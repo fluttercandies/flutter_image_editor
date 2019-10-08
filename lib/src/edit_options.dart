@@ -54,7 +54,13 @@ class ClipOption implements Option {
   final double width;
   final double height;
 
-  ClipOption({this.x, this.y, this.width, this.height});
+  ClipOption({
+    this.x = 0,
+    this.y = 0,
+    @required this.width,
+    @required this.height,
+  })  : assert(width > 0 && height > 0),
+        assert(x >= 0, y >= 0);
 
   factory ClipOption.fromRect(Rect rect) {
     return ClipOption(

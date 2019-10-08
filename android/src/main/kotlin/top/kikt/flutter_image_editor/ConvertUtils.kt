@@ -11,11 +11,16 @@ object ConvertUtils {
       if (optionMap !is Map<*, *>) {
         continue
       }
-      
+  
+      val valueMap = optionMap["value"]
       when (optionMap["type"]) {
         "flip" -> {
-          val flipOption = getFlipOption(optionMap["value"])
+          val flipOption = getFlipOption(valueMap)
           list.add(flipOption)
+        }
+        "clip" -> {
+          val clipOption = getClipOption(valueMap)
+          list.add(clipOption)
         }
         else -> {
         }
@@ -23,6 +28,18 @@ object ConvertUtils {
     }
     
     return list
+  }
+  
+  private fun getClipOption(optionMap: Any?): ClipOption {
+    if (optionMap !is Map<*, *>) {
+      return ClipOption(0, 0, -1, -1)
+    }
+    val width = (optionMap["width"] as Number).toInt()
+    val height = (optionMap["height"] as Number).toInt()
+    val x = (optionMap["x"] as Number).toInt()
+    val y = (optionMap["y"] as Number).toInt()
+    
+    return ClipOption(x, y, width, height)
   }
   
   private fun getFlipOption(optionMap: Any?): FlipOption {

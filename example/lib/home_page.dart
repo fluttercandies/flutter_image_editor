@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: <Widget>[
                   buildButton("flip", _flip),
+                  buildButton("clip", _clip),
                 ],
               ),
             ),
@@ -90,7 +91,23 @@ class _HomePageState extends State<HomePage> {
     final assetImage = await getAssetImage();
 
     ImageEditOption option = ImageEditOption();
-    option.addOption(FlipOption());
+    option.addOption(FlipOption(FlipType.vertical));
+
+    final result =
+        await ImageWrapper.memory(assetImage).handleAndGetUint8List(option);
+
+    final img = MemoryImage(result);
+    setProvider(img);
+  }
+
+  _clip() async {
+    final assetImage = await getAssetImage();
+
+    ImageEditOption option = ImageEditOption();
+    option.addOption(ClipOption(
+      width: 1800,
+      height: 1800,
+    ));
 
     final result =
         await ImageWrapper.memory(assetImage).handleAndGetUint8List(option);
