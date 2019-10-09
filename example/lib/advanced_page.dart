@@ -80,12 +80,12 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     var result = await wrapper.handleAndGetUint8List(option);
 
-    // final tmp = ImageWrapper.memory(result);
-    // option.reset();
-    // final h = state.editAction.flipX;
-    // final v = state.editAction.flipY;
-    // option.addOption(FlipOption(vertical: v, horizontal: h));
-    // result = await tmp.handleAndGetUint8List(option);
+    final tmp = ImageWrapper.memory(result);
+    option.reset();
+    final h = state.editAction.flipX;
+    final v = state.editAction.flipY;
+    option.addOption(FlipOption(horizontal: h, vertical: v));
+    result = await tmp.handleAndGetUint8List(option);
 
     showDialog(
       context: context,
