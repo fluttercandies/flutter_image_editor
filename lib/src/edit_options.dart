@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'dart:math' show pi;
 
 abstract class Option {
   String get key;
@@ -10,6 +11,10 @@ class ImageEditOption {
   ImageEditOption();
 
   List<Option> options = [];
+
+  void reset() {
+    options.clear();
+  }
 
   void addOption(Option option) {
     options.add(option);
@@ -94,6 +99,8 @@ class RotateOption implements Option {
   final int angle;
 
   RotateOption(this.angle);
+
+  RotateOption.radian(double radian) : angle = (radian / pi * 180).toInt();
 
   @override
   String get key => "rotate";

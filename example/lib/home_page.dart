@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_editor_example/advanced_page.dart';
 
 import 'const/resource.dart';
 import 'package:flutter_image_editor/flutter_image_editor.dart';
@@ -30,6 +31,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.extension),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => AdvancedPage(),
+            )),
+          ),
           IconButton(
             icon: Icon(Icons.settings_backup_restore),
             onPressed: restore,
