@@ -4,12 +4,12 @@
 
 - [x] clip
 - [x] flip
-- [ ] rotate
-- [ ] resize
+- [x] rotate
+<!-- - [ ] resize -->
 
 ## ios
 
 - [ ] clip
 - [ ] flip
 - [ ] rotate
-- [ ] resize
+<!-- - [ ] resize -->

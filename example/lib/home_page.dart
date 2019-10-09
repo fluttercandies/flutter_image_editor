@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'const/resource.dart';
 import 'package:flutter_image_editor/flutter_image_editor.dart';
 
+import 'widget/clip_widget.dart';
+import 'widget/flip_widget.dart';
+import 'widget/rotate_widget.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -35,16 +39,28 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: <Widget>[
-          Image(
-            image: provider,
+          AspectRatio(
+            aspectRatio: 1,
+            child: Image(
+              image: provider,
+            ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  buildButton("flip", _flip),
-                  buildButton("clip", _clip),
-                ],
+            child: Scrollbar(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    FlipWidget(
+                      onTap: _flip,
+                    ),
+                    ClipWidget(
+                      onTap: _clip,
+                    ),
+                    RotateWidget(
+                      onTap: _rotate,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -87,28 +103,25 @@ class _HomePageState extends State<HomePage> {
     return completer.future;
   }
 
-  _flip() async {
-    final assetImage = await getAssetImage();
-
-    ImageEditOption option = ImageEditOption();
-    option.addOption(FlipOption(FlipType.vertical));
-
-    final result =
-        await ImageWrapper.memory(assetImage).handleAndGetUint8List(option);
-
-    final img = MemoryImage(result);
-    setProvider(img);
+  void _flip(FlipOption flipOption) async {
+    handleOption([flipOption]);
   }
 
-  _clip() async {
-    final assetImage = await getAssetImage();
+  _clip(ClipOption clipOpt) async {
+    handleOption([clipOpt]);
+  }
 
+  void _rotate(RotateOption rotateOpt) async {
+    handleOption([rotateOpt]);
+  }
+
+  void handleOption(List<Option> options) async {
     ImageEditOption option = ImageEditOption();
-    option.addOption(ClipOption(
-      width: 1800,
-      height: 1800,
-    ));
+    for (final o in options) {
+      option.addOption(o);
+    }
 
+    final assetImage = await getAssetImage();
     final result =
         await ImageWrapper.memory(assetImage).handleAndGetUint8List(option);
 

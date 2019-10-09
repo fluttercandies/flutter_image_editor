@@ -28,31 +28,29 @@ class ImageEditOption {
 }
 
 class FlipOption implements Option {
-  final FlipType type;
+  final bool horizontal;
+  final bool vertical;
 
-  FlipOption([
-    this.type = FlipType.horizontal,
-  ]);
+  FlipOption({
+    this.horizontal = true,
+    this.vertical = false,
+  });
 
   @override
   String get key => "flip";
 
   @override
   Map<String, dynamic> get transferValue => {
-        "type": type.index,
+        'h': horizontal,
+        'v': vertical,
       };
 }
 
-enum FlipType {
-  horizontal,
-  vertical,
-}
-
 class ClipOption implements Option {
-  final double x;
-  final double y;
-  final double width;
-  final double height;
+  final num x;
+  final num y;
+  final num width;
+  final num height;
 
   ClipOption({
     this.x = 0,
@@ -93,7 +91,7 @@ class ClipOption implements Option {
 }
 
 class RotateOption implements Option {
-  final double angle;
+  final int angle;
 
   RotateOption(this.angle);
 

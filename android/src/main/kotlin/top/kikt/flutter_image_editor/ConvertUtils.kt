@@ -11,7 +11,7 @@ object ConvertUtils {
       if (optionMap !is Map<*, *>) {
         continue
       }
-  
+      
       val valueMap = optionMap["value"]
       when (optionMap["type"]) {
         "flip" -> {
@@ -22,12 +22,24 @@ object ConvertUtils {
           val clipOption = getClipOption(valueMap)
           list.add(clipOption)
         }
+        "rotate" -> {
+          val rotateOption = getRotateOption(valueMap)
+          list.add(rotateOption)
+        }
         else -> {
         }
       }
     }
     
     return list
+  }
+  
+  private fun getRotateOption(optionMap: Any?): RotateOption {
+    if (optionMap !is Map<*, *>) {
+      return RotateOption(0)
+    }
+    
+    return RotateOption(optionMap["angle"] as Int)
   }
   
   private fun getClipOption(optionMap: Any?): ClipOption {
@@ -44,10 +56,10 @@ object ConvertUtils {
   
   private fun getFlipOption(optionMap: Any?): FlipOption {
     if (optionMap !is Map<*, *>) {
-      return FlipOption(0)
+      return FlipOption()
     }
     
-    return FlipOption(optionMap["type"] as Int)
+    return FlipOption(optionMap["h"] as Boolean, optionMap["v"] as Boolean)
   }
   
 }
