@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface FlutterImageEditorPlugin : NSObject<FlutterPlugin>
+@interface FlutterImageEditorPlugin : NSObject <FlutterPlugin>
 @end
