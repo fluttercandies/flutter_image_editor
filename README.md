@@ -1,11 +1,11 @@
-# flutter_image_editor
+# image_editor
 
 Support android ios, use the native way to flip, crop, rotate pictures.
 
-- [flutter_image_editor](#flutterimageeditor)
+- [image_editor](#imageeditor)
   - [Screenshot](#screenshot)
   - [Usage](#usage)
-    - [FlutterImageEditor method params](#flutterimageeditor-method-params)
+    - [ImageEditor method params](#imageeditor-method-params)
     - [ImageEditorOption](#imageeditoroption)
     - [Option](#option)
       - [Flip](#flip)
@@ -33,6 +33,16 @@ void main(){
     /// init plugin
     ImageEditor.initialPlugin();
 }
+
+// or
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  ImageEditor.initialPlugin();
+  runApp(MyApp());
+}
+
+// This method initializes a cache directory for subsequent operations, you can call it before you want to use this plugin.`
 ```
 
 Method list:
@@ -48,7 +58,7 @@ ImageEditor.editImageAndGetFile();
 
 [Example](https://github.com/CaiJingLong/flutter_image_editor/blob/master/example/lib/advanced_page.dart) of [extended_image](https://github.com/fluttercandies/extended_image)
 
-### FlutterImageEditor method params
+### ImageEditor method params
 
 | Name              | Description                            |
 | ----------------- | -------------------------------------- |
