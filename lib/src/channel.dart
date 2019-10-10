@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_image_editor/src/edit_options.dart';
 
@@ -10,11 +12,21 @@ class NativeChannel {
     return version;
   }
 
+  static Future<Directory> getCachePath() async {
+    final path = await _channel.invokeMethod("getCachePath");
+    return Directory(path);
+  }
+
   static Future<String> handleResult(
       String srcPath, ImageEditOption option, String targetPath) async {
     if (option.options.isEmpty) {
       return srcPath;
     }
+
+    if (option.canIgnore) {
+      return srcPath;
+    }
+
     return _channel.invokeMethod("handleImage", {
       "src": srcPath,
       "target": targetPath,

@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:math' show pi;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
@@ -70,22 +70,61 @@ class _AdvancedPageState extends State<AdvancedPage> {
     final rect = state.getCropRect();
     final radian = state.editAction.rotateAngle;
 
+    final h = state.editAction.flipY;
+    final v = state.editAction.flipX;
     final img = await getAssetImage();
-    final wrapper = ImageWrapper.memory(img);
 
     ImageEditOption option = ImageEditOption();
 
-    option.addOption(RotateOption.radian(radian));
-    option.addOption(ClipOption.fromRect(rect));
+    option.addOption(FlipOption(horizontal: h, vertical: v), newGroup: true);
+    option.addOption(RotateOption.radian(radian), newGroup: true);
+    option.addOption(ClipOption.fromRect(rect), newGroup: true);
 
-    var result = await wrapper.handleAndGetUint8List(option);
+    print(json.encode(option.toJson()));
 
-    final tmp = ImageWrapper.memory(result);
-    option.reset();
+    final result = await FlutterImageEditor.editImage(
+      image: img,
+      imageEditOption: option,
+    );
+
+    showDialog(
+      context: context,
+      builder: (ctx) => GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          color: Colors.white,
+          child: Center(
+            child: SizedBox.fromSize(
+              size: Size.square(200),
+              child: Image.memory(result),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void newCrop() async {
+    final state = editorKey.currentState;
+    final rect = state.getCropRect();
+    final radian = state.editAction.rotateAngle;
+
+    final img = await getAssetImage();
+
+    ImageEditOption option = ImageEditOption();
+
+    option.addOption(ClipOption.fromRect(rect), newGroup: true);
+
+    option.addOption(RotateOption.radian(radian), newGroup: true);
+
     final h = state.editAction.flipX;
     final v = state.editAction.flipY;
-    option.addOption(FlipOption(horizontal: h, vertical: v));
-    result = await tmp.handleAndGetUint8List(option);
+    option.addOption(FlipOption(horizontal: h, vertical: v), newGroup: true);
+
+    final result = await FlutterImageEditor.editImage(
+      image: img,
+      imageEditOption: option,
+    );
 
     showDialog(
       context: context,

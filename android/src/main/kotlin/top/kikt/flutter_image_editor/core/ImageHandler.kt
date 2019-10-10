@@ -1,9 +1,13 @@
-package top.kikt.flutter_image_editor
+package top.kikt.flutter_image_editor.core
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
+import top.kikt.flutter_image_editor.option.ClipOption
+import top.kikt.flutter_image_editor.option.FlipOption
+import top.kikt.flutter_image_editor.option.Option
+import top.kikt.flutter_image_editor.option.RotateOption
 import java.io.File
 import java.io.FileOutputStream
 

@@ -4,21 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_editor/src/channel.dart';
 import 'package:flutter_image_editor/src/edit_options.dart';
 import 'package:flutter_image_editor/src/error.dart';
-import 'package:path_provider/path_provider.dart' as pp;
 
-class ImageWrapper {
+class ImageHandler {
   static String _tmpDir;
 
   static Future<void> initPath() async {
-    _tmpDir = (await pp.getTemporaryDirectory()).absolute.path;
+    _tmpDir = (await NativeChannel.getCachePath()).absolute.path;
   }
 
   String _path;
 
-  ImageWrapper._();
+  ImageHandler._();
 
-  factory ImageWrapper.memory(Uint8List uint8list) {
-    ImageWrapper image = ImageWrapper._();
+  factory ImageHandler.memory(Uint8List uint8list) {
+    ImageHandler image = ImageHandler._();
     final tmp = DateTime.now().microsecondsSinceEpoch;
     final path = "$_tmpDir/$tmp";
     image._path = path;
@@ -27,8 +26,8 @@ class ImageWrapper {
     return image;
   }
 
-  factory ImageWrapper.file(File file) {
-    ImageWrapper image = ImageWrapper._();
+  factory ImageHandler.file(File file) {
+    ImageHandler image = ImageHandler._();
     image._path = file.absolute.path;
     return image;
   }

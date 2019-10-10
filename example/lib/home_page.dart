@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
     final assetImage = await getAssetImage();
     final result =
-        await ImageWrapper.memory(assetImage).handleAndGetUint8List(option);
+        await ImageHandler.memory(assetImage).handleAndGetUint8List(option);
 
     final img = MemoryImage(result);
     setProvider(img);

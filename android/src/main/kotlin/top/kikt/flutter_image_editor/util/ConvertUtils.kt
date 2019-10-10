@@ -1,4 +1,9 @@
-package top.kikt.flutter_image_editor
+package top.kikt.flutter_image_editor.util
+
+import top.kikt.flutter_image_editor.option.ClipOption
+import top.kikt.flutter_image_editor.option.FlipOption
+import top.kikt.flutter_image_editor.option.Option
+import top.kikt.flutter_image_editor.option.RotateOption
 
 /// create 2019-10-08 by cai
 
