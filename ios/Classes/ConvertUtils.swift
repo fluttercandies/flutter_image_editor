@@ -37,20 +37,24 @@ class ConvertUtils {
   }
 
   private class func getRotateOption(_ map: [String: Any]) -> FlutterImageEditorOption {
-    return RotateOption(angle: map["angle"] as! Int)
+    return RotateOption(angle: getIntValue(map, "angle"))
   }
 
   private class func getClipOption(_ map: [String: Any]) -> FlutterImageEditorOption {
-    let x = map["x"] as! Int
-    let y = map["y"] as! Int
-    let width = map["width"] as! Int
-    let height = map["height"] as! Int
+    let x = getIntValue(map, "x")
+    let y = getIntValue(map, "y")
+    let width = getIntValue(map, "width")
+    let height = getIntValue(map, "height")
     return ClipOption(x: x, y: y, width: width, height: height)
   }
 
+  private class func getIntValue(_ map: [String: Any], _ key: String) -> Int {
+    return (map[key] as! NSNumber).intValue
+  }
+
   private class func getFlipOption(_ map: [String: Any]) -> FlutterImageEditorOption {
-    let h = map["h"] as! Bool
-    let v = map["v"] as! Bool
-    return FlipOption(horizontal: h, vertical: v)
+    let horizontal = map["h"] as! Bool
+    let vertical = map["v"] as! Bool
+    return FlipOption(horizontal: horizontal, vertical: vertical)
   }
 }

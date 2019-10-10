@@ -21,6 +21,8 @@ public class SwiftFlutterImageEditorPlugin: NSObject, FlutterPlugin {
       handler.output()
       result(target)
 
+    } else if call.method == "getCachePath" {
+      result(NSTemporaryDirectory())
     } else {
       result(FlutterMethodNotImplemented)
     }
