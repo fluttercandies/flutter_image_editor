@@ -22,7 +22,7 @@ Support android ios, use the native way to flip, crop, rotate pictures.
 Import
 
 ```dart
-import 'package:flutter_image_editor/flutter_image_editor.dart';
+import 'package:image_editor/image_editor.dart';
 ```
 
 Initial plugin (Must do it):
@@ -31,17 +31,17 @@ Initial plugin (Must do it):
 void main(){
     runApp();
     /// init plugin
-    FlutterImageEditor.initialPlugin();
+    ImageEditor.initialPlugin();
 }
 ```
 
 Method list:
 
 ```dart
-FlutterImageEditor.editImage();
-FlutterImageEditor.editFileImage();
-FlutterImageEditor.editFileImageAndGetFile();
-FlutterImageEditor.editImageAndGetFile();
+ImageEditor.editImage();
+ImageEditor.editFileImage();
+ImageEditor.editFileImageAndGetFile();
+ImageEditor.editImageAndGetFile();
 ```
 
 [Example used alone](https://github.com/CaiJingLong/flutter_image_editor/blob/master/example/lib/advanced_page.dart)

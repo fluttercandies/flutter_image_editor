@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_editor/flutter_image_editor.dart';
+import 'package:image_editor/image_editor.dart';
 
 import 'expand_container.dart';
 

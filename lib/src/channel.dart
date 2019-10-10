@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_image_editor/src/edit_options.dart';
+
+import 'edit_options.dart';
 
 class NativeChannel {
   static const MethodChannel _channel =

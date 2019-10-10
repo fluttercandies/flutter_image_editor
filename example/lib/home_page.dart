@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
 
 import 'const/resource.dart';
-import 'package:flutter_image_editor/flutter_image_editor.dart';
+import 'package:image_editor/image_editor.dart';
 
 import 'widget/clip_widget.dart';
 import 'widget/flip_widget.dart';
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
 
     final assetImage = await getAssetImage();
 
-    final result = await FlutterImageEditor.editImage(
+    final result = await ImageEditor.editImage(
       image: assetImage,
       imageEditorOption: option,
     );

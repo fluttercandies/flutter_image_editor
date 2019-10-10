@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_editor/src/channel.dart';
-import 'package:flutter_image_editor/src/edit_options.dart';
-import 'package:flutter_image_editor/src/error.dart';
+import 'channel.dart';
+import 'edit_options.dart';
+import 'error.dart';
 
 class ImageHandler {
   static String _tmpDir;

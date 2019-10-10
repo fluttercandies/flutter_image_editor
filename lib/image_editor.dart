@@ -3,14 +3,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_image_editor/src/channel.dart';
+import 'package:image_editor/src/channel.dart';
 import 'src/edit_options.dart';
 import 'src/image_handler.dart';
 
 export 'src/edit_options.dart' hide IgnoreAble, OptionGroup;
 export 'src/error.dart';
 
-class FlutterImageEditor {
+class ImageEditor {
   static Future<void> initialPlugin() async {
     await ImageHandler.initPath();
   }

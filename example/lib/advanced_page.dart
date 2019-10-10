@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
-import 'package:flutter_image_editor/flutter_image_editor.dart';
+import 'package:image_editor/image_editor.dart';
 
 class AdvancedPage extends StatefulWidget {
   @override
@@ -97,7 +97,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     print(json.encode(option.toJson()));
 
-    final result = await FlutterImageEditor.editImage(
+    final result = await ImageEditor.editImage(
       image: img,
       imageEditorOption: option,
     );
