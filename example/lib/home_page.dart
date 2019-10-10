@@ -30,12 +30,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Simple usage"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.extension),
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => AdvancedPage(),
             )),
+            tooltip: "Use extended_image library",
           ),
           IconButton(
             icon: Icon(Icons.settings_backup_restore),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_editor/src/channel.dart';
 import 'src/edit_options.dart';
 import 'src/image_handler.dart';
 
@@ -41,21 +42,64 @@ class FlutterImageEditor {
     @required ImageEditOption imageEditOption,
   }) async {
     Uint8List tmp;
-    bool handle = false;
-    for (final option in imageEditOption.options) {
-      if (option.canIgnore) {
+    bool isHandle = false;
+
+    for (final group in imageEditOption.groupList) {
+      if (group.canIgnore) {
         continue;
       }
       final handler = ImageHandler.file(file);
-      tmp = await handler
-          .handleAndGetUint8List(ImageEditOption()..addOption(option));
-      handle = true;
+      final editOption = ImageEditOption();
+      for (final option in group) {
+        editOption.addOption(option);
+      }
+
+      tmp = await handler.handleAndGetUint8List(editOption);
+
+      isHandle = true;
     }
 
-    if (handle) {
+    if (isHandle) {
       return tmp;
     } else {
       return file.readAsBytesSync();
     }
+  }
+
+  static Future<File> editFileImageAndGetFile({
+    @required File file,
+    @required ImageEditOption imageEditOption,
+  }) async {
+    File tmp = file;
+    for (final group in imageEditOption.groupList) {
+      if (group.canIgnore) {
+        continue;
+      }
+      final handler = ImageHandler.file(tmp);
+      final editOption = ImageEditOption();
+      for (final option in group) {
+        editOption.addOption(option);
+      }
+
+      final target = await _createTmpFilePath();
+
+      tmp = await handler.handleAndGetFile(editOption, target);
+    }
+    return tmp;
+  }
+
+  static Future<File> editImageAndGetFile({
+    @required Uint8List image,
+    @required ImageEditOption imageEditOption,
+  }) async {
+    final tmpPath = await _createTmpFilePath();
+    final f = File(tmpPath)..writeAsBytesSync(image);
+    return editFileImageAndGetFile(file: f, imageEditOption: imageEditOption);
+  }
+
+  static Future<String> _createTmpFilePath() async {
+    final cacheDir = await NativeChannel.getCachePath();
+    final name = DateTime.now().millisecondsSinceEpoch;
+    return "$cacheDir/$name";
   }
 }

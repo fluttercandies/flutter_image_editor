@@ -19,6 +19,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Use extended_image library"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.check),
@@ -44,24 +45,37 @@ class _AdvancedPageState extends State<AdvancedPage> {
               },
             ),
           ),
-          Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.flip),
-                onPressed: flip,
-              ),
-              IconButton(
-                icon: Icon(Icons.rotate_left),
-                onPressed: () => rotate(false),
-              ),
-              IconButton(
-                icon: Icon(Icons.rotate_right),
-                onPressed: () => rotate(true),
-              ),
-            ],
-          ),
+          _buildFunctions(),
         ],
       ),
+    );
+  }
+
+  Widget _buildFunctions() {
+    final w = Row(
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.flip),
+          onPressed: flip,
+        ),
+        IconButton(
+          icon: Icon(Icons.rotate_left),
+          onPressed: () => rotate(false),
+        ),
+        IconButton(
+          icon: Icon(Icons.rotate_right),
+          onPressed: () => rotate(true),
+        ),
+      ],
+    );
+
+    return Column(
+      children: <Widget>[
+        Divider(
+          height: 15,
+        ),
+        w
+      ],
     );
   }
 
@@ -70,15 +84,16 @@ class _AdvancedPageState extends State<AdvancedPage> {
     final rect = state.getCropRect();
     final radian = state.editAction.rotateAngle;
 
-    final h = state.editAction.flipY;
-    final v = state.editAction.flipX;
+    final flipHorizontal = state.editAction.flipY;
+    final flipVertical = state.editAction.flipX;
     final img = await getAssetImage();
 
     ImageEditOption option = ImageEditOption();
 
-    option.addOption(FlipOption(horizontal: h, vertical: v), newGroup: true);
-    option.addOption(RotateOption.radian(radian), newGroup: true);
-    option.addOption(ClipOption.fromRect(rect), newGroup: true);
+    option.addOption(
+        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+    option.addOption(RotateOption.radian(radian));
+    option.addOption(ClipOption.fromRect(rect));
 
     print(json.encode(option.toJson()));
 
@@ -87,60 +102,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
       imageEditOption: option,
     );
 
-    showDialog(
-      context: context,
-      builder: (ctx) => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          color: Colors.white,
-          child: Center(
-            child: SizedBox.fromSize(
-              size: Size.square(200),
-              child: Image.memory(result),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void newCrop() async {
-    final state = editorKey.currentState;
-    final rect = state.getCropRect();
-    final radian = state.editAction.rotateAngle;
-
-    final img = await getAssetImage();
-
-    ImageEditOption option = ImageEditOption();
-
-    option.addOption(ClipOption.fromRect(rect), newGroup: true);
-
-    option.addOption(RotateOption.radian(radian), newGroup: true);
-
-    final h = state.editAction.flipX;
-    final v = state.editAction.flipY;
-    option.addOption(FlipOption(horizontal: h, vertical: v), newGroup: true);
-
-    final result = await FlutterImageEditor.editImage(
-      image: img,
-      imageEditOption: option,
-    );
-
-    showDialog(
-      context: context,
-      builder: (ctx) => GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Container(
-          color: Colors.white,
-          child: Center(
-            child: SizedBox.fromSize(
-              size: Size.square(200),
-              child: Image.memory(result),
-            ),
-          ),
-        ),
-      ),
-    );
+    showPreviewDialog(result);
   }
 
   void flip() {
@@ -174,5 +136,26 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
   rotate(bool right) {
     editorKey.currentState.rotate(right: right);
+  }
+
+  void showPreviewDialog(Uint8List image) {
+    showDialog(
+      context: context,
+      builder: (ctx) => GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          color: Colors.grey.withOpacity(0.5),
+          child: Center(
+            child: SizedBox.fromSize(
+              size: Size.square(200),
+              child: Container(
+                color: Colors.white,
+                child: Image.memory(image),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

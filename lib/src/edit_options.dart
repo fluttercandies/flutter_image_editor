@@ -32,7 +32,7 @@ class ImageEditOption implements IgnoreAble {
     groupList.clear();
   }
 
-  void addOption(Option option, {bool newGroup = false}) {
+  void addOption(Option option, {bool newGroup = true}) {
     OptionGroup group;
     if (groupList.isEmpty || newGroup) {
       group = OptionGroup();
@@ -44,7 +44,7 @@ class ImageEditOption implements IgnoreAble {
     group.addOption(option);
   }
 
-  void addOptions(List<Option> options, {bool newGroup = false}) {
+  void addOptions(List<Option> options, {bool newGroup = true}) {
     OptionGroup group;
     if (groupList.isEmpty || newGroup) {
       group = OptionGroup();
