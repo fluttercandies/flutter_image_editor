@@ -180,10 +180,10 @@ class ClipOption implements Option {
 
   @override
   Map<String, dynamic> get transferValue => {
-        "x": x,
-        "y": y,
-        "width": width,
-        "height": height,
+        "x": x.round(),
+        "y": y.round(),
+        "width": width.round(),
+        "height": height.round(),
       };
 
   @override

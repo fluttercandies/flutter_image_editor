@@ -18,81 +18,96 @@ class _AdvancedPageState extends State<AdvancedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Use extended_image library"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: crop,
-          ),
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1,
-            child: ExtendedImage.asset(
-              R.ASSETS_ICON_PNG,
-              extendedImageEditorKey: editorKey,
-              mode: ExtendedImageMode.editor,
-              initEditorConfigHandler: (state) {
-                return EditorConfig(
-                  maxScale: 8.0,
-                  cropRectPadding: EdgeInsets.all(20.0),
-                  hitTestSize: 20.0,
-                  cropAspectRatio: 1,
-                );
-              },
+        appBar: AppBar(
+          title: Text("Use extended_image library"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: crop,
             ),
+          ],
+        ),
+        body: Container(
+          height: double.infinity,
+          child: Column(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 1,
+                child: ExtendedImage.asset(
+                  R.ASSETS_ICON_PNG,
+                  height: 400,
+                  width: 400,
+                  extendedImageEditorKey: editorKey,
+                  mode: ExtendedImageMode.editor,
+                  fit: BoxFit.contain,
+                  initEditorConfigHandler: (state) {
+                    return EditorConfig(
+                      maxScale: 8.0,
+                      cropRectPadding: EdgeInsets.all(20.0),
+                      hitTestSize: 20.0,
+                      cropAspectRatio: 1,
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          _buildFunctions(),
-        ],
-      ),
-    );
+        ),
+        bottomNavigationBar: _buildFunctions());
   }
 
   Widget _buildFunctions() {
-    final w = Row(
-      children: <Widget>[
-        IconButton(
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
           icon: Icon(Icons.flip),
-          onPressed: flip,
+          title: Text("Flip"),
         ),
-        IconButton(
+        BottomNavigationBarItem(
           icon: Icon(Icons.rotate_left),
-          onPressed: () => rotate(false),
+          title: Text("Rotate left"),
         ),
-        IconButton(
+        BottomNavigationBarItem(
           icon: Icon(Icons.rotate_right),
-          onPressed: () => rotate(true),
+          title: Text("Rotate right"),
         ),
       ],
-    );
-
-    return Column(
-      children: <Widget>[
-        Divider(
-          height: 15,
-        ),
-        w
-      ],
+      onTap: (index) {
+        switch (index) {
+          case 0:
+            flip();
+            break;
+          case 1:
+            rotate(false);
+            break;
+          case 2:
+            rotate(true);
+            break;
+        }
+      },
+      currentIndex: 0,
+      selectedItemColor: Theme.of(context).primaryColor,
+      unselectedItemColor: Theme.of(context).primaryColor,
     );
   }
 
   void crop() async {
     final state = editorKey.currentState;
     final rect = state.getCropRect();
-    final radian = state.editAction.rotateAngle;
+    final action = state.editAction;
+    final radian = action.rotateAngle;
 
-    final flipHorizontal = state.editAction.flipY;
-    final flipVertical = state.editAction.flipX;
+    final flipHorizontal = action.flipY;
+    final flipVertical = action.flipX;
     final img = await getAssetImage();
 
     ImageEditorOption option = ImageEditorOption();
 
     option.addOption(
         FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
-    option.addOption(RotateOption.radian(radian));
+    if (action.hasRotateAngle) {
+      option.addOption(RotateOption.radian(radian));
+    }
     option.addOption(ClipOption.fromRect(rect));
 
     print(json.encode(option.toJson()));
