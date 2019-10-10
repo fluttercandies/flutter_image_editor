@@ -44,7 +44,7 @@ void main() {
   runApp(MyApp());
 }
 
-// This method initializes a cache directory for subsequent operations, you can call it before you want to use this plugin.`
+// This method initializes a cache directory for subsequent operations, you can call it before you want to use this plugin.
 ```
 
 Method list:
