@@ -33,7 +33,7 @@ class ImageHandler {
   }
 
   Future<File> handleAndGetFile(
-      ImageEditOption option, String targetPath) async {
+      ImageEditorOption option, String targetPath) async {
     try {
       final String path =
           await NativeChannel.handleResult(_path, option, targetPath);
@@ -52,7 +52,7 @@ class ImageHandler {
     }
   }
 
-  Future<Uint8List> handleAndGetUint8List(ImageEditOption option) async {
+  Future<Uint8List> handleAndGetUint8List(ImageEditorOption option) async {
     File file = File("$_tmpDir/${DateTime.now().microsecondsSinceEpoch}");
     file.createSync(recursive: true);
     final result = await handleAndGetFile(option, file.absolute.path);

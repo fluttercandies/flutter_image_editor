@@ -13,8 +13,8 @@ abstract class Option implements IgnoreAble {
   Map<String, dynamic> get transferValue;
 }
 
-class ImageEditOption implements IgnoreAble {
-  ImageEditOption();
+class ImageEditorOption implements IgnoreAble {
+  ImageEditorOption();
 
   List<Option> get options {
     List<Option> result = [];
@@ -191,20 +191,20 @@ class ClipOption implements Option {
 }
 
 class RotateOption implements Option {
-  final int angle;
+  final int degree;
 
-  RotateOption(this.angle);
+  RotateOption(this.degree);
 
-  RotateOption.radian(double radian) : angle = (radian / pi * 180).toInt();
+  RotateOption.radian(double radian) : degree = (radian / pi * 180).toInt();
 
   @override
   String get key => "rotate";
 
   @override
   Map<String, dynamic> get transferValue => {
-        "angle": angle,
+        "degree": degree,
       };
 
   @override
-  bool get canIgnore => angle % 360 == 0;
+  bool get canIgnore => degree % 360 == 0;
 }

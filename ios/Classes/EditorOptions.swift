@@ -17,5 +17,5 @@ struct ClipOption: FlutterImageEditorOption {
 }
 
 struct RotateOption: FlutterImageEditorOption {
-  var angle: Int = 0
+  var degree: Int = 0
 }

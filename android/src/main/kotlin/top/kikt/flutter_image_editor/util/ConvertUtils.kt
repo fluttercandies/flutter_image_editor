@@ -44,7 +44,7 @@ object ConvertUtils {
       return RotateOption(0)
     }
     
-    return RotateOption(optionMap["angle"] as Int)
+    return RotateOption(optionMap["degree"] as Int)
   }
   
   private fun getClipOption(optionMap: Any?): ClipOption {

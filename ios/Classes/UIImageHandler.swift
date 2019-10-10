@@ -38,7 +38,7 @@ class UIImageHandler {
   }
 
   private func handleRotate(_ option: RotateOption) -> UIImage {
-    return image.rotate(option.angle)
+    return image.rotate(option.degree)
   }
 
   private func handleClip(_ option: ClipOption) -> UIImage {

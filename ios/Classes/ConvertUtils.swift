@@ -37,7 +37,7 @@ class ConvertUtils {
   }
 
   private class func getRotateOption(_ map: [String: Any]) -> FlutterImageEditorOption {
-    return RotateOption(angle: getIntValue(map, "angle"))
+    return RotateOption(degree: getIntValue(map, "degree"))
   }
 
   private class func getClipOption(_ map: [String: Any]) -> FlutterImageEditorOption {

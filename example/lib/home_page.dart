@@ -125,14 +125,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleOption(List<Option> options) async {
-    ImageEditOption option = ImageEditOption();
+    ImageEditorOption option = ImageEditorOption();
     for (final o in options) {
       option.addOption(o);
     }
 
     final assetImage = await getAssetImage();
-    final result =
-        await ImageHandler.memory(assetImage).handleAndGetUint8List(option);
+
+    final result = await FlutterImageEditor.editImage(
+      image: assetImage,
+      imageEditorOption: option,
+    );
 
     final img = MemoryImage(result);
     setProvider(img);

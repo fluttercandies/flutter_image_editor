@@ -18,7 +18,7 @@ class NativeChannel {
   }
 
   static Future<String> handleResult(
-      String srcPath, ImageEditOption option, String targetPath) async {
+      String srcPath, ImageEditorOption option, String targetPath) async {
     if (option.options.isEmpty) {
       return srcPath;
     }

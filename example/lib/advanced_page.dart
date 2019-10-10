@@ -88,7 +88,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
     final flipVertical = state.editAction.flipX;
     final img = await getAssetImage();
 
-    ImageEditOption option = ImageEditOption();
+    ImageEditorOption option = ImageEditorOption();
 
     option.addOption(
         FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
@@ -99,7 +99,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     final result = await FlutterImageEditor.editImage(
       image: img,
-      imageEditOption: option,
+      imageEditorOption: option,
     );
 
     showPreviewDialog(result);
