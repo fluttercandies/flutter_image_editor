@@ -6,18 +6,11 @@ import Foundation
 import UIKit
 
 class UIImageHandler {
-  var src: String
-  var target: String
 
   var image: UIImage
 
-  init(src: String, target: String) {
-    self.src = src
-    self.target = target
-
-    let data = try! Data(contentsOf: URL(fileURLWithPath: src), options: .mappedRead)
-
-    image = UIImage(data: data)!
+  init(image:UIImage) {
+    self.image = image
   }
 
   func handleImage(options: [FlutterImageEditorOption]) {
@@ -32,10 +25,14 @@ class UIImageHandler {
     }
   }
 
-  func output() {
-    let data = UIImagePNGRepresentation(image)
-    try! data?.write(to: URL(fileURLWithPath: target))
-  }
+    func outputFile(targetPath:String) {
+        let data = UIImagePNGRepresentation(image)
+        try! data?.write(to: URL(fileURLWithPath: targetPath))
+    }
+    
+    func outputMemory()->Data?{
+        return UIImagePNGRepresentation(image)
+    }
 
   private func handleRotate(_ option: RotateOption) -> UIImage {
     return image.rotate(option.degree)

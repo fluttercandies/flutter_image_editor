@@ -112,10 +112,15 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     print(json.encode(option.toJson()));
 
+    final start = DateTime.now();
     final result = await ImageEditor.editImage(
       image: img,
       imageEditorOption: option,
     );
+
+    final diff = DateTime.now().difference(start);
+
+    print("image_editor = $diff");
 
     showPreviewDialog(result);
   }

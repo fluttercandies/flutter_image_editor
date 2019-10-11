@@ -11,10 +11,6 @@ export 'src/edit_options.dart' hide IgnoreAble, OptionGroup;
 export 'src/error.dart';
 
 class ImageEditor {
-  static Future<void> initialPlugin() async {
-    await ImageHandler.initPath();
-  }
-
   /// [image] Uint8List
   /// [imageEditorOption] option of
   static Future<Uint8List> editImage({
@@ -93,12 +89,24 @@ class ImageEditor {
     @required Uint8List image,
     @required ImageEditorOption imageEditorOption,
   }) async {
-    final tmpPath = await _createTmpFilePath();
-    final f = File(tmpPath)..writeAsBytesSync(image);
-    return editFileImageAndGetFile(
-      file: f,
-      imageEditorOption: imageEditorOption,
-    );
+    Uint8List tmp = image;
+
+    for (final group in imageEditorOption.groupList) {
+      if (group.canIgnore) {
+        continue;
+      }
+      final handler = ImageHandler.memory(tmp);
+      final editOption = ImageEditorOption();
+      for (final option in group) {
+        editOption.addOption(option);
+      }
+
+      tmp = await handler.handleAndGetUint8List(editOption);
+    }
+
+    final file = File(await _createTmpFilePath());
+
+    return file..writeAsBytes(tmp);
   }
 
   static Future<String> _createTmpFilePath() async {
