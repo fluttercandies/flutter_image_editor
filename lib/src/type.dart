@@ -1,0 +1,4 @@
+enum SrcType {
+  file,
+  memory,
+}

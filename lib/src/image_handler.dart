@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'channel.dart';
 import 'edit_options.dart';
 import 'error.dart';
+import 'type.dart';
 
 class ImageHandler {
   static String _tmpDir;
@@ -12,35 +13,28 @@ class ImageHandler {
     _tmpDir = (await NativeChannel.getCachePath()).absolute.path;
   }
 
-  String _path;
+  SrcType _type;
 
-  ImageHandler._();
+  File _file;
 
-  factory ImageHandler.memory(Uint8List uint8list) {
-    ImageHandler image = ImageHandler._();
-    final tmp = DateTime.now().microsecondsSinceEpoch;
-    final path = "$_tmpDir/$tmp";
-    image._path = path;
-    final f = File(path);
-    f.writeAsBytesSync(uint8list);
-    return image;
-  }
+  Uint8List _memory;
 
-  factory ImageHandler.file(File file) {
-    ImageHandler image = ImageHandler._();
-    image._path = file.absolute.path;
-    return image;
-  }
+  ImageHandler.memory(this._memory) : _type = SrcType.memory;
+
+  ImageHandler.file(this._file) : _type = SrcType.file;
 
   Future<File> handleAndGetFile(
       ImageEditorOption option, String targetPath) async {
     try {
-      final String path =
-          await NativeChannel.handleResult(_path, option, targetPath);
-      if (path == null) {
-        throw HandleError("Processing failed.");
+      if (_type == SrcType.file) {
+        return File(
+            await NativeChannel.fileToFile(_file.path, option, targetPath));
+      } else if (_type == SrcType.memory) {
+        return File(
+            await NativeChannel.memoryToFile(_memory, option, targetPath));
+      } else {
+        return null;
       }
-      return File(path);
     } on PlatformException catch (e) {
       throw HandleError(e.code);
     } on Exception catch (e) {
@@ -53,11 +47,22 @@ class ImageHandler {
   }
 
   Future<Uint8List> handleAndGetUint8List(ImageEditorOption option) async {
-    File file = File("$_tmpDir/${DateTime.now().microsecondsSinceEpoch}");
-    file.createSync(recursive: true);
-    final result = await handleAndGetFile(option, file.absolute.path);
-    final list = result.readAsBytesSync();
-    result.deleteSync();
-    return list;
+    try {
+      if (_type == SrcType.file) {
+        return NativeChannel.fileToMemory(_file.path, option);
+      } else if (_type == SrcType.memory) {
+        return NativeChannel.memoryToMemory(_memory, option);
+      } else {
+        return null;
+      }
+    } on PlatformException catch (e) {
+      throw HandleError(e.code);
+    } on Exception catch (e) {
+      print(e.toString());
+      throw HandleError("Unhandled exception : $e");
+    } on Error catch (e) {
+      print(e.stackTrace.toString());
+      throw HandleError("Unhandled error : $e");
+    }
   }
 }

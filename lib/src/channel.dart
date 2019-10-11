@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
@@ -18,19 +19,52 @@ class NativeChannel {
     return Directory(path);
   }
 
-  static Future<String> handleResult(
-      String srcPath, ImageEditorOption option, String targetPath) async {
-    if (option.options.isEmpty) {
-      return srcPath;
+  static Future<String> memoryToFile(
+      Uint8List memory, ImageEditorOption option, String targetPath) async {
+    if (option.options.isEmpty || option.canIgnore) {
+      return (File(targetPath)..writeAsBytesSync(memory)).path;
     }
 
-    if (option.canIgnore) {
-      return srcPath;
-    }
-
-    return _channel.invokeMethod("handleImage", {
-      "src": srcPath,
+    return _channel.invokeMethod("memoryToFile", {
+      "image": memory,
       "target": targetPath,
+      "options": option.toJson(),
+    });
+  }
+
+  static Future<Uint8List> memoryToMemory(
+      Uint8List memory, ImageEditorOption option) async {
+    if (option.options.isEmpty || option.canIgnore) {
+      return memory;
+    }
+
+    return _channel.invokeMethod("memoryToMemory", {
+      "image": memory,
+      "options": option.toJson(),
+    });
+  }
+
+  static Future<Uint8List> fileToMemory(
+      String path, ImageEditorOption option) async {
+    if (option.options.isEmpty || option.canIgnore) {
+      return File(path).readAsBytesSync();
+    }
+
+    return _channel.invokeMethod("fileToMemory", {
+      "src": path,
+      "options": option.toJson(),
+    });
+  }
+
+  static Future<String> fileToFile(
+      String src, ImageEditorOption option, String target) async {
+    if (option.options.isEmpty || option.canIgnore) {
+      return src;
+    }
+
+    return _channel.invokeMethod("memoryToFile", {
+      "src": src,
+      "target": target,
       "options": option.toJson(),
     });
   }
