@@ -27,26 +27,6 @@ Import
 import 'package:image_editor/image_editor.dart';
 ```
 
-Initial plugin (Must do it):
-
-```dart
-void main(){
-    runApp();
-    /// init plugin
-    ImageEditor.initialPlugin();
-}
-
-// or
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  ImageEditor.initialPlugin();
-  runApp(MyApp());
-}
-
-// This method initializes a cache directory for subsequent operations, you can call it before you want to use this plugin.
-```
-
 Method list:
 
 ```dart
