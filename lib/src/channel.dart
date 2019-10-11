@@ -9,11 +9,6 @@ class NativeChannel {
   static const MethodChannel _channel =
       const MethodChannel('top.kikt/flutter_image_editor');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
   static Future<Directory> getCachePath() async {
     final path = await _channel.invokeMethod("getCachePath");
     return Directory(path);
@@ -62,7 +57,7 @@ class NativeChannel {
       return src;
     }
 
-    return _channel.invokeMethod("memoryToFile", {
+    return _channel.invokeMethod("fileToFile", {
       "src": src,
       "target": target,
       "options": option.toJson(),

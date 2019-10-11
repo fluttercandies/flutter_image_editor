@@ -1,24 +1,18 @@
 package top.kikt.flutter_image_editor.core
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import top.kikt.flutter_image_editor.option.ClipOption
 import top.kikt.flutter_image_editor.option.FlipOption
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.option.RotateOption
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 
 /// create 2019-10-08 by cai
 
-
-class ImageHandler(src: String, target: String) {
-  
-  private val dstFile = File(target)
-  
-  private var bitmap: Bitmap = BitmapFactory.decodeFile(src)
+class ImageHandler(private var bitmap: Bitmap) {
   
   fun handle(options: List<Option>) {
     for (option in options) {
@@ -34,7 +28,7 @@ class ImageHandler(src: String, target: String) {
     val tmpBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(tmpBitmap)
     val matrix = Matrix().apply {
-//      val rotate = option.angle.toFloat() / 180 * Math.PI
+      //      val rotate = option.angle.toFloat() / 180 * Math.PI
       this.postRotate(option.angle.toFloat())
     }
     
@@ -65,12 +59,19 @@ class ImageHandler(src: String, target: String) {
     return Bitmap.createBitmap(bitmap, x, y, option.width, option.height, null, false)
   }
   
-  fun output() {
-    val outputStream = FileOutputStream(dstFile)
+  fun outputToFile(dstPath: String) {
+    val outputStream = FileOutputStream(dstPath)
     outputStream.use {
       bitmap.compress(Bitmap.CompressFormat.PNG, 95, outputStream)
-//      bitmap.recycle()
     }
+  }
+  
+  fun outputByteArray(): ByteArray {
+    val outputStream = ByteArrayOutputStream()
+    outputStream.use {
+      bitmap.compress(Bitmap.CompressFormat.PNG, 95, outputStream)
+    }
+    return outputStream.toByteArray()
   }
   
 }

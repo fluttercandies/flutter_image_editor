@@ -7,12 +7,6 @@ import 'error.dart';
 import 'type.dart';
 
 class ImageHandler {
-  static String _tmpDir;
-
-  static Future<void> initPath() async {
-    _tmpDir = (await NativeChannel.getCachePath()).absolute.path;
-  }
-
   SrcType _type;
 
   File _file;
