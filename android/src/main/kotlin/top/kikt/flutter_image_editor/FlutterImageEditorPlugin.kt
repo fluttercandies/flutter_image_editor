@@ -89,7 +89,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
     return this.argument<String>("target")!!
   }
   
-  fun MethodCall.getOptions(): List<Option> {
+  private fun MethodCall.getOptions(): List<Option> {
     val optionMap = this.argument<List<Any>>("options")!!
     return ConvertUtils.convertMapOption(optionMap)
   }
