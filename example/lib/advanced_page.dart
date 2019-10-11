@@ -6,6 +6,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:oktoast/oktoast.dart';
 
 class AdvancedPage extends StatefulWidget {
   @override
@@ -15,12 +17,24 @@ class AdvancedPage extends StatefulWidget {
 class _AdvancedPageState extends State<AdvancedPage> {
   final editorKey = GlobalKey<ExtendedImageEditorState>();
 
+  ImageProvider provider;
+
+  @override
+  void initState() {
+    super.initState();
+    provider = AssetImage(R.ASSETS_ICON_PNG);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("Use extended_image library"),
           actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.photo),
+              onPressed: _pick,
+            ),
             IconButton(
               icon: Icon(Icons.check),
               onPressed: crop,
@@ -33,27 +47,31 @@ class _AdvancedPageState extends State<AdvancedPage> {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1,
-                child: ExtendedImage.asset(
-                  R.ASSETS_ICON_PNG,
-                  height: 400,
-                  width: 400,
-                  extendedImageEditorKey: editorKey,
-                  mode: ExtendedImageMode.editor,
-                  fit: BoxFit.contain,
-                  initEditorConfigHandler: (state) {
-                    return EditorConfig(
-                      maxScale: 8.0,
-                      cropRectPadding: EdgeInsets.all(20.0),
-                      hitTestSize: 20.0,
-                      cropAspectRatio: 1,
-                    );
-                  },
-                ),
+                child: buildImage(),
               ),
             ],
           ),
         ),
         bottomNavigationBar: _buildFunctions());
+  }
+
+  Widget buildImage() {
+    return ExtendedImage(
+      image: provider,
+      height: 400,
+      width: 400,
+      extendedImageEditorKey: editorKey,
+      mode: ExtendedImageMode.editor,
+      fit: BoxFit.contain,
+      initEditorConfigHandler: (state) {
+        return EditorConfig(
+          maxScale: 8.0,
+          cropRectPadding: EdgeInsets.all(20.0),
+          hitTestSize: 20.0,
+          cropAspectRatio: 1,
+        );
+      },
+    );
   }
 
   Widget _buildFunctions() {
@@ -120,7 +138,9 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     final diff = DateTime.now().difference(start);
 
-    print("image_editor = $diff");
+    print("image_editor time : $diff");
+    showToast("handle duration: $diff",
+        duration: Duration(seconds: 5), dismissOtherToast: true);
 
     showPreviewDialog(result);
   }
@@ -130,28 +150,10 @@ class _AdvancedPageState extends State<AdvancedPage> {
   }
 
   Future<Uint8List> getAssetImage() async {
-    final completer = Completer<Uint8List>();
-
-    final config = createLocalImageConfiguration(context);
-    final asset = AssetImage(R.ASSETS_ICON_PNG);
-    final key = await asset.obtainKey(config);
-    final comp = asset.load(key);
-    ImageStreamListener listener;
-    listener = ImageStreamListener((info, flag) {
-      comp.removeListener(listener);
-      info.image.toByteData(format: ui.ImageByteFormat.png).then((data) {
-        final l = data.buffer.asUint8List();
-        completer.complete(l);
-      });
-    }, onError: (e, s) {
-      completer.completeError(e, s);
-    });
-
-    comp.addListener(listener);
-
-    asset.resolve(config);
-
-    return completer.future;
+    final image = editorKey.currentState.image;
+    return (await image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
   }
 
   rotate(bool right) {
@@ -177,5 +179,13 @@ class _AdvancedPageState extends State<AdvancedPage> {
         ),
       ),
     );
+  }
+
+  void _pick() async {
+    final result = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (result != null) {
+      provider = FileImage(result);
+      setState(() {});
+    }
   }
 }
