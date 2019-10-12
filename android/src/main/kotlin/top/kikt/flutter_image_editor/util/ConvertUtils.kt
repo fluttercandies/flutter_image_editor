@@ -10,8 +10,12 @@ import top.kikt.flutter_image_editor.option.RotateOption
 
 object ConvertUtils {
   
-  fun convertMapOption(optionList: List<Any>): List<Option> {
+  fun convertMapOption(optionList: List<Any>, exifDegree: Int): List<Option> {
     val list = ArrayList<Option>()
+    if (exifDegree != 0) {
+      list.add(RotateOption(exifDegree))
+    }
+    
     for (optionMap in optionList) {
       if (optionMap !is Map<*, *>) {
         continue

@@ -2,6 +2,7 @@ package top.kikt.flutter_image_editor
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.exifinterface.media.ExifInterface
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -12,6 +13,7 @@ import top.kikt.flutter_image_editor.core.ResultHandler
 import top.kikt.flutter_image_editor.error.BitmapDecodeException
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.util.ConvertUtils
+import java.io.ByteArrayInputStream
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.ExecutorService
@@ -40,24 +42,16 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       try {
         when (call.method) {
           "memoryToFile" -> {
-            val imageHandler = ImageHandler(call.getBitmap())
-            imageHandler.handle(call.getOptions())
-            handle(imageHandler, false, resultHandler, call.getTarget())
+            handle(call, resultHandler, false)
           }
           "memoryToMemory" -> {
-            val imageHandler = ImageHandler(call.getBitmap())
-            imageHandler.handle(call.getOptions())
-            handle(imageHandler, true, resultHandler)
+            handle(call, resultHandler, true)
           }
           "fileToMemory" -> {
-            val imageHandler = ImageHandler(call.getBitmap())
-            imageHandler.handle(call.getOptions())
-            handle(imageHandler, true, resultHandler)
+            handle(call, resultHandler, true)
           }
           "fileToFile" -> {
-            val imageHandler = ImageHandler(call.getBitmap())
-            imageHandler.handle(call.getOptions())
-            handle(imageHandler, false, resultHandler, call.getTarget())
+            handle(call, resultHandler, false)
           }
           "getCachePath" -> {
             val cachePath = registrar.activeContext().cacheDir.absolutePath
@@ -85,27 +79,44 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
     return this.argument<String>("src")
   }
   
-  private fun MethodCall.getTarget(): String {
-    return this.argument<String>("target")!!
+  private fun MethodCall.getTarget(): String? {
+    return this.argument<String>("target")
   }
   
-  private fun MethodCall.getOptions(): List<Option> {
+  private fun MethodCall.getOptions(bitmapWrapper: BitmapWrapper): List<Option> {
     val optionMap = this.argument<List<Any>>("options")!!
-    return ConvertUtils.convertMapOption(optionMap)
+    return ConvertUtils.convertMapOption(optionMap, bitmapWrapper.degree)
   }
   
   private fun MethodCall.getMemory(): ByteArray? {
     return this.argument<ByteArray>("image")
   }
   
-  private fun MethodCall.getBitmap(): Bitmap {
-    if (getSrc() != null) {
-      return BitmapFactory.decodeFile(getSrc())
+  private fun MethodCall.getBitmap(): BitmapWrapper {
+    val src = getSrc()
+    if (src != null) {
+      val bitmap = BitmapFactory.decodeFile(src)
+      val degree = when (ExifInterface(src).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+        ExifInterface.ORIENTATION_NORMAL -> 0
+        ExifInterface.ORIENTATION_ROTATE_90 -> 90
+        ExifInterface.ORIENTATION_ROTATE_180 -> 180
+        ExifInterface.ORIENTATION_ROTATE_270 -> 270
+        else -> 0
+      }
+      return BitmapWrapper(bitmap, degree)
     }
     
     val memory = getMemory()
     if (memory != null) {
-      return BitmapFactory.decodeByteArray(memory, 0, memory.count())
+      val bitmap = BitmapFactory.decodeByteArray(memory, 0, memory.count())
+      val degree = when (ExifInterface(ByteArrayInputStream(memory)).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+        ExifInterface.ORIENTATION_NORMAL -> 0
+        ExifInterface.ORIENTATION_ROTATE_90 -> 90
+        ExifInterface.ORIENTATION_ROTATE_180 -> 180
+        ExifInterface.ORIENTATION_ROTATE_270 -> 270
+        else -> 0
+      }
+      return BitmapWrapper(bitmap, degree)
     }
     
     throw BitmapDecodeException()
@@ -124,4 +135,13 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       }
     }
   }
+  
+  private fun handle(call: MethodCall, resultHandler: ResultHandler, outputMemory: Boolean) {
+    val bitmapWrapper = call.getBitmap()
+    val imageHandler = ImageHandler(bitmapWrapper.bitmap)
+    imageHandler.handle(call.getOptions(bitmapWrapper))
+    handle(imageHandler, outputMemory, resultHandler, call.getTarget())
+  }
 }
+
+data class BitmapWrapper(val bitmap: Bitmap, val degree: Int)
