@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -117,7 +119,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     final flipHorizontal = action.flipY;
     final flipVertical = action.flipX;
-    final img = await getAssetImage();
+    final img = await getImageFromEditorKey(editorKey);
 
     ImageEditorOption option = ImageEditorOption();
 
@@ -149,11 +151,66 @@ class _AdvancedPageState extends State<AdvancedPage> {
     editorKey.currentState.flip();
   }
 
-  Future<Uint8List> getAssetImage() async {
-    final image = editorKey.currentState.image;
-    return (await image.toByteData(format: ui.ImageByteFormat.png))
-        .buffer
-        .asUint8List();
+  static Future<Uint8List> getImageFromEditorKey(
+      GlobalKey<ExtendedImageEditorState> editorKey) async {
+    Uint8List result;
+    final provider =
+        editorKey.currentState.widget.extendedImageState.imageProvider;
+    if (provider is AssetImage) {
+      ByteData byteData;
+      if (provider.package == null) {
+        byteData = await rootBundle.load(provider.assetName);
+      } else {
+        byteData = await rootBundle
+            .load("packages/${provider.package}/${provider.assetName}");
+      }
+      result = byteData.buffer.asUint8List();
+    } else if (provider is FileImage) {
+      result = provider.file.readAsBytesSync();
+    } else if (provider is MemoryImage) {
+      result = provider.bytes;
+    } else if (provider is NetworkImage) {
+      final client = HttpClient();
+      final req = await client.getUrl(Uri.parse(provider.url));
+      for (final key in provider.headers.keys) {
+        final value = provider.headers[key];
+        req.headers.add(key, value);
+      }
+      final response = await req.close();
+      final listList = await response.toList();
+      List<int> tmp = [];
+      for (final list in listList) {
+        tmp.addAll(list);
+      }
+      result = Uint8List.fromList(tmp);
+      client.close();
+    } else if (provider is ExtendedNetworkImageProvider) {
+      final file = await getCachedImageFile(provider.url);
+      if (file != null) {
+        result = file.readAsBytesSync();
+      } else {
+        final client = HttpClient();
+        final req = await client.getUrl(Uri.parse(provider.url));
+        for (final key in provider.headers.keys) {
+          final value = provider.headers[key];
+          req.headers.add(key, value);
+        }
+        final response = await req.close();
+        final listList = await response.toList();
+        List<int> tmp = [];
+        for (final list in listList) {
+          tmp.addAll(list);
+        }
+        result = Uint8List.fromList(tmp);
+        client.close();
+      }
+    } else {
+      result = (await editorKey.currentState.image.toByteData())
+          .buffer
+          .asUint8List();
+    }
+
+    return result;
   }
 
   rotate(bool right) {
