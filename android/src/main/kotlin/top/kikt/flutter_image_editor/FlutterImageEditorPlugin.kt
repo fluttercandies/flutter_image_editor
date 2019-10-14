@@ -11,6 +11,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import top.kikt.flutter_image_editor.core.ImageHandler
 import top.kikt.flutter_image_editor.core.ResultHandler
 import top.kikt.flutter_image_editor.error.BitmapDecodeException
+import top.kikt.flutter_image_editor.option.FlipOption
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.util.ConvertUtils
 import java.io.ByteArrayInputStream
@@ -85,7 +86,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
   
   private fun MethodCall.getOptions(bitmapWrapper: BitmapWrapper): List<Option> {
     val optionMap = this.argument<List<Any>>("options")!!
-    return ConvertUtils.convertMapOption(optionMap, bitmapWrapper.degree)
+    return ConvertUtils.convertMapOption(optionMap, bitmapWrapper)
   }
   
   private fun MethodCall.getMemory(): ByteArray? {
@@ -94,32 +95,57 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
   
   private fun MethodCall.getBitmap(): BitmapWrapper {
     val src = getSrc()
+    
     if (src != null) {
       val bitmap = BitmapFactory.decodeFile(src)
-      val degree = when (ExifInterface(src).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-        ExifInterface.ORIENTATION_NORMAL -> 0
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-        else -> 0
-      }
-      return BitmapWrapper(bitmap, degree)
+      val exifInterface = ExifInterface(src)
+      return wrapperBitmapWrapper(bitmap, exifInterface)
     }
     
     val memory = getMemory()
     if (memory != null) {
       val bitmap = BitmapFactory.decodeByteArray(memory, 0, memory.count())
-      val degree = when (ExifInterface(ByteArrayInputStream(memory)).getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-        ExifInterface.ORIENTATION_NORMAL -> 0
-        ExifInterface.ORIENTATION_ROTATE_90 -> 90
-        ExifInterface.ORIENTATION_ROTATE_180 -> 180
-        ExifInterface.ORIENTATION_ROTATE_270 -> 270
-        else -> 0
-      }
-      return BitmapWrapper(bitmap, degree)
+      val exifInterface = ExifInterface(ByteArrayInputStream(memory))
+      return wrapperBitmapWrapper(bitmap, exifInterface)
     }
     
     throw BitmapDecodeException()
+  }
+  
+  private fun wrapperBitmapWrapper(bitmap: Bitmap, exifInterface: ExifInterface): BitmapWrapper {
+    var degree = 0
+    var flipOption = FlipOption(horizontal = false)
+    
+    when (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+      ExifInterface.ORIENTATION_NORMAL -> {
+        degree = 0
+      }
+      ExifInterface.ORIENTATION_ROTATE_90 -> {
+        degree = 90
+      }
+      ExifInterface.ORIENTATION_ROTATE_180 -> {
+        degree = 180
+      }
+      ExifInterface.ORIENTATION_ROTATE_270 -> {
+        degree = 270
+      }
+      ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> {
+        flipOption = FlipOption(horizontal = true)
+      }
+      ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
+        flipOption = FlipOption(vertical = true)
+      }
+      ExifInterface.ORIENTATION_TRANSPOSE -> {
+        degree = 90
+        flipOption = FlipOption(horizontal = true)
+      }
+      ExifInterface.ORIENTATION_TRANSVERSE -> {
+        degree = 270
+        flipOption = FlipOption(horizontal = true)
+      }
+    }
+    return BitmapWrapper(bitmap, degree, flipOption)
+    
   }
   
   private fun handle(imageHandler: ImageHandler, outputMemory: Boolean, resultHandler: ResultHandler, targetPath: String? = null) {
@@ -144,4 +170,4 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
   }
 }
 
-data class BitmapWrapper(val bitmap: Bitmap, val degree: Int)
+data class BitmapWrapper(val bitmap: Bitmap, val degree: Int, val flipOption: FlipOption)
