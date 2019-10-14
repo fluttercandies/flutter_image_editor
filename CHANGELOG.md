@@ -1,3 +1,9 @@
+## 0.1.2
+
+Fix
+
+- If the exif contains the orientation information, it will be automatically corrected.
+
 ## 0.1.1
 
 Optimized the process of processing code.
