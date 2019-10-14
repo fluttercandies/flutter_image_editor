@@ -2,6 +2,8 @@
 
 Support android ios, use the native way to flip, crop, rotate pictures.
 
+The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
+
 - [image_editor](#imageeditor)
   - [Screenshot](#screenshot)
   - [Usage](#usage)
@@ -11,6 +13,7 @@ Support android ios, use the native way to flip, crop, rotate pictures.
       - [Flip](#flip)
       - [Clip](#clip)
       - [Rotate](#rotate)
+    - [OutputFormat](#outputformat)
   - [LICENSE](#license)
 
 ## Screenshot
@@ -55,6 +58,8 @@ final editorOption = ImageEditorOption();
 editorOption.addOption(FlipOption());
 editorOption.addOption(ClipOption());
 editorOption.addOption(RotateOption());
+
+editorOption.outputFormat = OutputFormat.png(88);
 ```
 
 ### Option
@@ -75,6 +80,13 @@ ClipOption(x:0, y:0, width:1920, height:1920);
 
 ```dart
 RotateOption(degree: 180);
+```
+
+### OutputFormat
+
+```dart
+var outputFormat = OutputFormat.png();
+var outputFormat = OutputFormat.jpeg(95);
 ```
 
 ## LICENSE
