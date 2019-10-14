@@ -9,6 +9,7 @@ import 'src/image_handler.dart';
 
 export 'src/edit_options.dart' hide IgnoreAble, OptionGroup;
 export 'src/error.dart';
+export 'src/output_format.dart';
 
 class ImageEditor {
   /// [image] Uint8List

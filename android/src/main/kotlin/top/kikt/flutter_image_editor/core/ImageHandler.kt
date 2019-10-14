@@ -3,12 +3,10 @@ package top.kikt.flutter_image_editor.core
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
-import top.kikt.flutter_image_editor.option.ClipOption
-import top.kikt.flutter_image_editor.option.FlipOption
-import top.kikt.flutter_image_editor.option.Option
-import top.kikt.flutter_image_editor.option.RotateOption
+import top.kikt.flutter_image_editor.option.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
+import java.io.OutputStream
 
 /// create 2019-10-08 by cai
 
@@ -59,19 +57,24 @@ class ImageHandler(private var bitmap: Bitmap) {
     return Bitmap.createBitmap(bitmap, x, y, option.width, option.height, null, false)
   }
   
-  fun outputToFile(dstPath: String) {
+  fun outputToFile(dstPath: String, formatOption: FormatOption) {
     val outputStream = FileOutputStream(dstPath)
-    outputStream.use {
-      bitmap.compress(Bitmap.CompressFormat.PNG, 95, outputStream)
-    }
+    output(outputStream, formatOption)
   }
   
-  fun outputByteArray(): ByteArray {
+  fun outputByteArray(formatOption: FormatOption): ByteArray {
     val outputStream = ByteArrayOutputStream()
-    outputStream.use {
-      bitmap.compress(Bitmap.CompressFormat.PNG, 95, outputStream)
-    }
+    output(outputStream, formatOption)
     return outputStream.toByteArray()
   }
   
+  private fun output(outputStream: OutputStream, formatOption: FormatOption) {
+    outputStream.use {
+      if (formatOption.format == 0) {
+        bitmap.compress(Bitmap.CompressFormat.PNG, formatOption.quality, outputStream)
+      } else {
+        bitmap.compress(Bitmap.CompressFormat.JPEG, formatOption.quality, outputStream)
+      }
+    }
+  }
 }

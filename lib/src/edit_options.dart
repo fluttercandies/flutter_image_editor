@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'package:flutter/widgets.dart';
 import 'dart:math' show pi;
 
+import 'package:image_editor/image_editor.dart';
+
 abstract class IgnoreAble {
   bool get canIgnore;
 }
@@ -15,6 +17,8 @@ abstract class Option implements IgnoreAble {
 
 class ImageEditorOption implements IgnoreAble {
   ImageEditorOption();
+
+  OutputFormat outputFormat = OutputFormat.jpeg(95);
 
   List<Option> get options {
     List<Option> result = [];

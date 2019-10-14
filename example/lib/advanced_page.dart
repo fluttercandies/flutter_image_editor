@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -131,6 +128,8 @@ class _AdvancedPageState extends State<AdvancedPage> {
       option.addOption(RotateOption(radian.toInt()));
     }
 
+    option.outputFormat = OutputFormat.png(88);
+
     print(json.encode(option.toJson()));
 
     final start = DateTime.now();
@@ -138,6 +137,8 @@ class _AdvancedPageState extends State<AdvancedPage> {
       image: img,
       imageEditorOption: option,
     );
+
+    print("result.length = ${result.length}");
 
     final diff = DateTime.now().difference(start);
 

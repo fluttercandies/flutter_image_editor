@@ -5,17 +5,22 @@
 import Foundation
 
 struct FlipOption: FlutterImageEditorOption {
-  var horizontal: Bool = true
-  var vertical: Bool = false
+    var horizontal: Bool = true
+    var vertical: Bool = false
 }
 
 struct ClipOption: FlutterImageEditorOption {
-  var x: Int = 0
-  var y: Int = 0
-  var width: Int = 100
-  var height: Int = 100
+    var x: Int = 0
+    var y: Int = 0
+    var width: Int = 100
+    var height: Int = 100
 }
 
 struct RotateOption: FlutterImageEditorOption {
-  var degree: Int = 0
+    var degree: Int = 0
+}
+
+struct FormatOption {
+    var format: Int
+    var quality: Int
 }

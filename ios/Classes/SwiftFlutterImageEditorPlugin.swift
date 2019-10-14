@@ -36,13 +36,14 @@ public class SwiftFlutterImageEditorPlugin: NSObject, FlutterPlugin {
 
         let optionMap = args["options"] as! [Any]
         let options = ConvertUtils.getOptions(options: optionMap)
+        let format = ConvertUtils.getFormat(args: args)
         imageHandler.handleImage(options: options)
 
         if outputMemory {
-            result(imageHandler.outputMemory())
+            result(imageHandler.outputMemory(format: format))
         } else {
             let target = args["target"] as! String
-            imageHandler.outputFile(targetPath: target)
+            imageHandler.outputFile(targetPath: target, format: format)
             result(target)
         }
     }

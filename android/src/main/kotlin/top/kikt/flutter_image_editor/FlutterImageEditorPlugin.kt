@@ -12,6 +12,7 @@ import top.kikt.flutter_image_editor.core.ImageHandler
 import top.kikt.flutter_image_editor.core.ResultHandler
 import top.kikt.flutter_image_editor.error.BitmapDecodeException
 import top.kikt.flutter_image_editor.option.FlipOption
+import top.kikt.flutter_image_editor.option.FormatOption
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.util.ConvertUtils
 import java.io.ByteArrayInputStream
@@ -148,15 +149,21 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
     
   }
   
-  private fun handle(imageHandler: ImageHandler, outputMemory: Boolean, resultHandler: ResultHandler, targetPath: String? = null) {
+  
+  private fun MethodCall.getFormatOption(): FormatOption {
+    return ConvertUtils.getFormatOption(this)
+  }
+  
+  
+  private fun handle(imageHandler: ImageHandler, formatOption: FormatOption, outputMemory: Boolean, resultHandler: ResultHandler, targetPath: String? = null) {
     if (outputMemory) {
-      val byteArray = imageHandler.outputByteArray()
+      val byteArray = imageHandler.outputByteArray(formatOption)
       resultHandler.reply(byteArray)
     } else {
       if (targetPath == null) {
         resultHandler.reply(null)
       } else {
-        imageHandler.outputToFile(targetPath)
+        imageHandler.outputToFile(targetPath, formatOption)
         resultHandler.reply(targetPath)
       }
     }
@@ -166,7 +173,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
     val bitmapWrapper = call.getBitmap()
     val imageHandler = ImageHandler(bitmapWrapper.bitmap)
     imageHandler.handle(call.getOptions(bitmapWrapper))
-    handle(imageHandler, outputMemory, resultHandler, call.getTarget())
+    handle(imageHandler, call.getFormatOption(), outputMemory, resultHandler, call.getTarget())
   }
 }
 
