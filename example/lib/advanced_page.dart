@@ -24,7 +24,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   @override
   void initState() {
     super.initState();
-    provider = AssetImage(R.ASSETS_ICON_PNG);
+    provider = ExtendedExactAssetImageProvider(R.ASSETS_ICON_PNG);
   }
 
   @override
@@ -119,16 +119,17 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     final flipHorizontal = action.flipY;
     final flipVertical = action.flipX;
-    final img = await getImageFromEditorKey(editorKey);
+    // final img = await getImageFromEditorKey(editorKey);
+    final img = state.rawImageData;
 
     ImageEditorOption option = ImageEditorOption();
 
+    option.addOption(ClipOption.fromRect(rect));
     option.addOption(
         FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
     if (action.hasRotateAngle) {
-      option.addOption(RotateOption.radian(radian));
+      option.addOption(RotateOption(radian.toInt()));
     }
-    option.addOption(ClipOption.fromRect(rect));
 
     print(json.encode(option.toJson()));
 
@@ -153,64 +154,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
   static Future<Uint8List> getImageFromEditorKey(
       GlobalKey<ExtendedImageEditorState> editorKey) async {
-    Uint8List result;
-    final provider =
-        editorKey.currentState.widget.extendedImageState.imageProvider;
-    if (provider is AssetImage) {
-      ByteData byteData;
-      if (provider.package == null) {
-        byteData = await rootBundle.load(provider.assetName);
-      } else {
-        byteData = await rootBundle
-            .load("packages/${provider.package}/${provider.assetName}");
-      }
-      result = byteData.buffer.asUint8List();
-    } else if (provider is FileImage) {
-      result = provider.file.readAsBytesSync();
-    } else if (provider is MemoryImage) {
-      result = provider.bytes;
-    } else if (provider is NetworkImage) {
-      final client = HttpClient();
-      final req = await client.getUrl(Uri.parse(provider.url));
-      for (final key in provider.headers.keys) {
-        final value = provider.headers[key];
-        req.headers.add(key, value);
-      }
-      final response = await req.close();
-      final listList = await response.toList();
-      List<int> tmp = [];
-      for (final list in listList) {
-        tmp.addAll(list);
-      }
-      result = Uint8List.fromList(tmp);
-      client.close();
-    } else if (provider is ExtendedNetworkImageProvider) {
-      final file = await getCachedImageFile(provider.url);
-      if (file != null) {
-        result = file.readAsBytesSync();
-      } else {
-        final client = HttpClient();
-        final req = await client.getUrl(Uri.parse(provider.url));
-        for (final key in provider.headers.keys) {
-          final value = provider.headers[key];
-          req.headers.add(key, value);
-        }
-        final response = await req.close();
-        final listList = await response.toList();
-        List<int> tmp = [];
-        for (final list in listList) {
-          tmp.addAll(list);
-        }
-        result = Uint8List.fromList(tmp);
-        client.close();
-      }
-    } else {
-      result = (await editorKey.currentState.image.toByteData())
-          .buffer
-          .asUint8List();
-    }
-
-    return result;
+    return editorKey.currentState.rawImageData;
   }
 
   rotate(bool right) {
@@ -241,7 +185,8 @@ class _AdvancedPageState extends State<AdvancedPage> {
   void _pick() async {
     final result = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (result != null) {
-      provider = FileImage(result);
+      print(result.absolute.path);
+      provider = ExtendedFileImageProvider(result);
       setState(() {});
     }
   }

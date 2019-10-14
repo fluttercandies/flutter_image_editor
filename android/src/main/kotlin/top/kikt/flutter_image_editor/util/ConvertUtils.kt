@@ -1,5 +1,6 @@
 package top.kikt.flutter_image_editor.util
 
+import top.kikt.flutter_image_editor.BitmapWrapper
 import top.kikt.flutter_image_editor.option.ClipOption
 import top.kikt.flutter_image_editor.option.FlipOption
 import top.kikt.flutter_image_editor.option.Option
@@ -10,8 +11,16 @@ import top.kikt.flutter_image_editor.option.RotateOption
 
 object ConvertUtils {
   
-  fun convertMapOption(optionList: List<Any>): List<Option> {
+  fun convertMapOption(optionList: List<Any>, bitmapWrapper: BitmapWrapper): List<Option> {
     val list = ArrayList<Option>()
+    if (bitmapWrapper.degree != 0) {
+      list.add(RotateOption(bitmapWrapper.degree))
+    }
+    
+    if (!bitmapWrapper.flipOption.canIgnore()) {
+      list.add(bitmapWrapper.flipOption)
+    }
+    
     for (optionMap in optionList) {
       if (optionMap !is Map<*, *>) {
         continue
