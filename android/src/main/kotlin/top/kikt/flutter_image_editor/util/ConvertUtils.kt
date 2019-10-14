@@ -1,15 +1,20 @@
 package top.kikt.flutter_image_editor.util
 
+import io.flutter.plugin.common.MethodCall
 import top.kikt.flutter_image_editor.BitmapWrapper
-import top.kikt.flutter_image_editor.option.ClipOption
-import top.kikt.flutter_image_editor.option.FlipOption
-import top.kikt.flutter_image_editor.option.Option
-import top.kikt.flutter_image_editor.option.RotateOption
+import top.kikt.flutter_image_editor.option.*
 
 /// create 2019-10-08 by cai
 
 
 object ConvertUtils {
+  
+  fun getFormatOption(call: MethodCall): FormatOption {
+    val fmtMap = call.argument<Map<*, *>>("fmt")!!
+    val format = fmtMap["format"] as Int
+    val quality: Int = fmtMap["quality"] as Int
+    return FormatOption(format, quality)
+  }
   
   fun convertMapOption(optionList: List<Any>, bitmapWrapper: BitmapWrapper): List<Option> {
     val list = ArrayList<Option>()

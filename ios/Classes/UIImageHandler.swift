@@ -48,13 +48,17 @@ class UIImageHandler {
         }
     }
 
-    func outputFile(targetPath: String) {
-        let data = UIImagePNGRepresentation(image)
+    func outputFile(targetPath: String, format: FormatOption) {
+        let data = outputMemory(format: format)
         try! data?.write(to: URL(fileURLWithPath: targetPath))
     }
 
-    func outputMemory() -> Data? {
-        return UIImagePNGRepresentation(image)
+    func outputMemory(format: FormatOption) -> Data? {
+        if format.format == 0 {
+            return UIImagePNGRepresentation(image)
+        } else {
+            return UIImageJPEGRepresentation(image, CGFloat(format.quality) / 100)
+        }
     }
 
     private func handleRotate(_ option: RotateOption) -> UIImage {

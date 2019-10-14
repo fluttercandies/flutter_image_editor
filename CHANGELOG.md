@@ -4,6 +4,10 @@ Fix
 
 - If the exif contains the orientation information, it will be automatically corrected.
 
+Add
+
+- Support output format.
+
 ## 0.1.1
 
 Optimized the process of processing code.

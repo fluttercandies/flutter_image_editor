@@ -24,6 +24,7 @@ class NativeChannel {
       "image": memory,
       "target": targetPath,
       "options": option.toJson(),
+      "fmt": option.outputFormat.toJson(),
     });
   }
 
@@ -36,6 +37,7 @@ class NativeChannel {
     return _channel.invokeMethod("memoryToMemory", {
       "image": memory,
       "options": option.toJson(),
+      "fmt": option.outputFormat.toJson(),
     });
   }
 
@@ -48,6 +50,7 @@ class NativeChannel {
     return _channel.invokeMethod("fileToMemory", {
       "src": path,
       "options": option.toJson(),
+      "fmt": option.outputFormat.toJson(),
     });
   }
 
@@ -61,6 +64,7 @@ class NativeChannel {
       "src": src,
       "target": target,
       "options": option.toJson(),
+      "fmt": option.outputFormat.toJson(),
     });
   }
 }
