@@ -124,12 +124,12 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     ImageEditorOption option = ImageEditorOption();
 
+    option.addOption(ClipOption.fromRect(rect));
     option.addOption(
         FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
     if (action.hasRotateAngle) {
       option.addOption(RotateOption(radian.toInt()));
     }
-    option.addOption(ClipOption.fromRect(rect));
 
     print(json.encode(option.toJson()));
 
@@ -185,6 +185,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   void _pick() async {
     final result = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (result != null) {
+      print(result.absolute.path);
       provider = ExtendedFileImageProvider(result);
       setState(() {});
     }
