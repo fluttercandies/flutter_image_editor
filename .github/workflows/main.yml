@@ -21,4 +21,4 @@ jobs:
       - run: flutter pub get
       # - run: flutter test
       - run: cd example ; flutter build apk
-      - run: cd example ; flutter build ios
+      - run: cd example ; flutter build ios --no-codesign
