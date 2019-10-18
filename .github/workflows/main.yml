@@ -19,6 +19,7 @@ jobs:
           flutter-version: '1.10.7'
           channel: 'beta'
       - run: flutter pub get
+      - run: dartanalyzer lib example/lib
       # - run: flutter test
       - run: cd example ; flutter build apk
       - run: cd example ; flutter build ios --no-codesign
