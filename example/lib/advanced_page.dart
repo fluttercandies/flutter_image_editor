@@ -184,7 +184,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   }
 
   void _pick() async {
-    final result = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final result = await ImagePicker.pickImage(source: ImageSource.camera);
     if (result != null) {
       print(result.absolute.path);
       provider = ExtendedFileImageProvider(result);

@@ -1,3 +1,9 @@
+## 0.1.3
+
+Fix
+
+- Image orientation of camera on ios.
+
 ## 0.1.2
 
 Fix

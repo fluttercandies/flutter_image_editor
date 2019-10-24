@@ -21,9 +21,9 @@ class UIImageHandler {
             case .down:
                 image = image.rotate(180)
             case .left:
-                image = image.rotate(90)
-            case .right:
                 image = image.rotate(270)
+            case .right:
+                image = image.rotate(90)
             case .upMirrored:
                 image = image.flip(horizontal: true, vertical: false)
             case .downMirrored:
