@@ -13,29 +13,7 @@ class UIImageHandler {
     }
 
     func handleImage(options: [FlutterImageEditorOption], fixOrientation: Bool = true) {
-        if fixOrientation {
-            let orientation = image.imageOrientation
-            switch orientation {
-            case .up:
-                break
-            case .down:
-                image = image.rotate(180)
-            case .left:
-                image = image.rotate(270)
-            case .right:
-                image = image.rotate(90)
-            case .upMirrored:
-                image = image.flip(horizontal: true, vertical: false)
-            case .downMirrored:
-                image = image.flip(horizontal: false, vertical: true)
-            case .leftMirrored:
-                image = image.rotate(90)
-                image = image.flip(horizontal: true, vertical: false)
-            case .rightMirrored:
-                image = image.rotate(270)
-                image = image.flip(horizontal: true, vertical: false)
-            }
-        }
+        image = image.fixOrientation()
 
         for option in options {
             if option is FlipOption {
@@ -46,6 +24,7 @@ class UIImageHandler {
                 image = handleRotate(option as! RotateOption)
             }
         }
+        
     }
 
     func outputFile(targetPath: String, format: FormatOption) {
