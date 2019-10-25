@@ -173,7 +173,6 @@ class _AdvancedPageState extends State<AdvancedPage> {
             child: SizedBox.fromSize(
               size: Size.square(200),
               child: Container(
-                color: Colors.white,
                 child: Image.memory(image),
               ),
             ),

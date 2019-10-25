@@ -7,25 +7,23 @@
 
 import Foundation
 
-extension UIImage{
-    
-    func fixOrientation() -> UIImage{
-        if self.imageOrientation == .up{
+extension UIImage {
+    func fixOrientation() -> UIImage {
+        if imageOrientation == .up {
             return self
         }
-        
-        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-        
-        draw(in: CGRect(origin: .zero, size: self.size))
-        
+
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+
+        draw(in: CGRect(origin: .zero, size: size))
+
         guard let result = UIGraphicsGetImageFromCurrentImageContext() else {
             UIGraphicsEndImageContext()
             return self
         }
-        
+
         UIGraphicsEndImageContext()
-        
+
         return result
     }
-    
 }

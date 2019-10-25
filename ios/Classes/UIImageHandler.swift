@@ -12,7 +12,7 @@ class UIImageHandler {
         self.image = image
     }
 
-    func handleImage(options: [FlutterImageEditorOption], fixOrientation: Bool = true) {
+    func handleImage(options: [FlutterImageEditorOption], fixOrientation _: Bool = true) {
         image = image.fixOrientation()
 
         for option in options {
@@ -24,7 +24,6 @@ class UIImageHandler {
                 image = handleRotate(option as! RotateOption)
             }
         }
-        
     }
 
     func outputFile(targetPath: String, format: FormatOption) {

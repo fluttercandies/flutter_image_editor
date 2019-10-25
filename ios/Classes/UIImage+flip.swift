@@ -9,7 +9,7 @@ import UIKit
 
 extension UIImage {
     func flip(horizontal: Bool, vertical: Bool) -> UIImage {
-        if !horizontal, !vertical{
+        if !horizontal, !vertical {
             return self
         }
         let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
