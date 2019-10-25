@@ -26,25 +26,34 @@ public class SwiftFlutterImageEditorPlugin: NSObject, FlutterPlugin {
     }
 
     public func handleResult(call: FlutterMethodCall, outputMemory: Bool, result: @escaping FlutterResult) {
-        guard let image = call.getUIImage() else {
-            result(FlutterError(code: "decode image error", message: nil, details: nil))
-            return
-        }
+        DispatchQueue.global().async{
+            guard let image = call.getUIImage() else {
+                DispatchQueue.main.sync {
+                     result(FlutterError(code: "decode image error", message: nil, details: nil))
+                }
+                return
+            }
 
-        let args = call.arguments as! [String: Any]
-        let imageHandler = UIImageHandler(image: image)
+            let args = call.arguments as! [String: Any]
+            let imageHandler = UIImageHandler(image: image)
 
-        let optionMap = args["options"] as! [Any]
-        let options = ConvertUtils.getOptions(options: optionMap)
-        let format = ConvertUtils.getFormat(args: args)
-        imageHandler.handleImage(options: options)
+            let optionMap = args["options"] as! [Any]
+            let options = ConvertUtils.getOptions(options: optionMap)
+            let format = ConvertUtils.getFormat(args: args)
+            imageHandler.handleImage(options: options)
 
-        if outputMemory {
-            result(imageHandler.outputMemory(format: format))
-        } else {
-            let target = args["target"] as! String
-            imageHandler.outputFile(targetPath: target, format: format)
-            result(target)
+            if outputMemory {
+                let momery = imageHandler.outputMemory(format: format)
+                DispatchQueue.main.sync {
+                    result(momery)
+                }
+            } else {
+                let target = args["target"] as! String
+                imageHandler.outputFile(targetPath: target, format: format)
+                DispatchQueue.main.sync {
+                    result(target)
+                }
+            }
         }
     }
 }
