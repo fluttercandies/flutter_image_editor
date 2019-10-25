@@ -21,7 +21,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   @override
   void initState() {
     super.initState();
-    provider = ExtendedExactAssetImageProvider(R.ASSETS_ICON_PNG);
+    provider = ExtendedExactAssetImageProvider(R.ASSETS_HAVE_EXIF_3_JPG);
   }
 
   @override
@@ -67,7 +67,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
           maxScale: 8.0,
           cropRectPadding: EdgeInsets.all(20.0),
           hitTestSize: 20.0,
-          cropAspectRatio: 1,
+          cropAspectRatio: 2 / 1,
         );
       },
     );
@@ -173,7 +173,6 @@ class _AdvancedPageState extends State<AdvancedPage> {
             child: SizedBox.fromSize(
               size: Size.square(200),
               child: Container(
-                color: Colors.white,
                 child: Image.memory(image),
               ),
             ),

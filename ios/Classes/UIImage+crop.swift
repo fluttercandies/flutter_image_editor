@@ -12,6 +12,7 @@ extension UIImage {
         guard let cg = self.cgImage?.cropping(to: CGRect(x: x, y: y, width: width, height: height)) else {
             return self
         }
+
         return UIImage(cgImage: cg)
     }
 }

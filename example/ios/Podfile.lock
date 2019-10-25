@@ -11,7 +11,7 @@ DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
   - image_editor (from `/Users/cai/Documents/GitHub/flutter_image_editor/ios/image_editor.podspec`)
   - "image_picker (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
-  - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.3.0/ios/path_provider.podspec`)
+  - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
 
 EXTERNAL SOURCES:
   Flutter:
@@ -21,13 +21,13 @@ EXTERNAL SOURCES:
   image_picker:
     :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec"
   path_provider:
-    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.3.0/ios/path_provider.podspec"
+    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   image_editor: d0181032f68c58c9de3c9b8c17291b9a51c9dbb5
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
 
 PODFILE CHECKSUM: 1554125681f04c66fd40caade42f3011b107afb8
 
