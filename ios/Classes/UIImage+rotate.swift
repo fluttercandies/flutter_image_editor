@@ -9,33 +9,36 @@ import Foundation
 
 extension UIImage {
     func rotate(_ angle: Int) -> UIImage {
-        // 因为如果旋转角度不是90的倍数, 则图片尺寸会发生变化, 这里使用UIView作为工具测量出旋转后的尺寸,
+//        // 转为弧度制
         let radian = CGFloat(angle) * CGFloat.pi / 180
-        let measureView = UIView(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        let t = CGAffineTransform(rotationAngle: radian)
-        measureView.transform = t
-        let rect = measureView.frame
+        return rotate(radians: radian)
+    }
 
-        // 使用CG开始绘制
-        UIGraphicsBeginImageContext(rect.size)
-        guard let ctx = UIGraphicsGetCurrentContext() else {
+    func rotate(radians: CGFloat) -> UIImage {
+        var newSize = CGRect(origin: CGPoint.zero, size: size).applying(CGAffineTransform(rotationAngle: radians)).size
+        // Trim off the extremely small float value to prevent core graphics from rounding it up
+        newSize.width = floor(newSize.width)
+        newSize.height = floor(newSize.height)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, scale)
+        guard let context = UIGraphicsGetCurrentContext() else {
             return self
         }
 
-        let origin = CGPoint(x: rect.width / 2.0,
-                             y: rect.height / 2.0)
+        // Move origin to middle
+        context.translateBy(x: newSize.width / 2, y: newSize.height / 2)
+        // Rotate around middle
+        context.rotate(by: radians)
+        // Draw the image at its center
+        draw(in: CGRect(x: -size.width / 2, y: -size.height / 2, width: size.width, height: size.height))
 
-        // 开始绘制
-        ctx.translateBy(x: origin.x, y: origin.y)
-        ctx.rotate(by: radian)
-        draw(in: CGRect(x: -origin.y, y: -origin.x, width: size.width, height: size.height))
-
-        guard let rotatedImage = UIGraphicsGetImageFromCurrentImageContext() else {
+        guard let newImage = UIGraphicsGetImageFromCurrentImageContext() else {
             UIGraphicsEndImageContext()
             return self
         }
+
         UIGraphicsEndImageContext()
 
-        return rotatedImage
+        return newImage
     }
 }

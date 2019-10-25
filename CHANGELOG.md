@@ -1,3 +1,14 @@
+## 0.1.4
+
+Feature:
+
+- Round the trimming data to prevent errors caused by precision problems.
+- Use gcd to handle image on iOS.
+
+Fix :
+
+- Problem with a rotation angle of 180 degrees on IOS.
+
 ## 0.1.3
 
 Fix

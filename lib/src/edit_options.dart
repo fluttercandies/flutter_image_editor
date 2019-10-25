@@ -163,20 +163,24 @@ class ClipOption implements Option {
 
   factory ClipOption.fromRect(Rect rect) {
     return ClipOption(
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
+      x: fixNumber(rect.left),
+      y: fixNumber(rect.top),
+      width: fixNumber(rect.width),
+      height: fixNumber(rect.height),
     );
   }
 
   factory ClipOption.fromOffset(Offset start, Offset end) {
     return ClipOption(
-      x: start.dx,
-      y: start.dy,
-      width: end.dx - start.dx,
-      height: end.dy - start.dy,
+      x: fixNumber(start.dx),
+      y: fixNumber(start.dy),
+      width: fixNumber(end.dx - start.dx),
+      height: fixNumber(end.dy - start.dy),
     );
+  }
+
+  static int fixNumber(num number) {
+    return number.round();
   }
 
   @override
