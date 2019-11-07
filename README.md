@@ -94,7 +94,7 @@ var outputFormat = OutputFormat.jpeg(95);
 ## Common issue
 
 ```bash
-..../flutter/.pub-cache/hosted/pub.flutter-io.cn/image_editor-0.1.4/ios/Classes/FlutterImageEditorPlugin.m:2:9: 'image_editor/image_editor-Swift.h' file not found
+..../image_editor-0.1.4/ios/Classes/FlutterImageEditorPlugin.m:2:9: 'image_editor/image_editor-Swift.h' file not found
 ```
 
 See [#10](https://github.com/fluttercandies/flutter_image_editor/issues/10)
