@@ -113,6 +113,6 @@ class ImageEditor {
   static Future<String> _createTmpFilePath() async {
     final cacheDir = await NativeChannel.getCachePath();
     final name = DateTime.now().millisecondsSinceEpoch;
-    return "$cacheDir/$name";
+    return "${cacheDir.path}/$name";
   }
 }
