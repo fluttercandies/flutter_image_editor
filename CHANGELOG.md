@@ -1,3 +1,9 @@
+## 0.1.5
+
+Fix:
+
+Fix `cachePath` error.
+
 ## 0.1.4
 
 Feature:
