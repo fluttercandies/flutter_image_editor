@@ -107,7 +107,7 @@ class ImageEditor {
 
     final file = File(await _createTmpFilePath());
 
-    return file..writeAsBytes(tmp);
+    return file.writeAsBytes(tmp);
   }
 
   static Future<String> _createTmpFilePath() async {
