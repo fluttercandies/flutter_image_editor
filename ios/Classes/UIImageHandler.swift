@@ -33,9 +33,9 @@ class UIImageHandler {
 
     func outputMemory(format: FormatOption) -> Data? {
         if format.format == 0 {
-            return UIImagePNGRepresentation(image)
+            return UIImage.pngData(image)
         } else {
-            return UIImageJPEGRepresentation(image, CGFloat(format.quality) / 100)
+            return UIImage.jpegData(image, CGFloat(format.quality) / 100)
         }
     }
 
