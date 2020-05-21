@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
 
 import 'const/resource.dart';
@@ -88,28 +88,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Uint8List> getAssetImage() async {
-    final completer = Completer<Uint8List>();
-
-    final config = createLocalImageConfiguration(context);
-    final asset = AssetImage(R.ASSETS_ICON_PNG);
-    final key = await asset.obtainKey(config);
-    final comp = asset.load(key);
-    ImageStreamListener listener;
-    listener = ImageStreamListener((info, flag) {
-      comp.removeListener(listener);
-      info.image.toByteData(format: ui.ImageByteFormat.png).then((data) {
-        final l = data.buffer.asUint8List();
-        completer.complete(l);
-      });
-    }, onError: (e, s) {
-      completer.completeError(e, s);
-    });
-
-    comp.addListener(listener);
-
-    asset.resolve(config);
-
-    return completer.future;
+    final byteData = await rootBundle.load(R.ASSETS_ICON_PNG);
+    return byteData.buffer.asUint8List();
   }
 
   void _flip(FlipOption flipOption) async {

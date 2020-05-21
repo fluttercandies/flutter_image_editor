@@ -6,8 +6,6 @@ class OutputFormat {
   /// If format is png, then ios will ignore it.
   final int quality;
 
-  OutputFormat._(this.format, this.quality);
-
   OutputFormat.jpeg(this.quality)
       : format = ImageFormat.jpeg,
         assert(quality > 0 && quality <= 100);

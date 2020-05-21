@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
@@ -151,11 +150,6 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
   void flip() {
     editorKey.currentState.flip();
-  }
-
-  static Future<Uint8List> getImageFromEditorKey(
-      GlobalKey<ExtendedImageEditorState> editorKey) async {
-    return editorKey.currentState.rawImageData;
   }
 
   rotate(bool right) {

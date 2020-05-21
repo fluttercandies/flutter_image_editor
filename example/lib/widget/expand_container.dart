@@ -54,7 +54,7 @@ class _ExpandContainerState extends State<ExpandContainer> {
               ),
             ),
           ),
-          if (show) Divider(),
+          Divider(),
           child,
         ],
       ),
