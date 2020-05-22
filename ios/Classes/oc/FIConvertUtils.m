@@ -4,21 +4,28 @@
 
 #import "FIConvertUtils.h"
 
-
 @implementation FIConvertUtils {
-
 }
 + (FIEditorOptionGroup *)getOptions:(NSArray<NSDictionary *> *)dict {
   FIEditorOptionGroup *group = [FIEditorOptionGroup new];
+  NSMutableArray *optionArray = [NSMutableArray new];
+  group.options = optionArray;
   for (NSDictionary *map in dict) {
-    NSString *type = (NSString *) map[@"type"];
+    NSString *type = (NSString *)map[@"type"];
     NSDictionary *value = map[@"value"];
+    NSObject<FIOption> *option;
     if ([@"flip" isEqualToString:type]) {
       group.flip = [FIFlipOption createFromDict:value];
+      option = group.flip;
     } else if ([@"clip" isEqualToString:type]) {
       group.clip = [FIClipOption createFromDict:value];
+      option = group.clip;
     } else if ([@"rotate" isEqualToString:type]) {
       group.rotate = [FIRotateOption createFromDict:value];
+      option = group.rotate;
+    }
+    if (option) {
+      [optionArray addObject:option];
     }
   }
   return group;
@@ -27,7 +34,6 @@
 @end
 
 @implementation FIFlipOption {
-
 }
 + (id)createFromDict:(NSDictionary *)dict {
   FIFlipOption *option = [FIFlipOption new];
@@ -38,9 +44,7 @@
 
 @end
 
-
 @implementation FIClipOption {
-
 }
 + (id)createFromDict:(NSDictionary *)dict {
   FIClipOption *option = [FIClipOption new];
@@ -54,7 +58,6 @@
 @end
 
 @implementation FIRotateOption {
-
 }
 + (id)createFromDict:(NSDictionary *)dict {
   FIRotateOption *option = [FIRotateOption new];
@@ -65,7 +68,6 @@
 @end
 
 @implementation FIFormatOption {
-
 }
 + (id)createFromDict:(NSDictionary *)dict {
   FIFormatOption *option = [FIFormatOption new];
@@ -77,7 +79,6 @@
 @end
 
 @implementation FIEditorOptionGroup {
-
 }
 
 @end

@@ -9,19 +9,19 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - image_editor (from `/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec`)
-  - "image_picker (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
-  - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
+  - image_editor (from `/Volumes/Evo512/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec`)
+  - "image_picker (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
+  - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   image_editor:
-    :path: "/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec"
+    :path: "/Volumes/Evo512/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec"
   image_picker:
-    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec"
+    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec"
   path_provider:
-    :path: "/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec"
+    :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec

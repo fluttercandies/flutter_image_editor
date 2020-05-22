@@ -3,6 +3,7 @@
 //
 
 #import <Foundation/Foundation.h>
+NS_ASSUME_NONNULL_BEGIN
 
 @class FIEditorOptionGroup;
 
@@ -23,7 +24,6 @@
 
 @end
 
-
 @interface FIClipOption : NSObject <FIOption>
 @property(assign, nonatomic) int x;
 @property(assign, nonatomic) int y;
@@ -40,10 +40,12 @@
 @property(assign, nonatomic) int quality;
 @end
 
-
 @interface FIEditorOptionGroup : NSObject
 @property(nonatomic, strong) FIFlipOption *flip;
 @property(nonatomic, strong) FIClipOption *clip;
 @property(nonatomic, strong) FIRotateOption *rotate;
 @property(nonatomic, strong) FIFormatOption *fmt;
+@property(nonatomic, strong) NSArray *options;
 @end
+
+NS_ASSUME_NONNULL_END
