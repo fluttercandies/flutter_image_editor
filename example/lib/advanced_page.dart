@@ -129,7 +129,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
 
     option.outputFormat = OutputFormat.png(88);
 
-    print(json.encode(option.toJson()));
+    print(JsonEncoder.withIndent('  ').convert(option.toJson()));
 
     final start = DateTime.now();
     final result = await ImageEditor.editImage(

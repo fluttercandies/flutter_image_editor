@@ -70,14 +70,14 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.4"
+    version: "0.8.0"
   extended_image_library:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.8"
+    version: "0.2.3"
   flutter:
     dependency: "direct main"
     description: flutter

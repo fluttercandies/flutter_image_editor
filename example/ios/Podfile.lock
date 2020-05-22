@@ -9,7 +9,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - image_editor (from `/Users/cai/Documents/GitHub/flutter_image_editor/ios/image_editor.podspec`)
+  - image_editor (from `/Volumes/Evo512/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec`)
   - "image_picker (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
   - path_provider (from `/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
 
@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   image_editor:
-    :path: "/Users/cai/Documents/GitHub/flutter_image_editor/ios/image_editor.podspec"
+    :path: "/Volumes/Evo512/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec"
   image_picker:
     :path: "/Users/cai/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec"
   path_provider:
@@ -25,10 +25,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  image_editor: d0181032f68c58c9de3c9b8c17291b9a51c9dbb5
+  image_editor: c1d038630eedea60d2dee9c14f36aa66c7f9cfab
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
 
 PODFILE CHECKSUM: 1554125681f04c66fd40caade42f3011b107afb8
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1
