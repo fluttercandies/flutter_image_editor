@@ -16,6 +16,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Clip](#clip)
       - [Rotate](#rotate)
     - [OutputFormat](#outputformat)
+  - [Common issue](#common-issue)
   - [LICENSE](#license)
 
 ## Screenshot
@@ -25,6 +26,11 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 ## Usage
 
 [![pub package](https://img.shields.io/pub/v/image_editor.svg)](https://pub.dev/packages/image_editor) [![GitHub](https://img.shields.io/github/license/fluttercandies/flutter_image_editor.svg)](https://github.com/fluttercandies/flutter_image_editor) [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_editor.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_editor)
+
+```yaml
+dependencies:
+  image_editor: ^0.2.0
+```
 
 Import
 
