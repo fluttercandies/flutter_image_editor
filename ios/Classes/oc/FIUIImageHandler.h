@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)handleImage;
 
-- (void)outputFile:(NSString*)targetPath;
+- (BOOL)outputFile:(NSString*)targetPath;
 
 - (NSData*)outputMemory;
 

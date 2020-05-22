@@ -59,6 +59,22 @@
     handler.optionGroup = optionGroup;
 
     [handler handleImage];
+    if (outMemory) {
+      NSData *data = [handler outputMemory];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        result(data);
+      });
+    } else {
+      NSString *target = args[@"target"];
+      BOOL success = [handler outputFile:target];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (success) {
+          result(target);
+        } else {
+          result([FlutterError errorWithCode:@"cannot handle" message:nil details:nil]);
+        }
+      });
+    }
   });
 }
 
