@@ -1,6 +1,6 @@
 name: image_editor
 description: Rotate ,flip, crop your image. Use objc/kotlin to handle it.
-version: 0.2.0
+version: 0.3.0
 author: Caijinglong<cjl_spy@163.com>
 homepage: https://github.com/fluttercandies/flutter_image_editor
 

@@ -6,6 +6,7 @@
 //
 
 #import "FIUIImageHandler.h"
+#import <GPUImage/GPUImage.h>
 
 @implementation FIUIImageHandler {
   UIImage *outImage;
@@ -21,9 +22,13 @@
       [self clip:(FIClipOption *)option];
     } else if ([option isKindOfClass:[FIRotateOption class]]) {
       [self rotate:(FIRotateOption *)option];
+    } else if ([option isKindOfClass:[FIColorOption class]]) {
+      [self color:(FIColorOption *)option];
     }
   }
 }
+
+#pragma mark output
 
 - (BOOL)outputFile:(NSString *)targetPath {
   NSData *data = [self outputMemory];
@@ -52,7 +57,8 @@
 
   UIGraphicsBeginImageContextWithOptions(outImage.size, NO, outImage.scale);
 
-  [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+  [outImage
+      drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
 
   UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -62,6 +68,8 @@
     outImage = result;
   }
 }
+
+#pragma mark flip
 
 - (void)flip:(FIFlipOption *)option {
   BOOL h = option.horizontal;
@@ -115,12 +123,16 @@
                            orientation:[outImage imageOrientation]];
 }
 
+#pragma mark clip
+
 - (void)clip:(FIClipOption *)option {
   CGImageRef cg = outImage.CGImage;
   CGRect rect = CGRectMake(option.x, option.y, option.width, option.height);
   CGImageRef resultCg = CGImageCreateWithImageInRect(cg, rect);
   outImage = [UIImage imageWithCGImage:resultCg];
 }
+
+#pragma mark rotate
 
 - (void)rotate:(FIRotateOption *)option {
   CGFloat redians = [self convertDegreeToRadians:option.degree];
@@ -140,8 +152,8 @@
   CGContextTranslateCTM(ctx, newSize.width / 2, newSize.height / 2);
   CGContextRotateCTM(ctx, redians);
 
-  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width,
-                                  oldSize.height)];
+  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2,
+                                  oldSize.width, oldSize.height)];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -155,6 +167,61 @@
 
 - (CGFloat)convertDegreeToRadians:(CGFloat)degree {
   return degree * M_PI / 180;
+}
+
+#pragma mark color(hsb)
+
+- (void)color:(FIColorOption *)option {
+  if (!outImage) {
+    return;
+  }
+  GPUImageColorMatrixFilter *filter = [GPUImageColorMatrixFilter new];
+  
+  CGSize size;
+    
+  if(outImage.imageOrientation == UIImageOrientationLeft
+     || outImage.imageOrientation == UIImageOrientationRight
+     || outImage.imageOrientation == UIImageOrientationLeftMirrored
+     || outImage.imageOrientation == UIImageOrientationRightMirrored
+     ){
+      size = CGSizeMake(outImage.size.height, outImage.size.width);
+  }else{
+      size = outImage.size;
+  }
+    
+    NSArray *martix = option.matrix;
+  
+  [filter forceProcessingAtSize: size];
+  [filter useNextFrameForImageCapture];
+  
+  filter.colorMatrix = (GPUMatrix4x4){
+      [self getVector4:martix start:0],
+      [self getVector4:martix start:5],
+      [self getVector4:martix start:10],
+      [self getVector4:martix start:15]
+  };
+  
+  GPUImagePicture *pic = [[GPUImagePicture alloc]initWithImage:outImage];
+    if(!pic){
+        return;
+    }
+  [pic addTarget:filter];
+  [pic processImage];
+  
+  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+    if(image){
+        outImage = image;
+    }
+}
+
+-(GPUVector4) getVector4 :(NSArray*)array start:(int)start{
+    GPUVector4 vector = {
+        [array[start] floatValue],
+        [array[start+1] floatValue],
+        [array[start+2] floatValue],
+        [array[start+3] floatValue],
+    };
+    return vector;
 }
 
 @end

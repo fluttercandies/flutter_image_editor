@@ -40,10 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) int quality;
 @end
 
+@interface FIColorOption : NSObject <FIOption>
+@property(assign, nonatomic) NSArray *matrix;
+@end
+
 @interface FIEditorOptionGroup : NSObject
-@property(nonatomic, strong) FIFlipOption *flip;
-@property(nonatomic, strong) FIClipOption *clip;
-@property(nonatomic, strong) FIRotateOption *rotate;
 @property(nonatomic, strong) FIFormatOption *fmt;
 @property(nonatomic, strong) NSArray *options;
 @end

@@ -6,4 +6,7 @@ package top.kikt.flutter_image_editor.option
 interface Option {
 
 
+  fun canIgnore(): Boolean {
+    return false
+  }
 }

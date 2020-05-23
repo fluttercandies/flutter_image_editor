@@ -15,14 +15,13 @@
     NSDictionary *value = map[@"value"];
     NSObject<FIOption> *option;
     if ([@"flip" isEqualToString:type]) {
-      group.flip = [FIFlipOption createFromDict:value];
-      option = group.flip;
+      option = [FIFlipOption createFromDict:value];
     } else if ([@"clip" isEqualToString:type]) {
-      group.clip = [FIClipOption createFromDict:value];
-      option = group.clip;
+      option = [FIClipOption createFromDict:value];
     } else if ([@"rotate" isEqualToString:type]) {
-      group.rotate = [FIRotateOption createFromDict:value];
-      option = group.rotate;
+      option = [FIRotateOption createFromDict:value];
+    } else if ([@"color" isEqualToString:type]) {
+      option = [FIColorOption createFromDict:value];
     }
     if (option) {
       [optionArray addObject:option];
@@ -77,6 +76,18 @@
 }
 
 @end
+
+@implementation FIColorOption
+
++ (id)createFromDict:(NSDictionary *)dict {
+    NSArray *array = dict[@"matrix"];
+    FIColorOption *option = [FIColorOption new];
+    option.matrix = array;
+  return option;
+}
+
+@end
+
 
 @implementation FIEditorOptionGroup {
 }

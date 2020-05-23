@@ -4,7 +4,7 @@ package top.kikt.flutter_image_editor.option
 
 
 data class FlipOption(val horizontal: Boolean = false, val vertical: Boolean = false) : Option {
-  fun canIgnore(): Boolean {
+  override fun canIgnore(): Boolean {
     return !horizontal || !vertical
   }
 }

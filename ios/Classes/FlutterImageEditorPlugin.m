@@ -2,7 +2,7 @@
 #import "FIEPlugin.h"
 
 @implementation FlutterImageEditorPlugin
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
   [FIEPlugin registerWithRegistrar:registrar];
 }
 

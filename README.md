@@ -6,7 +6,7 @@ Support android ios, use the native way to flip, crop, rotate pictures.
 
 The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
 
-- [image_editor](#imageeditor)
+- [image_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Usage](#usage)
     - [ImageEditor method params](#imageeditor-method-params)
@@ -15,9 +15,11 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Flip](#flip)
       - [Clip](#clip)
       - [Rotate](#rotate)
+      - [Color](#color)
     - [OutputFormat](#outputformat)
   - [Common issue](#common-issue)
   - [LICENSE](#license)
+    - [Third party](#third-party)
 
 ## Screenshot
 
@@ -90,6 +92,16 @@ ClipOption(x:0, y:0, width:1920, height:1920);
 RotateOption(degree: 180);
 ```
 
+#### Color
+
+```dart
+ColorOption();
+```
+
+In android, it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html
+
+In iOS, it's use 4x4 matrix.
+
 ### OutputFormat
 
 ```dart
@@ -108,3 +120,11 @@ See [#10](https://github.com/fluttercandies/flutter_image_editor/issues/10)
 ## LICENSE
 
 MIT Style.
+
+### Third party
+
+Under BSD3 style:
+[GPUImage](https://github.com/BradLarson/GPUImage.git)
+
+Under Apache 2.0 style:
+Some martix code come from android sdk.
