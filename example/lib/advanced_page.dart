@@ -47,6 +47,20 @@ class _AdvancedPageState extends State<AdvancedPage> {
                 aspectRatio: 1,
                 child: buildImage(),
               ),
+              Expanded(
+                child: SliderTheme(
+                  data: SliderThemeData(
+                    showValueIndicator: ShowValueIndicator.always,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      _buildSat(),
+                      _buildBrightness(),
+                      _buildCon(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -127,6 +141,12 @@ class _AdvancedPageState extends State<AdvancedPage> {
       option.addOption(RotateOption(radian.toInt()));
     }
 
+    option.addOption(ColorOption(
+      brightness: bright,
+      contrast: con,
+      saturation: sat,
+    ));
+
     option.outputFormat = OutputFormat.png(88);
 
     print(JsonEncoder.withIndent('  ').convert(option.toJson()));
@@ -183,5 +203,51 @@ class _AdvancedPageState extends State<AdvancedPage> {
       provider = ExtendedFileImageProvider(result);
       setState(() {});
     }
+  }
+
+  double sat = 1;
+  double bright = 0;
+  double con = 1;
+
+  _buildSat() {
+    return Slider(
+      label: 'sat : ${sat.toStringAsFixed(2)}',
+      onChanged: (double value) {
+        setState(() {
+          sat = value;
+        });
+      },
+      value: sat,
+      min: 0,
+      max: 2,
+    );
+  }
+
+  _buildBrightness() {
+    return Slider(
+      label: 'brightness : ${bright.toStringAsFixed(2)}',
+      onChanged: (double value) {
+        setState(() {
+          bright = value;
+        });
+      },
+      value: bright,
+      min: -1,
+      max: 1,
+    );
+  }
+
+  _buildCon() {
+    return Slider(
+      label: 'con : ${con.toStringAsFixed(2)}',
+      onChanged: (double value) {
+        setState(() {
+          con = value;
+        });
+      },
+      value: con,
+      min: 0,
+      max: 4,
+    );
   }
 }

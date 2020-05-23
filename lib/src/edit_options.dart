@@ -228,13 +228,13 @@ class ColorOption implements Option {
   final double contrast;
 
   ColorOption({
-    this.brightness,
-    this.saturation,
-    this.contrast,
-  });
+    this.brightness = 0,
+    this.saturation = 1,
+    this.contrast = 1,
+  }) : assert(brightness != null && saturation != null && contrast != null);
 
   @override
-  bool get canIgnore => false;
+  bool get canIgnore => brightness == 0 && saturation == 1 && contrast == 1;
 
   @override
   String get key => 'color';

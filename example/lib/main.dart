@@ -15,6 +15,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return OKToast(
+      position: ToastPosition.bottom,
       child: MaterialApp(
         home: HomePage(),
       ),

@@ -8,14 +8,14 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
   - image_editor (from `/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec`)
   - "image_picker (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
   - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
   image_editor:
     :path: "/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec"
   image_picker:
@@ -29,6 +29,6 @@ SPEC CHECKSUMS:
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
 
-PODFILE CHECKSUM: 1554125681f04c66fd40caade42f3011b107afb8
+PODFILE CHECKSUM: 8a308083208ab836aae24bde0d05bba3f9066f30
 
 COCOAPODS: 1.9.1
