@@ -141,11 +141,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
       option.addOption(RotateOption(radian.toInt()));
     }
 
-    option.addOption(ColorOption(
-      brightness: bright,
-      contrast: con,
-      saturation: sat,
-    ));
+    option.addOption(ColorOption.saturation(sat));
 
     option.outputFormat = OutputFormat.png(88);
 

@@ -1,7 +1,9 @@
 PODS:
   - Flutter (1.0.0)
+  - GPUImage (0.1.7)
   - image_editor (0.0.1):
     - Flutter
+    - GPUImage
   - image_picker (0.0.1):
     - Flutter
   - path_provider (0.0.1):
@@ -12,6 +14,10 @@ DEPENDENCIES:
   - image_editor (from `/Volumes/Samsung-T5/code/flutter/plugins/flutter_image_editor/ios/image_editor.podspec`)
   - "image_picker (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/image_picker-0.6.1+8/ios/image_picker.podspec`)"
   - path_provider (from `/Users/caijinglong/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.4.0/ios/path_provider.podspec`)
+
+SPEC REPOS:
+  trunk:
+    - GPUImage
 
 EXTERNAL SOURCES:
   Flutter:
@@ -25,7 +31,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  image_editor: c1d038630eedea60d2dee9c14f36aa66c7f9cfab
+  GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
+  image_editor: 6de621f6637dcc33ab05b40b8adc8c4ab25032db
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
 

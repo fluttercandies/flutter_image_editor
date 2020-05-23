@@ -41,16 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface FIColorOption : NSObject <FIOption>
-@property(assign, nonatomic) double sat;
-@property(assign, nonatomic) double contrast;
-@property(assign, nonatomic) double bright;
+@property(assign, nonatomic) NSArray *matrix;
 @end
 
 @interface FIEditorOptionGroup : NSObject
-@property(nonatomic, strong) FIFlipOption *flip;
-@property(nonatomic, strong) FIClipOption *clip;
-@property(nonatomic, strong) FIRotateOption *rotate;
-@property(nonatomic, strong) FIColorOption *color;
 @property(nonatomic, strong) FIFormatOption *fmt;
 @property(nonatomic, strong) NSArray *options;
 @end

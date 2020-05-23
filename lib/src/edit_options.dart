@@ -1,5 +1,7 @@
 import 'dart:collection';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math' show pi;
 
@@ -217,32 +219,90 @@ class RotateOption implements Option {
   bool get canIgnore => degree % 360 == 0;
 }
 
+/// ```
+/// 1,0,0,0,0,
+/// 0,1,0,0,0,
+/// 0,0,1,0,0,
+/// 0,0,0,1,0
+/// ```
+///
+const defaultColorMatrix = const <double>[
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0
+];
+
 class ColorOption implements Option {
-  /// -1 to 1
-  final double brightness;
+  /// 5x4 matrix. See [Document of android](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html)
+  ///
+  /// In android:
+  /// ```
+  /// [ a, b, c, d, e,
+  ///   f, g, h, i, j,
+  ///   k, l, m, n, o,
+  ///   p, q, r, s, t ]
+  /// ```
+  ///
+  /// Since iOS uses the GPUImage library to handle matrix color changes
+  ///
+  /// GPUImage only supports 4x4 matrix, so in iOS, the same matrix is as follows:
+  /// ```
+  /// [ a, b, c, d,
+  ///   f, g, h, i,
+  ///   k, l, m, n,
+  ///   p, q, r, s ]
+  /// ```
+  ///
+  final List<double> matrix;
 
-  /// 0 to 2
-  final double saturation;
+  ColorOption({this.matrix = defaultColorMatrix});
 
-  /// 0 to 4
-  final double contrast;
+  /// migrate from [android sdk saturation code](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html#setSaturation(float)) . 
+  factory ColorOption.saturation(double saturation) {
 
-  ColorOption({
-    this.brightness = 0,
-    this.saturation = 1,
-    this.contrast = 1,
-  }) : assert(brightness != null && saturation != null && contrast != null);
+    final m = List<double>.from(defaultColorMatrix);
+
+    final invSat = 1 - saturation;
+    final R = 0.213 * invSat;
+    final G = 0.715 * invSat;
+    final B = 0.072 * invSat;
+
+    m[0] = R + saturation;
+    m[1] = G;
+    m[2] = B;
+    m[5] = R;
+    m[6] = G + saturation;
+    m[7] = B;
+    m[10] = R;
+    m[11] = G;
+    m[12] = B + saturation;
+
+    return ColorOption(matrix: m);
+  }
 
   @override
-  bool get canIgnore => brightness == 0 && saturation == 1 && contrast == 1;
+  bool get canIgnore => listEquals(matrix, defaultColorMatrix);
 
   @override
   String get key => 'color';
 
   @override
-  Map<String, dynamic> get transferValue => {
-        'b': brightness,
-        's': saturation,
-        'c': contrast,
-      };
+  Map<String, dynamic> get transferValue => {'matrix': matrix};
 }

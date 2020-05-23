@@ -6,6 +6,7 @@
 //
 
 #import "FIUIImageHandler.h"
+#import <GPUImage/GPUImage.h>
 
 @implementation FIUIImageHandler {
   UIImage *outImage;
@@ -174,29 +175,53 @@
   if (!outImage) {
     return;
   }
-  CIContext *context = [CIContext contextWithOptions:nil];
-  CIImage *ciImage = [CIImage imageWithCGImage:outImage.CGImage];
-  if (!ciImage) {
-    return;
+  GPUImageColorMatrixFilter *filter = [GPUImageColorMatrixFilter new];
+  
+  CGSize size;
+    
+  if(outImage.imageOrientation == UIImageOrientationLeft
+     || outImage.imageOrientation == UIImageOrientationRight
+     || outImage.imageOrientation == UIImageOrientationLeftMirrored
+     || outImage.imageOrientation == UIImageOrientationRightMirrored
+     ){
+      size = CGSizeMake(outImage.size.height, outImage.size.width);
+  }else{
+      size = outImage.size;
   }
-  CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+    
+    NSArray *martix = option.matrix;
+  
+  [filter forceProcessingAtSize: size];
+  [filter useNextFrameForImageCapture];
+  
+  filter.colorMatrix = (GPUMatrix4x4){
+      [self getVector4:martix start:0],
+      [self getVector4:martix start:5],
+      [self getVector4:martix start:10],
+      [self getVector4:martix start:15]
+  };
+  
+  GPUImagePicture *pic = [[GPUImagePicture alloc]initWithImage:outImage];
+    if(!pic){
+        return;
+    }
+  [pic addTarget:filter];
+  [pic processImage];
+  
+  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+    if(image){
+        outImage = image;
+    }
+}
 
-  [filter setValue:ciImage forKey:kCIInputImageKey];
-  [filter setValue:@(option.bright) forKey:kCIInputBrightnessKey];
-  [filter setValue:@(option.sat) forKey:kCIInputSaturationKey];
-  [filter setValue:@(option.contrast) forKey:kCIInputContrastKey];
-
-  CIImage *result = [filter valueForKey:kCIOutputImageKey];
-  CGImageRef cgImage = [context createCGImage:result fromRect:ciImage.extent];
-
-  UIImage *target = [UIImage imageWithCGImage:cgImage];
-
-  CGImageRelease(cgImage);
-
-  if (!target) {
-    return;
-  }
-  outImage = target;
+-(GPUVector4) getVector4 :(NSArray*)array start:(int)start{
+    GPUVector4 vector = {
+        [array[start] floatValue],
+        [array[start+1] floatValue],
+        [array[start+2] floatValue],
+        [array[start+3] floatValue],
+    };
+    return vector;
 }
 
 @end
