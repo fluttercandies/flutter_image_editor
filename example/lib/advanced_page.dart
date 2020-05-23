@@ -35,7 +35,9 @@ class _AdvancedPageState extends State<AdvancedPage> {
             ),
             IconButton(
               icon: Icon(Icons.check),
-              onPressed: crop,
+              onPressed: () async {
+                await crop();
+              },
             ),
           ],
         ),
@@ -121,7 +123,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
     );
   }
 
-  void crop() async {
+  Future<void> crop([bool test = false]) async {
     final state = editorKey.currentState;
     final rect = state.getCropRect();
     final action = state.editAction;
