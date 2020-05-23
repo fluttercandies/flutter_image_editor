@@ -21,9 +21,9 @@
       [self clip:(FIClipOption *)option];
     } else if ([option isKindOfClass:[FIRotateOption class]]) {
       [self rotate:(FIRotateOption *)option];
-    }  else if ([option isKindOfClass:[FIColorOption class]]) {
-         [self color:(FIColorOption *)option];
-       }
+    } else if ([option isKindOfClass:[FIColorOption class]]) {
+      [self color:(FIColorOption *)option];
+    }
   }
 }
 
@@ -170,33 +170,33 @@
 
 #pragma mark color(hsb)
 
-- (void) color:(FIColorOption*) option{
-    if(!outImage){
-        return;
-    }
-    CIContext *context = [CIContext contextWithOptions:nil];
-    CIImage *ciImage = [CIImage imageWithCGImage:outImage.CGImage];
-    if(!ciImage){
-        return;
-    }
-    CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-    
-    [filter setValue:ciImage forKey:kCIInputImageKey];
-    [filter setValue:@(option.bright) forKey:kCIInputBrightnessKey];
-    [filter setValue:@(option.sat) forKey:kCIInputSaturationKey];
-    [filter setValue:@(option.contrast) forKey:kCIInputContrastKey];
-    
-    CIImage *result = [filter valueForKey:kCIOutputImageKey];
-    CGImageRef cgImage = [context createCGImage:result fromRect:ciImage.extent];
-    
-    UIImage *target = [UIImage imageWithCGImage:cgImage];
-    
-    CGImageRelease(cgImage);
-    
-    if(!target){
-        return;
-    }
-    outImage = target;
+- (void)color:(FIColorOption *)option {
+  if (!outImage) {
+    return;
+  }
+  CIContext *context = [CIContext contextWithOptions:nil];
+  CIImage *ciImage = [CIImage imageWithCGImage:outImage.CGImage];
+  if (!ciImage) {
+    return;
+  }
+  CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+
+  [filter setValue:ciImage forKey:kCIInputImageKey];
+  [filter setValue:@(option.bright) forKey:kCIInputBrightnessKey];
+  [filter setValue:@(option.sat) forKey:kCIInputSaturationKey];
+  [filter setValue:@(option.contrast) forKey:kCIInputContrastKey];
+
+  CIImage *result = [filter valueForKey:kCIOutputImageKey];
+  CGImageRef cgImage = [context createCGImage:result fromRect:ciImage.extent];
+
+  UIImage *target = [UIImage imageWithCGImage:cgImage];
+
+  CGImageRelease(cgImage);
+
+  if (!target) {
+    return;
+  }
+  outImage = target;
 }
 
 @end
