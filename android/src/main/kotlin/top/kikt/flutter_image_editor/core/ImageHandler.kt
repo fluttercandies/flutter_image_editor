@@ -5,6 +5,7 @@ import top.kikt.flutter_image_editor.option.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.OutputStream
+import kotlin.math.min
 
 
 /// create 2019-10-08 by cai
@@ -18,8 +19,34 @@ class ImageHandler(private var bitmap: Bitmap) {
         is ClipOption -> bitmap = handleClip(option)
         is RotateOption -> bitmap = handleRotate(option)
         is ColorOption -> bitmap = handleColor(option)
+        is ScaleOption -> bitmap = handleScale(option)
       }
     }
+  }
+
+  private fun handleScale(option: ScaleOption): Bitmap {
+    val w = min(bitmap.width, option.width)
+    val h = min(bitmap.height, option.height)
+
+    val newBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+
+    val canvas = Canvas(newBitmap)
+
+    val p = Paint()
+
+    val m = Matrix()
+
+    val width: Int = bitmap.width
+    val height: Int = bitmap.height
+    if (width != w || height != h) {
+      val sx: Float = w / width.toFloat()
+      val sy: Float = h / height.toFloat()
+      m.setScale(sx, sy)
+    }
+
+    canvas.drawBitmap(bitmap, m, p)
+
+    return newBitmap
   }
 
   private fun handleRotate(option: RotateOption): Bitmap {
