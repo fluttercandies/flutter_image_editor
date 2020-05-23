@@ -22,6 +22,8 @@
       option = [FIRotateOption createFromDict:value];
     } else if ([@"color" isEqualToString:type]) {
       option = [FIColorOption createFromDict:value];
+    } else if ([@"scale" isEqualToString:type]) {
+      option = [FIScaleOption createFromDict:value];
     }
     if (option) {
       [optionArray addObject:option];
@@ -80,14 +82,23 @@
 @implementation FIColorOption
 
 + (id)createFromDict:(NSDictionary *)dict {
-    NSArray *array = dict[@"matrix"];
-    FIColorOption *option = [FIColorOption new];
-    option.matrix = array;
+  NSArray *array = dict[@"matrix"];
+  FIColorOption *option = [FIColorOption new];
+  option.matrix = array;
   return option;
 }
 
 @end
 
+@implementation FIScaleOption
++ (id)createFromDict:(NSDictionary *)dict {
+  FIScaleOption *option = [FIScaleOption new];
+  option.width = [dict[@"width"] intValue];
+  option.height = [dict[@"height"] intValue];
+  return option;
+}
+
+@end
 
 @implementation FIEditorOptionGroup {
 }

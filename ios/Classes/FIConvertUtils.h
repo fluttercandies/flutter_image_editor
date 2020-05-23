@@ -41,7 +41,12 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface FIColorOption : NSObject <FIOption>
-@property(assign, nonatomic) NSArray *matrix;
+@property(strong, nonatomic) NSArray *matrix;
+@end
+
+@interface FIScaleOption : NSObject <FIOption>
+@property(assign, nonatomic) int width;
+@property(assign, nonatomic) int height;
 @end
 
 @interface FIEditorOptionGroup : NSObject
