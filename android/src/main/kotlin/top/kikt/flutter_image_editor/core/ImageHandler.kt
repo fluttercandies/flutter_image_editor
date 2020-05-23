@@ -18,7 +18,6 @@ class ImageHandler(private var bitmap: Bitmap) {
         is ClipOption -> bitmap = handleClip(option)
         is RotateOption -> bitmap = handleRotate(option)
         is ColorOption -> bitmap = handleColor(option)
-        is SaturationOption -> bitmap = handleSaturation(option)
       }
     }
   }
@@ -57,42 +56,13 @@ class ImageHandler(private var bitmap: Bitmap) {
   }
 
   private fun handleColor(option: ColorOption): Bitmap {
-    if (option.canIgnore()) {
-      return bitmap
-    }
-
-    val colorMatrix = ColorMatrix(option.matrix)
-
     val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
 
     val canvas = Canvas(newBitmap)
 
     val paint = Paint()
-    paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+    paint.colorFilter = ColorMatrixColorFilter(option.matrix)
 
-    canvas.drawBitmap(bitmap, 0F, 0F, paint)
-
-    return newBitmap
-  }
-
-
-  private fun handleSaturation(option: SaturationOption): Bitmap {
-    if (option.canIgnore()) {
-      return bitmap
-    }
-    val contrast = 0F
-    val brightness = 1F
-
-    val colorMatrix =
-            ColorMatrix(floatArrayOf(contrast, 0f, 0f, 0f,
-                    brightness, 0f, contrast, 0f, 0f, brightness, 0f, 0f, contrast, 0f, brightness, 0f, 0f, 0f, 1f, 0f))
-    colorMatrix.setSaturation(option.saturation.toFloat())
-    val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
-
-    val canvas = Canvas(newBitmap)
-
-    val paint = Paint()
-    paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
     canvas.drawBitmap(bitmap, 0F, 0F, paint)
 
     return newBitmap

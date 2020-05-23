@@ -1,9 +1,8 @@
 import 'dart:collection';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:math' show pi;
+import 'dart:math' as math;
 
 import 'package:image_editor/image_editor.dart';
 
@@ -205,7 +204,8 @@ class RotateOption implements Option {
 
   RotateOption(this.degree);
 
-  RotateOption.radian(double radian) : degree = (radian / pi * 180).toInt();
+  RotateOption.radian(double radian)
+      : degree = (radian / math.pi * 180).toInt();
 
   @override
   String get key => "rotate";
@@ -272,11 +272,12 @@ class ColorOption implements Option {
   ///
   final List<double> matrix;
 
-  ColorOption({this.matrix = defaultColorMatrix});
+  /// see [matrix]
+  const ColorOption({this.matrix = defaultColorMatrix})
+      : assert(matrix != null && matrix.length == 20);
 
-  /// migrate from [android sdk saturation code](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html#setSaturation(float)) . 
+  /// migrate from [android sdk saturation code](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html#setSaturation(float)) .
   factory ColorOption.saturation(double saturation) {
-
     final m = List<double>.from(defaultColorMatrix);
 
     final invSat = 1 - saturation;
@@ -296,6 +297,73 @@ class ColorOption implements Option {
 
     return ColorOption(matrix: m);
   }
+
+  /// Copy from android sdk.
+  factory ColorOption.rotate(int axis, double degrees) {
+    final mArray = List<double>.from(defaultColorMatrix);
+    double radians = degrees * math.pi / 180;
+    final cosine = math.cos(radians);
+    final sine = math.sin(radians);
+    switch (axis) {
+      // Rotation around the red color
+      case 0:
+        mArray[6] = mArray[12] = cosine;
+        mArray[7] = sine;
+        mArray[11] = -sine;
+        break;
+      // Rotation around the green color
+      case 1:
+        mArray[0] = mArray[12] = cosine;
+        mArray[2] = -sine;
+        mArray[10] = sine;
+        break;
+      // Rotation around the blue color
+      case 2:
+        mArray[0] = mArray[6] = cosine;
+        mArray[1] = sine;
+        mArray[5] = -sine;
+        break;
+      default:
+        throw ArgumentError("cannot create");
+    }
+
+    return ColorOption(matrix: mArray);
+  }
+
+  factory ColorOption.scale(
+      double rScale, double gScale, double bScale, double aScale) {
+    final a = List<double>.filled(20, 0);
+    a[0] = rScale;
+    a[6] = gScale;
+    a[12] = bScale;
+    a[18] = aScale;
+    return ColorOption(matrix: a);
+  }
+
+  ColorOption concat(ColorOption other) {
+    List<double> tmp = List.filled(20, 0);
+
+    final a = this.matrix.toList();
+    final b = other.matrix.toList();
+    int index = 0;
+    for (int j = 0; j < 20; j += 5) {
+      for (int i = 0; i < 4; i++) {
+        tmp[index++] = a[j + 0] * b[i + 0] +
+            a[j + 1] * b[i + 5] +
+            a[j + 2] * b[i + 10] +
+            a[j + 3] * b[i + 15];
+      }
+      tmp[index++] = a[j + 0] * b[4] +
+          a[j + 1] * b[9] +
+          a[j + 2] * b[14] +
+          a[j + 3] * b[19] +
+          a[j + 4];
+    }
+
+    return ColorOption(matrix: tmp);
+  }
+
+  
 
   @override
   bool get canIgnore => listEquals(matrix, defaultColorMatrix);

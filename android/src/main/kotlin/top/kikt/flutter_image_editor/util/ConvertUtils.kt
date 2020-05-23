@@ -49,10 +49,6 @@ object ConvertUtils {
           val colorOption: ColorOption = getColorOption(valueMap)
           list.add(colorOption)
         }
-        "saturation" -> {
-          val colorOption: SaturationOption = getSaturationOption(valueMap)
-          list.add(colorOption)
-        }
         else -> {
         }
       }
@@ -71,17 +67,6 @@ object ConvertUtils {
     }.toFloatArray()
 
     return ColorOption(matrix)
-  }
-
-
-  private fun getSaturationOption(optionMap: Any?): SaturationOption {
-    if (optionMap !is Map<*, *>) {
-      return SaturationOption()
-    }
-
-    return SaturationOption(
-            optionMap["s"] as Double
-    )
   }
 
   private fun getRotateOption(optionMap: Any?): RotateOption {
