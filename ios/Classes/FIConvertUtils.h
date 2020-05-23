@@ -50,6 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) FIFlipOption *flip;
 @property(nonatomic, strong) FIClipOption *clip;
 @property(nonatomic, strong) FIRotateOption *rotate;
+@property(nonatomic, strong) FIColorOption *color;
 @property(nonatomic, strong) FIFormatOption *fmt;
 @property(nonatomic, strong) NSArray *options;
 @end

@@ -23,6 +23,12 @@
     } else if ([@"rotate" isEqualToString:type]) {
       group.rotate = [FIRotateOption createFromDict:value];
       option = group.rotate;
+    } else if ([@"rotate" isEqualToString:type]) {
+      group.rotate = [FIRotateOption createFromDict:value];
+      option = group.rotate;
+    } else if ([@"color" isEqualToString:type]){
+        group.color = [FIColorOption createFromDict:value];
+        option = group.color;
     }
     if (option) {
       [optionArray addObject:option];
