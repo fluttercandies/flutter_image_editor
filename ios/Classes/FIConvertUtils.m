@@ -78,6 +78,19 @@
 
 @end
 
+@implementation FIColorOption
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIColorOption *option = [FIColorOption new];
+  option.bright = [dict[@"b"] doubleValue];
+  option.sat = [dict[@"s"] doubleValue];
+  option.contrast = [dict[@"c"] doubleValue];
+
+  return option;
+}
+
+@end
+
 @implementation FIEditorOptionGroup {
 }
 

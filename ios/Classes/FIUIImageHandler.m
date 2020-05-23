@@ -25,6 +25,8 @@
   }
 }
 
+#pragma mark output
+
 - (BOOL)outputFile:(NSString *)targetPath {
   NSData *data = [self outputMemory];
   if (!data) {
@@ -52,7 +54,8 @@
 
   UIGraphicsBeginImageContextWithOptions(outImage.size, NO, outImage.scale);
 
-  [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+  [outImage
+      drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
 
   UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -62,6 +65,8 @@
     outImage = result;
   }
 }
+
+#pragma mark flip
 
 - (void)flip:(FIFlipOption *)option {
   BOOL h = option.horizontal;
@@ -115,12 +120,16 @@
                            orientation:[outImage imageOrientation]];
 }
 
+#pragma mark clip
+
 - (void)clip:(FIClipOption *)option {
   CGImageRef cg = outImage.CGImage;
   CGRect rect = CGRectMake(option.x, option.y, option.width, option.height);
   CGImageRef resultCg = CGImageCreateWithImageInRect(cg, rect);
   outImage = [UIImage imageWithCGImage:resultCg];
 }
+
+#pragma mark rotate
 
 - (void)rotate:(FIRotateOption *)option {
   CGFloat redians = [self convertDegreeToRadians:option.degree];
@@ -140,8 +149,8 @@
   CGContextTranslateCTM(ctx, newSize.width / 2, newSize.height / 2);
   CGContextRotateCTM(ctx, redians);
 
-  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width,
-                                  oldSize.height)];
+  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2,
+                                  oldSize.width, oldSize.height)];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -156,5 +165,7 @@
 - (CGFloat)convertDegreeToRadians:(CGFloat)degree {
   return degree * M_PI / 180;
 }
+
+#pragma mark color(hsb)
 
 @end

@@ -216,3 +216,33 @@ class RotateOption implements Option {
   @override
   bool get canIgnore => degree % 360 == 0;
 }
+
+class ColorOption implements Option {
+  /// -1 to 1
+  final double brightness;
+
+  /// 0 to 2
+  final double saturation;
+
+  /// 0 to 4
+  final double contrast;
+
+  ColorOption({
+    this.brightness,
+    this.saturation,
+    this.contrast,
+  });
+
+  @override
+  bool get canIgnore => false;
+
+  @override
+  String get key => 'color';
+
+  @override
+  Map<String, dynamic> get transferValue => {
+        'b': brightness,
+        's': saturation,
+        'c': contrast,
+      };
+}
