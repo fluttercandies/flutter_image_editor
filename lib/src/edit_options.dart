@@ -363,7 +363,17 @@ class ColorOption implements Option {
     return ColorOption(matrix: tmp);
   }
 
-  
+  factory ColorOption.brightness(double brightness) {
+    return ColorOption.scale(brightness, brightness, brightness, 1);
+  }
+
+  factory ColorOption.contrast(double contrast) {
+    final m = List<double>.from(defaultColorMatrix);
+    m[0] = contrast;
+    m[6] = contrast;
+    m[12] = contrast;
+    return ColorOption(matrix: m);
+  }
 
   @override
   bool get canIgnore => listEquals(matrix, defaultColorMatrix);

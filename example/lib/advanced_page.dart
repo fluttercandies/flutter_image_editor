@@ -142,6 +142,8 @@ class _AdvancedPageState extends State<AdvancedPage> {
     }
 
     option.addOption(ColorOption.saturation(sat));
+    option.addOption(ColorOption.brightness(bright));
+    option.addOption(ColorOption.contrast(con));
 
     option.outputFormat = OutputFormat.png(88);
 
@@ -202,7 +204,7 @@ class _AdvancedPageState extends State<AdvancedPage> {
   }
 
   double sat = 1;
-  double bright = 0;
+  double bright = 1;
   double con = 1;
 
   _buildSat() {
@@ -228,8 +230,8 @@ class _AdvancedPageState extends State<AdvancedPage> {
         });
       },
       value: bright,
-      min: -1,
-      max: 1,
+      min: 0,
+      max: 2,
     );
   }
 
