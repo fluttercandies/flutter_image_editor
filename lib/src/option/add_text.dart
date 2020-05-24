@@ -32,6 +32,13 @@ class EditorText {
     this.textColor = Colors.black,
   });
 
+  int get y {
+    if (Platform.isAndroid) {
+      return offset.dy.toInt() + fontSizePx;
+    }
+    return offset.dy.toInt();
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'text': text,

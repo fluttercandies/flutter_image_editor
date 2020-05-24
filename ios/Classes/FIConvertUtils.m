@@ -24,6 +24,8 @@
       option = [FIColorOption createFromDict:value];
     } else if ([@"scale" isEqualToString:type]) {
       option = [FIScaleOption createFromDict:value];
+    } else if ([@"add_text" isEqualToString:type]) {
+      option = [FIAddTextOption createFromDict:value];
     }
     if (option) {
       [optionArray addObject:option];
@@ -96,6 +98,45 @@
   option.width = [dict[@"width"] intValue];
   option.height = [dict[@"height"] intValue];
   return option;
+}
+
+@end
+
+@implementation FIAddText
++(id)createFromDict:(NSDictionary *)dict{
+    FIAddText *text = [FIAddText new];
+    
+    text.text = dict[@"text"];
+    text.fontSizePx = [dict[@"size"] intValue];
+    
+    text.x = [dict[@"x"] intValue];
+    text.y = [dict[@"y"] intValue];
+    
+    text.r = [dict[@"r"] intValue];
+    text.g = [dict[@"g"] intValue];
+    text.b = [dict[@"b"] intValue];
+    text.a = [dict[@"a"] intValue];
+    
+    return text;
+}
+@end
+
+@implementation FIAddTextOption
+
++(id)createFromDict:(NSDictionary *)dict{
+   FIAddTextOption *opt = [FIAddTextOption new];
+    
+    NSArray *src = dict[@"texts"];
+    NSMutableArray<FIAddText*> *arr = [NSMutableArray new];
+    
+    for (NSDictionary *dict in src) {
+        FIAddText *addText = [FIAddText createFromDict:dict];
+        [arr addObject:addText];
+    }
+    
+    opt.texts =arr;
+    
+    return opt;
 }
 
 @end

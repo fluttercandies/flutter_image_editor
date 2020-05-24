@@ -57,7 +57,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 final textOption = AddTextOption();
                 textOption.addText(
                   EditorText(
-                    offset: Offset(0, 120),
+                    offset: Offset(0, 0),
                     text: this._controller.text,
                     fontSizePx: size,
                   ),
