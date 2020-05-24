@@ -1,3 +1,13 @@
+## 0.4.0
+
+New Feature:
+
+- ScaleOption
+
+Fix:
+
+- output format
+
 ## 0.3.0
 
 Support some color option.

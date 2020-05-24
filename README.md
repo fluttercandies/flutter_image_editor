@@ -16,6 +16,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Clip](#clip)
       - [Rotate](#rotate)
       - [Color](#color)
+      - [ScaleOption](#scaleoption)
     - [OutputFormat](#outputformat)
   - [Common issue](#common-issue)
   - [LICENSE](#license)
@@ -100,7 +101,27 @@ ColorOption();
 
 In android, it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html
 
-In iOS, it's use 4x4 matrix.
+a, b, c, d, e,  
+f, g, h, i, j,  
+k, l, m, n, o,  
+p, q, r, s, t
+
+---
+
+In iOS, it's use 4x4 matrix. The last of line will be ignored.
+
+a, b, c, d,  
+f, g, h, i,  
+k, l, m, n,  
+p, q, r, s
+
+#### ScaleOption
+
+```dart
+ScaleOption(width,height);
+```
+
+After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does not maintain the aspect ratio of the image).
 
 ### OutputFormat
 
