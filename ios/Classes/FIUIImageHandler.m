@@ -26,6 +26,8 @@
       [self color:(FIColorOption *)option];
     } else if ([option isKindOfClass:[FIScaleOption class]]) {
       [self scale:(FIScaleOption *)option];
+    } else if ([option isKindOfClass:[FIAddTextOption class]]) {
+      [self addText:(FIAddTextOption *)option];
     }
   }
 }
@@ -257,6 +259,53 @@
   if (image) {
     outImage = image;
   }
+}
+
+#pragma mark add text
+
+- (void)addText:(FIAddTextOption *)option {
+    if(!outImage){
+        return;
+    }
+    
+    if(option.texts.count == 0){
+        return;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(outImage.size, NO, outImage.scale);
+
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    if (!ctx) {
+      return;
+    }
+    
+    [outImage drawInRect: CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+    
+    for (FIAddText *text in option.texts) {
+        UIColor *color = [UIColor colorWithRed:text.r green:text.g blue:text.b alpha:text.a];
+            
+        NSDictionary *attr = @{
+              NSFontAttributeName: [UIFont boldSystemFontOfSize:text.fontSizePx],
+              NSForegroundColorAttributeName : color,
+              NSBackgroundColorAttributeName : UIColor.clearColor,
+          };
+        
+        CGFloat w = outImage.size.width - text.x;
+        CGFloat h = outImage.size.height - text.y;
+        
+        CGRect rect = CGRectMake(text.x, text.y, w, h);
+        
+        [text.text drawInRect:rect withAttributes:attr];
+    }
+
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+    UIGraphicsEndImageContext();
+    if (!newImage) {
+      return;
+    }
+
+    outImage = newImage;
 }
 
 @end

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
+import 'add_text_page.dart';
 import 'const/resource.dart';
 import 'package:image_editor/image_editor.dart';
 
@@ -45,6 +46,11 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.settings_backup_restore),
             onPressed: restore,
             tooltip: "Restore image to default.",
+          ),
+          IconButton(
+            icon: Icon(Icons.text_fields),
+            onPressed: _addText,
+            tooltip: "Add text",
           ),
         ],
       ),
@@ -131,6 +137,12 @@ class _HomePageState extends State<HomePage> {
 
     final img = MemoryImage(result);
     setProvider(img);
+  }
+
+  void _addText() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AddTextPage(),
+    ));
   }
 }
 

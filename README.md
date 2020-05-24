@@ -18,6 +18,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Rotate](#rotate)
       - [Color](#color)
       - [ScaleOption](#scaleoption)
+      - [AddTextOption](#addtextoption)
     - [OutputFormat](#outputformat)
   - [Common issue](#common-issue)
     - [iOS](#ios)
@@ -39,7 +40,7 @@ Android, iOS.
 
 ```yaml
 dependencies:
-  image_editor: ^0.4.0
+  image_editor: ^0.5.0
 ```
 
 Import
@@ -130,6 +131,22 @@ ScaleOption(width,height);
 ```
 
 After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does not maintain the aspect ratio of the image).
+
+#### AddTextOption
+
+All of unit is **pixel**.
+
+```dart
+final textOption = AddTextOption();
+textOption.addText(
+  EditorText(
+    offset: Offset(0, 0),
+    text: this._controller.text,
+    fontSizePx: size,
+    color: Colors.red,
+  ),
+);
+```
 
 ### OutputFormat
 

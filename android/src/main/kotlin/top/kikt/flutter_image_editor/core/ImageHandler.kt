@@ -1,6 +1,10 @@
 package top.kikt.flutter_image_editor.core
 
 import android.graphics.*
+import android.os.Build
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
 import top.kikt.flutter_image_editor.option.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
@@ -20,6 +24,7 @@ class ImageHandler(private var bitmap: Bitmap) {
         is RotateOption -> bitmap = handleRotate(option)
         is ColorOption -> bitmap = handleColor(option)
         is ScaleOption -> bitmap = handleScale(option)
+        is AddTextOpt -> bitmap = handleText(option)
       }
     }
   }
@@ -93,6 +98,45 @@ class ImageHandler(private var bitmap: Bitmap) {
     canvas.drawBitmap(bitmap, 0F, 0F, paint)
 
     return newBitmap
+  }
+
+  private fun handleText(option: AddTextOpt): Bitmap {
+    val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+
+    val canvas = Canvas(newBitmap)
+    val paint = Paint()
+
+    canvas.drawBitmap(bitmap, 0F, 0F, paint)
+
+    for (text in option.texts) {
+      drawText(text, canvas)
+    }
+
+    return newBitmap
+  }
+
+  private fun drawText(text: Text, canvas: Canvas) {
+    val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+    textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
+    textPaint.textSize = text.fontSizePx.toFloat()
+//    canvas.drawText(text.text, text.x.toFloat(), text.y.toFloat(), textPaint)
+
+    val staticLayout = getStaticLayout(text, textPaint, canvas.width - text.x)
+
+    canvas.translate(text.x.toFloat(), text.y.toFloat())
+    staticLayout.draw(canvas)
+    canvas.translate((-text.x).toFloat(), (-text.y).toFloat())
+  }
+
+  @Suppress("DEPRECATION")
+  private fun getStaticLayout(text: Text, textPaint: TextPaint, width: Int): StaticLayout {
+    return if (Build.VERSION.SDK_INT >= 23) {
+      StaticLayout.Builder.obtain(
+              text.text, 0, text.text.length, textPaint, width
+      ).build()
+    } else {
+      StaticLayout(text.text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true)
+    }
   }
 
   fun outputToFile(dstPath: String, formatOption: FormatOption) {

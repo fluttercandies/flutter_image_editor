@@ -49,6 +49,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) int height;
 @end
 
+@interface FIAddText : NSObject<FIOption>
+@property(nonatomic,copy) NSString *text;
+@property(nonatomic,assign) int x;
+@property(nonatomic,assign) int y;
+@property(nonatomic,assign) int fontSizePx;
+@property(nonatomic,assign) int r;
+@property(nonatomic,assign) int g;
+@property(nonatomic,assign) int b;
+@property(nonatomic,assign) int a;
+@end
+
+@interface FIAddTextOption : NSObject<FIOption>
+@property(nonatomic,strong)NSArray<FIAddText*> *texts;
+@end
+
 @interface FIEditorOptionGroup : NSObject
 @property(nonatomic, strong) FIFormatOption *fmt;
 @property(nonatomic, strong) NSArray *options;
