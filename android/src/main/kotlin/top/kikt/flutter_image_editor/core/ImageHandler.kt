@@ -1,6 +1,7 @@
 package top.kikt.flutter_image_editor.core
 
 import android.graphics.*
+import android.text.TextPaint
 import top.kikt.flutter_image_editor.option.*
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
@@ -20,6 +21,7 @@ class ImageHandler(private var bitmap: Bitmap) {
         is RotateOption -> bitmap = handleRotate(option)
         is ColorOption -> bitmap = handleColor(option)
         is ScaleOption -> bitmap = handleScale(option)
+        is AddTextOpt -> bitmap = handleText(option)
       }
     }
   }
@@ -91,6 +93,24 @@ class ImageHandler(private var bitmap: Bitmap) {
     paint.colorFilter = ColorMatrixColorFilter(option.matrix)
 
     canvas.drawBitmap(bitmap, 0F, 0F, paint)
+
+    return newBitmap
+  }
+
+  private fun handleText(option: AddTextOpt): Bitmap {
+    val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+
+    val canvas = Canvas(newBitmap)
+    val paint = Paint()
+
+    canvas.drawBitmap(bitmap, 0F, 0F, paint)
+
+    for (text in option.texts) {
+      val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
+      textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
+      textPaint.textSize = text.fontSizePx.toFloat()
+      canvas.drawText(text.text, text.x.toFloat(), text.y.toFloat(), textPaint)
+    }
 
     return newBitmap
   }

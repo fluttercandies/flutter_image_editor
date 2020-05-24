@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:math' as math;
 
@@ -11,6 +12,7 @@ part 'clip.dart';
 part 'rotate.dart';
 part 'color.dart';
 part 'scale.dart';
+part 'add_text.dart';
 
 abstract class IgnoreAble {
   bool get canIgnore;

@@ -54,12 +54,51 @@ object ConvertUtils {
           val scaleOption: ScaleOption = getScaleOption(valueMap) ?: continue@loop
           list.add(scaleOption)
         }
+        "add_text" -> {
+          val addTextOption: AddTextOpt = getTextOption(valueMap) ?: continue@loop
+          list.add(addTextOption)
+        }
         else -> {
         }
       }
     }
 
     return list
+  }
+
+  private fun getTextOption(valueMap: Any?): AddTextOpt? {
+    if (valueMap !is Map<*, *>) {
+      return null
+    }
+
+    val list: List<*> = valueMap["texts"]!!.asValue()
+
+    if (list.isEmpty()) {
+      return null
+    }
+
+    val addTextOpt = AddTextOpt()
+
+    for (v in list) {
+      if (v is Map<*, *>) {
+        addTextOpt.addText(convertToText(v))
+      }
+    }
+
+    return addTextOpt
+  }
+
+  private fun convertToText(v: Map<*, *>): Text {
+    return Text(
+            v["text"]!!.asValue(),
+            v["x"]!!.asValue(),
+            v["y"]!!.asValue(),
+            v["size"]!!.asValue(),
+            v["r"]!!.asValue(),
+            v["g"]!!.asValue(),
+            v["b"]!!.asValue(),
+            v["a"]!!.asValue()
+    )
   }
 
   private fun getScaleOption(optionMap: Any?): ScaleOption? {
@@ -112,4 +151,8 @@ object ConvertUtils {
     return FlipOption(optionMap["h"] as Boolean, optionMap["v"] as Boolean)
   }
 
+  @Suppress("UNCHECKED_CAST")
+  fun <T> Any.asValue(): T {
+    return this as T
+  }
 }
