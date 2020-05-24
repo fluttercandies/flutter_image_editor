@@ -17,7 +17,8 @@ class _AddTextPageState extends State<AddTextPage> {
 
   String get asset => R.ASSETS_ICON_PNG;
 
-  TextEditingController _controller = TextEditingController(text: "输入文字, 添加足够长的字数, 以测试换行的效果是怎么样的.");
+  TextEditingController _controller =
+      TextEditingController(text: "输入文字, 添加足够长的字数, 以测试换行的效果是怎么样的.");
 
   @override
   Widget build(BuildContext context) {
