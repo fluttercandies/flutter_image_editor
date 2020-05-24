@@ -1,3 +1,7 @@
+## 0.2.1
+
+Fix error for output format.
+
 ## 0.2.0
 
 Migrate swift to objc.
