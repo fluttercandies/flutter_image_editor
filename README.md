@@ -145,7 +145,7 @@ var outputFormat = OutputFormat.jpeg(95);
 
 #### Privacy of camera
 
-Because, I include `[GPUImage](https://github.com/BradLarson/GPUImage.git)` to handle image data, and the library have Camera api, so you must add next Usage String in info.plist. It was introduced in version 0.3.x, if you don't need the new features added after 0.3, you can keep using the old version.
+Because, I include [GPUImage](https://github.com/BradLarson/GPUImage.git) to handle image data, and the library have Camera api, so you must add next Usage String in info.plist. It was introduced in version 0.3.x, if you don't need the new features added after 0.3, you can keep using the old version.
 
 [Why need add it by apple](https://developer.apple.com/library/archive/qa/qa1937/_index.html)  
 [How to add it by apple](https://help.apple.com/xcode/mac/8.0/#/dev3f399a2a6)
