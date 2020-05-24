@@ -11,16 +11,18 @@
 
 @implementation FIEPlugin
 
-+ (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {
++ (void)registerWithRegistrar:
+    (nonnull NSObject<FlutterPluginRegistrar> *)registrar {
   FIEPlugin *plugin = [FIEPlugin new];
-  FlutterMethodChannel *channel =
-      [FlutterMethodChannel methodChannelWithName:@"top.kikt/flutter_image_editor"
-                                  binaryMessenger:registrar.messenger];
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+      methodChannelWithName:@"top.kikt/flutter_image_editor"
+            binaryMessenger:registrar.messenger];
 
   [registrar addMethodCallDelegate:plugin channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
+- (void)handleMethodCall:(FlutterMethodCall *)call
+                  result:(FlutterResult)result {
   NSString *method = call.method;
   id args = call.arguments;
   if ([method isEqualToString:@"getCachePath"]) {
@@ -38,13 +40,18 @@
   }
 }
 
-- (void)handleArgs:(id)args outMemory:(BOOL)outMemory result:(FlutterResult)result {
-  dispatch_queue_global_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+- (void)handleArgs:(id)args
+         outMemory:(BOOL)outMemory
+            result:(FlutterResult)result {
+  dispatch_queue_global_t queue =
+      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
   dispatch_async(queue, ^{
     UIImage *image = [self getUIImage:args];
     if (!image) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        result([FlutterError errorWithCode:@"decode image error" message:nil details:nil]);
+        result([FlutterError errorWithCode:@"decode image error"
+                                   message:nil
+                                   details:nil]);
       });
       return;
     }
@@ -71,7 +78,9 @@
         if (success) {
           result(target);
         } else {
-          result([FlutterError errorWithCode:@"cannot handle" message:nil details:nil]);
+          result([FlutterError errorWithCode:@"cannot handle"
+                                     message:nil
+                                     details:nil]);
         }
       });
     }
