@@ -24,6 +24,8 @@
       [self rotate:(FIRotateOption *)option];
     } else if ([option isKindOfClass:[FIColorOption class]]) {
       [self color:(FIColorOption *)option];
+    } else if ([option isKindOfClass:[FIScaleOption class]]) {
+      [self scale:(FIScaleOption *)option];
     }
   }
 }
@@ -169,59 +171,92 @@
   return degree * M_PI / 180;
 }
 
-#pragma mark color(hsb)
+#pragma mark color matrix
 
 - (void)color:(FIColorOption *)option {
   if (!outImage) {
     return;
   }
   GPUImageColorMatrixFilter *filter = [GPUImageColorMatrixFilter new];
-  
+
   CGSize size;
-    
-  if(outImage.imageOrientation == UIImageOrientationLeft
-     || outImage.imageOrientation == UIImageOrientationRight
-     || outImage.imageOrientation == UIImageOrientationLeftMirrored
-     || outImage.imageOrientation == UIImageOrientationRightMirrored
-     ){
-      size = CGSizeMake(outImage.size.height, outImage.size.width);
-  }else{
-      size = outImage.size;
+
+  if (outImage.imageOrientation == UIImageOrientationLeft ||
+      outImage.imageOrientation == UIImageOrientationRight ||
+      outImage.imageOrientation == UIImageOrientationLeftMirrored ||
+      outImage.imageOrientation == UIImageOrientationRightMirrored) {
+    size = CGSizeMake(outImage.size.height, outImage.size.width);
+  } else {
+    size = outImage.size;
   }
-    
-    NSArray *martix = option.matrix;
-  
-  [filter forceProcessingAtSize: size];
+
+  NSArray *martix = option.matrix;
+
+  [filter forceProcessingAtSize:size];
   [filter useNextFrameForImageCapture];
-  
+
   filter.colorMatrix = (GPUMatrix4x4){
-      [self getVector4:martix start:0],
-      [self getVector4:martix start:5],
-      [self getVector4:martix start:10],
-      [self getVector4:martix start:15]
-  };
-  
-  GPUImagePicture *pic = [[GPUImagePicture alloc]initWithImage:outImage];
-    if(!pic){
-        return;
-    }
+      [self getVector4:martix start:0], [self getVector4:martix start:5],
+      [self getVector4:martix start:10], [self getVector4:martix start:15]};
+
+  GPUImagePicture *pic = [[GPUImagePicture alloc] initWithImage:outImage];
+  if (!pic) {
+    return;
+  }
   [pic addTarget:filter];
   [pic processImage];
-  
-  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
-    if(image){
-        outImage = image;
-    }
+
+  UIImage *image = [filter
+      imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+  if (image) {
+    outImage = image;
+  }
 }
 
--(GPUVector4) getVector4 :(NSArray*)array start:(int)start{
-    GPUVector4 vector = {
-        [array[start] floatValue],
-        [array[start+1] floatValue],
-        [array[start+2] floatValue],
-        [array[start+3] floatValue],
-    };
-    return vector;
+- (GPUVector4)getVector4:(NSArray *)array start:(int)start {
+  GPUVector4 vector = {
+      [array[start] floatValue],
+      [array[start + 1] floatValue],
+      [array[start + 2] floatValue],
+      [array[start + 3] floatValue],
+  };
+  return vector;
+}
+
+#pragma mark scale
+
+- (void)scale:(FIScaleOption *)option {
+  if (!outImage) {
+    return;
+  }
+
+  GPUImageFilter *filter = [GPUImageFilter new];
+  CGSize size;
+
+  if (outImage.imageOrientation == UIImageOrientationLeft ||
+      outImage.imageOrientation == UIImageOrientationRight ||
+      outImage.imageOrientation == UIImageOrientationLeftMirrored ||
+      outImage.imageOrientation == UIImageOrientationRightMirrored) {
+    size = CGSizeMake(option.height, option.width);
+  } else {
+    size = CGSizeMake(option.width, option.height);
+  }
+
+  [filter forceProcessingAtSize:size];
+  [filter useNextFrameForImageCapture];
+
+  GPUImagePicture *pic = [[GPUImagePicture alloc] initWithImage:outImage];
+  if (!pic) {
+    return;
+  }
+  [pic addTarget:filter];
+  [pic processImage];
+
+  UIImage *image = [filter
+      imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+  if (image) {
+    outImage = image;
+  }
 }
 
 @end

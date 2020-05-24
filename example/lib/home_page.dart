@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
+import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
 import 'const/resource.dart';
 import 'package:image_editor/image_editor.dart';
@@ -68,6 +70,9 @@ class _HomePageState extends State<HomePage> {
                     RotateWidget(
                       onTap: _rotate,
                     ),
+                    ScaleWidget(
+                      onTap: _scale,
+                    ),
                   ],
                 ),
               ),
@@ -104,14 +109,21 @@ class _HomePageState extends State<HomePage> {
     handleOption([rotateOpt]);
   }
 
+  void _scale(Option value) {
+    handleOption([value]);
+  }
+
   void handleOption(List<Option> options) async {
     ImageEditorOption option = ImageEditorOption();
     for (final o in options) {
       option.addOption(o);
     }
 
+    option.outputFormat = OutputFormat.png();
+
     final assetImage = await getAssetImage();
 
+    print(JsonEncoder.withIndent('  ').convert(option.toJson()));
     final result = await ImageEditor.editImage(
       image: assetImage,
       imageEditorOption: option,

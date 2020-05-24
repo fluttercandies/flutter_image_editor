@@ -26,7 +26,8 @@ object ConvertUtils {
       list.add(bitmapWrapper.flipOption)
     }
 
-    for (optionMap in optionList) {
+
+    loop@ for (optionMap in optionList) {
       if (optionMap !is Map<*, *>) {
         continue
       }
@@ -49,12 +50,26 @@ object ConvertUtils {
           val colorOption: ColorOption = getColorOption(valueMap)
           list.add(colorOption)
         }
+        "scale" -> {
+          val scaleOption: ScaleOption = getScaleOption(valueMap) ?: continue@loop
+          list.add(scaleOption)
+        }
         else -> {
         }
       }
     }
 
     return list
+  }
+
+  private fun getScaleOption(optionMap: Any?): ScaleOption? {
+    if (optionMap !is Map<*, *>) {
+      return null
+    }
+
+    val w = optionMap["width"] as Int
+    val h = optionMap["height"] as Int
+    return ScaleOption(w, h)
   }
 
   private fun getColorOption(optionMap: Any?): ColorOption {
