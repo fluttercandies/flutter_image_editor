@@ -1,3 +1,7 @@
+## 0.5.0
+
+Support add text.
+
 ## 0.4.1
 
 Split option file.

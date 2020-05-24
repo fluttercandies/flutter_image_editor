@@ -40,7 +40,7 @@ Android, iOS.
 
 ```yaml
 dependencies:
-  image_editor: ^0.4.0
+  image_editor: ^0.5.0
 ```
 
 Import
