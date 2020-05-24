@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
-import 'edit_options.dart';
+import 'option/edit_options.dart';
 
 class NativeChannel {
   static const MethodChannel _channel =

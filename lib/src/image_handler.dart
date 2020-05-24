@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'channel.dart';
-import 'edit_options.dart';
 import 'error.dart';
+import 'option/edit_options.dart';
 import 'type.dart';
 
 class ImageHandler {
