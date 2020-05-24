@@ -8,6 +8,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 
 - [image_editor](#image_editor)
   - [Screenshot](#screenshot)
+  - [Platform of support](#platform-of-support)
   - [Usage](#usage)
     - [ImageEditor method params](#imageeditor-method-params)
     - [ImageEditorOption](#imageeditoroption)
@@ -28,13 +29,17 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 
 ![img](https://github.com/kikt-blog/image/raw/master/github/flutter_image_editor_ss.gif)
 
+## Platform of support
+
+Android, iOS.
+
 ## Usage
 
 [![pub package](https://img.shields.io/pub/v/image_editor.svg)](https://pub.dev/packages/image_editor) [![GitHub](https://img.shields.io/github/license/fluttercandies/flutter_image_editor.svg)](https://github.com/fluttercandies/flutter_image_editor) [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_editor.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_editor)
 
 ```yaml
 dependencies:
-  image_editor: ^0.2.0
+  image_editor: ^0.4.0
 ```
 
 Import
@@ -71,6 +76,7 @@ final editorOption = ImageEditorOption();
 editorOption.addOption(FlipOption());
 editorOption.addOption(ClipOption());
 editorOption.addOption(RotateOption());
+editorOption.addOption(); // and other option.
 
 editorOption.outputFormat = OutputFormat.png(88);
 ```
@@ -130,6 +136,7 @@ After specifying the width and height, it is not clipped, but stretched to the s
 ```dart
 var outputFormat = OutputFormat.png();
 var outputFormat = OutputFormat.jpeg(95);
+
 ```
 
 ## Common issue
