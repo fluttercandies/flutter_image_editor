@@ -1,4 +1,4 @@
-name: Build
+name: PR
 
 on: [pull_request,release]
 

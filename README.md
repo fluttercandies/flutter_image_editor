@@ -1,6 +1,6 @@
 # image_editor
 
-![CI](https://github.com/fluttercandies/flutter_image_editor/workflows/CI/badge.svg)
+![BUILD](https://github.com/fluttercandies/flutter_image_editor/workflows/PR/badge.svg)
 
 Support android ios, use the native way to flip, crop, rotate pictures.
 
