@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
-import 'package:image_editor/image_editor.dart';
+import 'package:image_editor/image_editor.dart' hide ImageSource;
 import 'package:image_picker/image_picker.dart';
 import 'package:oktoast/oktoast.dart';
 

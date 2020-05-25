@@ -166,7 +166,7 @@ Support next BlendMode, other will be ignored.
 | kCGBlendModeSourceIn        | SRC_IN                   | srcIn              |
 | kCGBlendModeDestinationIn   | DST_IN                   | dstIn              |
 | kCGBlendModeSourceOut       | SRC_OUT                  | srcOut             |
-| kCGBlendModeDestinationOver | DST_OUT                  | dstOver            |
+| kCGBlendModeDestinationOver | DST_OUT                  | dstOut             |
 | kCGBlendModeSourceAtop      | SRC_ATOP                 | srcATop            |
 | kCGBlendModeDestinationAtop | DST_ATOP                 | dstATop            |
 | kCGBlendModeXOR             | XOR                      | xor                |

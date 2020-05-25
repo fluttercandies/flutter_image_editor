@@ -9,19 +9,19 @@ abstract class ImageSource {
       };
 }
 
-class MemorySource extends ImageSource {
-  MemorySource(Uint8List uint8list) : memory = uint8list;
+class MemoryImageSource extends ImageSource {
+  MemoryImageSource(Uint8List uint8list) : memory = uint8list;
 
   @override
   final Uint8List memory;
 }
 
-class FileSource extends ImageSource {
+class FileImageSource extends ImageSource {
   final File file;
 
-  FileSource(this.file);
+  FileImageSource(this.file);
 
-  FileSource.path(String path) : file = File(path);
+  FileImageSource.path(String path) : file = File(path);
 
   @override
   Uint8List get memory => file.readAsBytesSync();

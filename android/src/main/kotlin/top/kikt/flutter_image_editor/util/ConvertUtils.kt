@@ -1,5 +1,7 @@
 package top.kikt.flutter_image_editor.util
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import io.flutter.plugin.common.MethodCall
 import top.kikt.flutter_image_editor.BitmapWrapper
 import top.kikt.flutter_image_editor.option.*
@@ -156,6 +158,29 @@ object ConvertUtils {
     }
 
     return FlipOption(optionMap["h"] as Boolean, optionMap["v"] as Boolean)
+  }
+
+  fun convertToPorterDuffMode(type: String): PorterDuff.Mode {
+    return when (type) {
+      "clear" -> PorterDuff.Mode.CLEAR
+      "src" -> PorterDuff.Mode.SRC
+      "dst" -> PorterDuff.Mode.DST
+      "srcOver" -> PorterDuff.Mode.SRC_OVER
+      "dstOver" -> PorterDuff.Mode.DST_OVER
+      "srcIn" -> PorterDuff.Mode.SRC_IN
+      "dstIn" -> PorterDuff.Mode.DST_IN
+      "srcOut" -> PorterDuff.Mode.SRC_OUT
+      "dstOut" -> PorterDuff.Mode.DST_OUT
+      "srcATop" -> PorterDuff.Mode.SRC_ATOP
+      "dstATop" -> PorterDuff.Mode.DST_ATOP
+      "xor" -> PorterDuff.Mode.XOR
+      "darken" -> PorterDuff.Mode.DARKEN
+      "lighten" -> PorterDuff.Mode.LIGHTEN
+      "multiply" -> PorterDuff.Mode.MULTIPLY
+      "screen" -> PorterDuff.Mode.SCREEN
+      "overlay" -> PorterDuff.Mode.OVERLAY
+      else -> PorterDuff.Mode.SRC_OVER
+    }
   }
 
   @Suppress("UNCHECKED_CAST")

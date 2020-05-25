@@ -6,6 +6,7 @@ class MixImageOption implements Option {
   final int y;
   final int width;
   final int height;
+  final BlendMode blendMode;
 
   MixImageOption({
     @required this.target,
@@ -13,11 +14,13 @@ class MixImageOption implements Option {
     @required this.y,
     @required this.width,
     @required this.height,
+    this.blendMode = BlendMode.srcOver,
   })  : assert(target != null),
         assert(x != null),
         assert(y != null),
         assert(width != null),
-        assert(height != null);
+        assert(height != null),
+        assert(supportBlendModes.contains(blendMode));
 
   @override
   bool get canIgnore => target == null;
@@ -32,5 +35,26 @@ class MixImageOption implements Option {
         'y': y,
         'w': width,
         'h': height,
+        'mixMode': blendMode.toString().replaceAll('BlendMode.', ''),
       };
 }
+
+const supportBlendModes = [
+  BlendMode.clear,
+  BlendMode.src,
+  BlendMode.dst,
+  BlendMode.srcOver,
+  BlendMode.dstOver,
+  BlendMode.srcIn,
+  BlendMode.dstIn,
+  BlendMode.srcOut,
+  BlendMode.dstOut,
+  BlendMode.srcATop,
+  BlendMode.dstATop,
+  BlendMode.xor,
+  BlendMode.darken,
+  BlendMode.lighten,
+  BlendMode.multiply,
+  BlendMode.screen,
+  BlendMode.overlay,
+];

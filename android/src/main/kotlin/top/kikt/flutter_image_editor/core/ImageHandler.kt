@@ -31,15 +31,23 @@ class ImageHandler(private var bitmap: Bitmap) {
   }
 
   private fun handleMixImage(option: MixImageOpt): Bitmap {
-    val newBitmap = Bitmap.createBitmap(bitmap)
+    val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+    val canvas = Canvas(newBitmap)
+    canvas.drawBitmap(bitmap, 0F, 0F, null)
 
     val src = BitmapFactory.decodeByteArray(option.img, 0, option.img.count())
 
-    val canvas = Canvas(newBitmap)
     val paint = Paint()
-    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
+    paint.xfermode = PorterDuffXfermode(option.porterDuffMode)
 
-    canvas.drawBitmap()
+//    val srcRect = Rect(option.x, option.y, option.x + option.w, option.y + option.h)
+//    val dstRect = Rect(0, 0, bitmap.width, bitmap.height)
+
+    val dstRect = Rect(option.x, option.y, option.x + option.w, option.y + option.h)
+    val srcRect = Rect(0, 0, bitmap.width, bitmap.height)
+    canvas.drawBitmap(src, srcRect, dstRect, paint)
+
+    return newBitmap
   }
 
   private fun handleScale(option: ScaleOption): Bitmap {
