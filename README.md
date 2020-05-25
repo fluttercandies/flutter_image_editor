@@ -174,7 +174,7 @@ Support next BlendMode, other will be ignored.
 | kCGBlendModeLighten         | LIGHTEN                  | lighten            |
 | kCGBlendModeMultiply        | MULTIPLY                 | multiply           |
 | kCGBlendModeScreen          | SCREEN                   | screen             |
-| kCGBlendModeOverlay         | Overlay                  | overlay            |
+| kCGBlendModeOverlay         | OVERLAY                  | overlay            |
 
 ### OutputFormat
 
