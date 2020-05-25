@@ -14,7 +14,7 @@
 
 - (void)handleImage {
   outImage = self.image;
-  [self fixOrientation];
+    [self fixOrientation];
   for (NSObject<FIOption> *option in self.optionGroup.options) {
     if ([option isKindOfClass:[FIFlipOption class]]) {
       [self flip:(FIFlipOption *)option];
@@ -28,6 +28,8 @@
       [self scale:(FIScaleOption *)option];
     } else if ([option isKindOfClass:[FIAddTextOption class]]) {
       [self addText:(FIAddTextOption *)option];
+    } else if ([option isKindOfClass:[FIMixImageOption class]]) {
+      [self mixImage:(FIMixImageOption *)option];
     }
   }
 }
@@ -59,7 +61,7 @@
     return;
   }
 
-  UIGraphicsBeginImageContextWithOptions(outImage.size, NO, outImage.scale);
+  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
 
   [outImage
       drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
@@ -84,7 +86,7 @@
 
   CGSize size = outImage.size;
 
-  UIGraphicsBeginImageContextWithOptions(size, NO, 1);
+  UIGraphicsBeginImageContextWithOptions(size, YES, 1);
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
@@ -146,7 +148,7 @@
   CGRect newRect = CGRectApplyAffineTransform(oldRect, aff);
   CGSize newSize = newRect.size;
 
-  UIGraphicsBeginImageContextWithOptions(newSize, NO, outImage.scale);
+  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
@@ -264,48 +266,91 @@
 #pragma mark add text
 
 - (void)addText:(FIAddTextOption *)option {
-    if(!outImage){
-        return;
-    }
-    
-    if(option.texts.count == 0){
-        return;
-    }
-    
-    UIGraphicsBeginImageContextWithOptions(outImage.size, NO, outImage.scale);
+  if (!outImage) {
+    return;
+  }
 
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (!ctx) {
-      return;
-    }
-    
-    [outImage drawInRect: CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
-    
-    for (FIAddText *text in option.texts) {
-        UIColor *color = [UIColor colorWithRed:text.r green:text.g blue:text.b alpha:text.a];
-            
-        NSDictionary *attr = @{
-              NSFontAttributeName: [UIFont boldSystemFontOfSize:text.fontSizePx],
-              NSForegroundColorAttributeName : color,
-              NSBackgroundColorAttributeName : UIColor.clearColor,
-          };
-        
-        CGFloat w = outImage.size.width - text.x;
-        CGFloat h = outImage.size.height - text.y;
-        
-        CGRect rect = CGRectMake(text.x, text.y, w, h);
-        
-        [text.text drawInRect:rect withAttributes:attr];
-    }
+  if (option.texts.count == 0) {
+    return;
+  }
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
 
-    UIGraphicsEndImageContext();
-    if (!newImage) {
-      return;
-    }
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  if (!ctx) {
+    return;
+  }
 
-    outImage = newImage;
+  [outImage
+      drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+
+  for (FIAddText *text in option.texts) {
+    UIColor *color = [UIColor colorWithRed:text.r
+                                     green:text.g
+                                      blue:text.b
+                                     alpha:text.a];
+
+    NSDictionary *attr = @{
+      NSFontAttributeName : [UIFont boldSystemFontOfSize:text.fontSizePx],
+      NSForegroundColorAttributeName : color,
+      NSBackgroundColorAttributeName : UIColor.clearColor,
+    };
+
+    CGFloat w = outImage.size.width - text.x;
+    CGFloat h = outImage.size.height - text.y;
+
+    CGRect rect = CGRectMake(text.x, text.y, w, h);
+
+    [text.text drawInRect:rect withAttributes:attr];
+  }
+
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
+  if (!newImage) {
+    return;
+  }
+
+  outImage = newImage;
+}
+
+#pragma mark mix image
+
+- (void)mixImage:(FIMixImageOption *)option {
+  if (!outImage) {
+    return;
+  }
+
+//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+    UIGraphicsBeginImageContext(outImage.size);
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  if (!ctx) {
+    return;
+  }
+
+  CGRect srcRect = CGRectMake(option.x, option.y, option.width, option.height);
+  CGRect dstRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
+  if ([option.blendMode isEqualToNumber:@(kCGBlendModeDst)]) {
+    [outImage drawInRect:dstRect
+               blendMode:[option.blendMode intValue]
+                   alpha:YES];
+  } else if ([option.blendMode isEqualToNumber:@(kCGBlendModeSrc)]) {
+    UIImage *src = [UIImage imageWithData:option.src];
+    [src drawInRect:srcRect blendMode:[option.blendMode intValue] alpha:YES];
+  } else {
+    [outImage drawInRect:dstRect];
+    UIImage *src = [UIImage imageWithData:option.src];
+    [src drawInRect:srcRect blendMode:[option.blendMode intValue] alpha:YES];
+  }
+
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
+  if (!newImage) {
+    return;
+  }
+
+  outImage = newImage;
 }
 
 @end

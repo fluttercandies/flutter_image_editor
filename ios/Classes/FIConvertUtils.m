@@ -3,6 +3,7 @@
 //
 
 #import "FIConvertUtils.h"
+#import <Flutter/Flutter.h>
 
 @implementation FIConvertUtils {
 }
@@ -26,6 +27,8 @@
       option = [FIScaleOption createFromDict:value];
     } else if ([@"add_text" isEqualToString:type]) {
       option = [FIAddTextOption createFromDict:value];
+    } else if ([@"mix_image" isEqualToString:type]) {
+      option = [FIMixImageOption createFromDict:value];
     }
     if (option) {
       [optionArray addObject:option];
@@ -103,42 +106,86 @@
 @end
 
 @implementation FIAddText
-+(id)createFromDict:(NSDictionary *)dict{
-    FIAddText *text = [FIAddText new];
-    
-    text.text = dict[@"text"];
-    text.fontSizePx = [dict[@"size"] intValue];
-    
-    text.x = [dict[@"x"] intValue];
-    text.y = [dict[@"y"] intValue];
-    
-    text.r = [dict[@"r"] intValue];
-    text.g = [dict[@"g"] intValue];
-    text.b = [dict[@"b"] intValue];
-    text.a = [dict[@"a"] intValue];
-    
-    return text;
++ (id)createFromDict:(NSDictionary *)dict {
+  FIAddText *text = [FIAddText new];
+
+  text.text = dict[@"text"];
+  text.fontSizePx = [dict[@"size"] intValue];
+
+  text.x = [dict[@"x"] intValue];
+  text.y = [dict[@"y"] intValue];
+
+  text.r = [dict[@"r"] intValue];
+  text.g = [dict[@"g"] intValue];
+  text.b = [dict[@"b"] intValue];
+  text.a = [dict[@"a"] intValue];
+
+  return text;
 }
 @end
 
 @implementation FIAddTextOption
 
-+(id)createFromDict:(NSDictionary *)dict{
-   FIAddTextOption *opt = [FIAddTextOption new];
-    
-    NSArray *src = dict[@"texts"];
-    NSMutableArray<FIAddText*> *arr = [NSMutableArray new];
-    
-    for (NSDictionary *dict in src) {
-        FIAddText *addText = [FIAddText createFromDict:dict];
-        [arr addObject:addText];
-    }
-    
-    opt.texts =arr;
-    
-    return opt;
++ (id)createFromDict:(NSDictionary *)dict {
+  FIAddTextOption *opt = [FIAddTextOption new];
+
+  NSArray *src = dict[@"texts"];
+  NSMutableArray<FIAddText *> *arr = [NSMutableArray new];
+
+  for (NSDictionary *dict in src) {
+    FIAddText *addText = [FIAddText createFromDict:dict];
+    [arr addObject:addText];
+  }
+
+  opt.texts = arr;
+
+  return opt;
 }
 
+@end
+
+static NSDictionary *mixBlendModeDict;
+
+@implementation FIMixImageOption {
+}
+
++ (id)createFromDict:(NSDictionary *)dict {
+  if (!mixBlendModeDict) {
+    mixBlendModeDict = @{
+      @"clear" : @(kCGBlendModeClear),
+      @"src" : @(kCGBlendModeSrc),
+      @"dst" : @(kCGBlendModeDst),
+      @"srcOver" : @(kCGBlendModeNormal),
+      @"dstOver" : @(kCGBlendModeDestinationOver),
+      @"srcIn" : @(kCGBlendModeSourceIn),
+      @"dstIn" : @(kCGBlendModeDestinationIn),
+      @"srcOut" : @(kCGBlendModeSourceOut),
+      @"dstOut" : @(kCGBlendModeDestinationOver),
+      @"srcATop" : @(kCGBlendModeSourceAtop),
+      @"dstATop" : @(kCGBlendModeDestinationAtop),
+      @"xor" : @(kCGBlendModeXOR),
+      @"darken" : @(kCGBlendModeDarken),
+      @"lighten" : @(kCGBlendModeLighten),
+      @"multiply" : @(kCGBlendModeMultiply),
+      @"screen" : @(kCGBlendModeScreen),
+      @"overlay" : @(kCGBlendModeOverlay),
+
+    };
+  }
+
+  FIMixImageOption *option = [FIMixImageOption new];
+
+  option.x = [dict[@"x"] intValue];
+  option.y = [dict[@"y"] intValue];
+  option.width = [dict[@"w"] intValue];
+  option.height = [dict[@"h"] intValue];
+
+  option.src = ((FlutterStandardTypedData *)dict[@"target"][@"memory"]).data;
+  NSString *modeString = dict[@"mixMode"];
+  option.blendMode = mixBlendModeDict[modeString];
+
+  return option;
+}
 @end
 
 @implementation FIEditorOptionGroup {
