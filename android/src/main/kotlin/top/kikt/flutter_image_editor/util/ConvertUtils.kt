@@ -33,6 +33,9 @@ object ConvertUtils {
       }
 
       val valueMap = optionMap["value"]
+      if (valueMap !is Map<*, *>) {
+        continue@loop
+      }
       when (optionMap["type"]) {
         "flip" -> {
           val flipOption = getFlipOption(valueMap)
@@ -57,6 +60,10 @@ object ConvertUtils {
         "add_text" -> {
           val addTextOption: AddTextOpt = getTextOption(valueMap) ?: continue@loop
           list.add(addTextOption)
+        }
+        "mix_image" -> {
+          val mixImageOpt = MixImageOpt(valueMap)
+          list.add(mixImageOpt)
         }
         else -> {
         }

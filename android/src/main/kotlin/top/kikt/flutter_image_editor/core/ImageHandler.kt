@@ -25,8 +25,21 @@ class ImageHandler(private var bitmap: Bitmap) {
         is ColorOption -> bitmap = handleColor(option)
         is ScaleOption -> bitmap = handleScale(option)
         is AddTextOpt -> bitmap = handleText(option)
+        is MixImageOpt -> bitmap = handleMixImage(option)
       }
     }
+  }
+
+  private fun handleMixImage(option: MixImageOpt): Bitmap {
+    val newBitmap = Bitmap.createBitmap(bitmap)
+
+    val src = BitmapFactory.decodeByteArray(option.img, 0, option.img.count())
+
+    val canvas = Canvas(newBitmap)
+    val paint = Paint()
+    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
+
+    canvas.drawBitmap()
   }
 
   private fun handleScale(option: ScaleOption): Bitmap {

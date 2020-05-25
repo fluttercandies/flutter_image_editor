@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_editor/src/image_source.dart';
 import 'dart:math' as math;
 
 import '../output_format.dart';
@@ -14,6 +15,7 @@ part 'rotate.dart';
 part 'color.dart';
 part 'scale.dart';
 part 'add_text.dart';
+part 'mix_image.dart';
 
 abstract class IgnoreAble {
   bool get canIgnore;
