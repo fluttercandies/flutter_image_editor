@@ -24,6 +24,7 @@
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins*
 .packages
 .pub-cache/
 .pub/
@@ -34,3 +35,5 @@ lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+.
