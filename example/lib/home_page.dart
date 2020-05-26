@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
+import 'package:flutter_image_editor_example/mix_image_page.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
 import 'add_text_page.dart';
@@ -51,6 +52,11 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.text_fields),
             onPressed: _addText,
             tooltip: "Add text",
+          ),
+          IconButton(
+            icon: Icon(Icons.branding_watermark),
+            onPressed: _mixImage,
+            tooltip: "Mix image",
           ),
         ],
       ),
@@ -142,6 +148,12 @@ class _HomePageState extends State<HomePage> {
   void _addText() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AddTextPage(),
+    ));
+  }
+
+  void _mixImage() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => MixImagePage(),
     ));
   }
 }

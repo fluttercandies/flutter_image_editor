@@ -19,6 +19,8 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Color](#color)
       - [ScaleOption](#scaleoption)
       - [AddTextOption](#addtextoption)
+      - [MixOption](#mixoption)
+        - [BlendMode](#blendmode)
     - [OutputFormat](#outputformat)
   - [Common issue](#common-issue)
     - [iOS](#ios)
@@ -147,6 +149,32 @@ textOption.addText(
   ),
 );
 ```
+
+#### MixOption
+
+##### BlendMode
+
+Support next BlendMode, other will be ignored.
+
+| iOS                         | android(PorterDuff.Mode) | flutter(BlendMode) |
+| --------------------------- | ------------------------ | ------------------ |
+| kCGBlendModeClear           | CLEAR                    | clear              |
+|                             | SRC                      | src                |
+|                             | DST                      | dst                |
+| kCGBlendModeNormal          | SRC_OVER                 | srcOver            |
+| kCGBlendModeDestinationOver | DST_OVER                 | dstOver            |
+| kCGBlendModeSourceIn        | SRC_IN                   | srcIn              |
+| kCGBlendModeDestinationIn   | DST_IN                   | dstIn              |
+| kCGBlendModeSourceOut       | SRC_OUT                  | srcOut             |
+| kCGBlendModeDestinationOver | DST_OUT                  | dstOut             |
+| kCGBlendModeSourceAtop      | SRC_ATOP                 | srcATop            |
+| kCGBlendModeDestinationAtop | DST_ATOP                 | dstATop            |
+| kCGBlendModeXOR             | XOR                      | xor                |
+| kCGBlendModeDarken          | DARKEN                   | darken             |
+| kCGBlendModeLighten         | LIGHTEN                  | lighten            |
+| kCGBlendModeMultiply        | MULTIPLY                 | multiply           |
+| kCGBlendModeScreen          | SCREEN                   | screen             |
+| kCGBlendModeOverlay         | OVERLAY                  | overlay            |
 
 ### OutputFormat
 

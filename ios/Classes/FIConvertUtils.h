@@ -5,6 +5,9 @@
 #import <Foundation/Foundation.h>
 NS_ASSUME_NONNULL_BEGIN
 
+#define kCGBlendModeSrc 12345
+#define kCGBlendModeDst 12346
+
 @class FIEditorOptionGroup;
 
 @interface FIConvertUtils : NSObject
@@ -49,19 +52,28 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) int height;
 @end
 
-@interface FIAddText : NSObject<FIOption>
-@property(nonatomic,copy) NSString *text;
-@property(nonatomic,assign) int x;
-@property(nonatomic,assign) int y;
-@property(nonatomic,assign) int fontSizePx;
-@property(nonatomic,assign) int r;
-@property(nonatomic,assign) int g;
-@property(nonatomic,assign) int b;
-@property(nonatomic,assign) int a;
+@interface FIAddText : NSObject <FIOption>
+@property(nonatomic, copy) NSString *text;
+@property(nonatomic, assign) int x;
+@property(nonatomic, assign) int y;
+@property(nonatomic, assign) int fontSizePx;
+@property(nonatomic, assign) int r;
+@property(nonatomic, assign) int g;
+@property(nonatomic, assign) int b;
+@property(nonatomic, assign) int a;
 @end
 
-@interface FIAddTextOption : NSObject<FIOption>
-@property(nonatomic,strong)NSArray<FIAddText*> *texts;
+@interface FIAddTextOption : NSObject <FIOption>
+@property(nonatomic, strong) NSArray<FIAddText *> *texts;
+@end
+
+@interface FIMixImageOption : NSObject <FIOption>
+@property(nonatomic, assign) int x;
+@property(nonatomic, assign) int y;
+@property(nonatomic, assign) int width;
+@property(nonatomic, assign) int height;
+@property(nonatomic, strong) NSData *src;
+@property(nonatomic, strong) NSNumber *blendMode;
 @end
 
 @interface FIEditorOptionGroup : NSObject
