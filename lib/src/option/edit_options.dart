@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -94,6 +95,13 @@ class ImageEditorOption implements IgnoreAble {
       }
     }
     return true;
+  }
+
+  String toString() {
+    final m = <String, dynamic>{};
+    m['options'] = toJson();
+    m['fmt'] = outputFormat.toJson();
+    return JsonEncoder.withIndent('  ').convert(m);
   }
 }
 

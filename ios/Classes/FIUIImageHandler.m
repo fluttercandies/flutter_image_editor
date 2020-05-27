@@ -61,7 +61,8 @@
     return;
   }
 
-  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+    UIGraphicsBeginImageContext(outImage.size);
 
   [outImage
       drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
@@ -86,7 +87,8 @@
 
   CGSize size = outImage.size;
 
-  UIGraphicsBeginImageContextWithOptions(size, YES, 1);
+//  UIGraphicsBeginImageContextWithOptions(size, YES, 1);
+    UIGraphicsBeginImageContext(outImage.size);
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
@@ -147,8 +149,10 @@
   CGAffineTransform aff = CGAffineTransformMakeRotation(redians);
   CGRect newRect = CGRectApplyAffineTransform(oldRect, aff);
   CGSize newSize = newRect.size;
+    
+    UIGraphicsBeginImageContext(outImage.size);
 
-  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
+//  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
@@ -274,7 +278,8 @@
     return;
   }
 
-  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+    UIGraphicsBeginImageContext(outImage.size);
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
