@@ -6,11 +6,11 @@ class OutputFormat {
   /// If format is png, then ios will ignore it.
   final int quality;
 
-  OutputFormat.jpeg(this.quality)
+  const OutputFormat.jpeg(this.quality)
       : format = ImageFormat.jpeg,
         assert(quality > 0 && quality <= 100);
 
-  OutputFormat.png([this.quality = 100]) : format = ImageFormat.png;
+  const OutputFormat.png([this.quality = 100]) : format = ImageFormat.png;
 
   Map<String, dynamic> toJson() {
     return {

@@ -81,4 +81,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) NSArray *options;
 @end
 
+@interface FIMergeImage : NSObject <FIOption>
+
+@property(nonatomic, strong) NSData *data;
+@property(nonatomic, assign) int x;
+@property(nonatomic, assign) int y;
+@property(nonatomic, assign) int width;
+@property(nonatomic, assign) int height;
+@end
+
+@interface FIMergeOption : NSObject <FIOption>
+
+@property(nonatomic, strong) NSArray<FIMergeImage *> *images;
+@property(nonatomic, assign) CGSize size;
+@property(nonatomic, strong) FIFormatOption *format;
+
+@end
+
 NS_ASSUME_NONNULL_END

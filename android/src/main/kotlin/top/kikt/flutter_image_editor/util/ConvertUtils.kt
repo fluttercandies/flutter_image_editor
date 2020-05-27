@@ -1,7 +1,6 @@
 package top.kikt.flutter_image_editor.util
 
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import io.flutter.plugin.common.MethodCall
 import top.kikt.flutter_image_editor.BitmapWrapper
 import top.kikt.flutter_image_editor.option.*
@@ -10,30 +9,28 @@ import top.kikt.flutter_image_editor.option.*
 
 
 object ConvertUtils {
-
+  
   fun getFormatOption(call: MethodCall): FormatOption {
     val fmtMap = call.argument<Map<*, *>>("fmt")!!
-    val format = fmtMap["format"] as Int
-    val quality: Int = fmtMap["quality"] as Int
-    return FormatOption(format, quality)
+    return FormatOption(fmtMap)
   }
-
+  
   fun convertMapOption(optionList: List<Any>, bitmapWrapper: BitmapWrapper): List<Option> {
     val list = ArrayList<Option>()
     if (bitmapWrapper.degree != 0) {
       list.add(RotateOption(bitmapWrapper.degree))
     }
-
+    
     if (!bitmapWrapper.flipOption.canIgnore()) {
       list.add(bitmapWrapper.flipOption)
     }
-
-
+    
+    
     loop@ for (optionMap in optionList) {
       if (optionMap !is Map<*, *>) {
         continue
       }
-
+      
       val valueMap = optionMap["value"]
       if (valueMap !is Map<*, *>) {
         continue@loop
@@ -71,75 +68,75 @@ object ConvertUtils {
         }
       }
     }
-
+    
     return list
   }
-
+  
   private fun getTextOption(valueMap: Any?): AddTextOpt? {
     if (valueMap !is Map<*, *>) {
       return null
     }
-
+    
     val list: List<*> = valueMap["texts"]!!.asValue()
-
+    
     if (list.isEmpty()) {
       return null
     }
-
+    
     val addTextOpt = AddTextOpt()
-
+    
     for (v in list) {
       if (v is Map<*, *>) {
         addTextOpt.addText(convertToText(v))
       }
     }
-
+    
     return addTextOpt
   }
-
+  
   private fun convertToText(v: Map<*, *>): Text {
     return Text(
-            v["text"]!!.asValue(),
-            v["x"]!!.asValue(),
-            v["y"]!!.asValue(),
-            v["size"]!!.asValue(),
-            v["r"]!!.asValue(),
-            v["g"]!!.asValue(),
-            v["b"]!!.asValue(),
-            v["a"]!!.asValue()
+      v["text"]!!.asValue(),
+      v["x"]!!.asValue(),
+      v["y"]!!.asValue(),
+      v["size"]!!.asValue(),
+      v["r"]!!.asValue(),
+      v["g"]!!.asValue(),
+      v["b"]!!.asValue(),
+      v["a"]!!.asValue()
     )
   }
-
+  
   private fun getScaleOption(optionMap: Any?): ScaleOption? {
     if (optionMap !is Map<*, *>) {
       return null
     }
-
+    
     val w = optionMap["width"] as Int
     val h = optionMap["height"] as Int
     return ScaleOption(w, h)
   }
-
+  
   private fun getColorOption(optionMap: Any?): ColorOption {
     if (optionMap !is Map<*, *>) {
       return ColorOption.src
     }
-
+    
     val matrix = (optionMap["matrix"] as List<*>).map {
       if (it is Double) it.toFloat() else 0F
     }.toFloatArray()
-
+    
     return ColorOption(matrix)
   }
-
+  
   private fun getRotateOption(optionMap: Any?): RotateOption {
     if (optionMap !is Map<*, *>) {
       return RotateOption(0)
     }
-
+    
     return RotateOption(optionMap["degree"] as Int)
   }
-
+  
   private fun getClipOption(optionMap: Any?): ClipOption {
     if (optionMap !is Map<*, *>) {
       return ClipOption(0, 0, -1, -1)
@@ -148,18 +145,18 @@ object ConvertUtils {
     val height = (optionMap["height"] as Number).toInt()
     val x = (optionMap["x"] as Number).toInt()
     val y = (optionMap["y"] as Number).toInt()
-
+    
     return ClipOption(x, y, width, height)
   }
-
+  
   private fun getFlipOption(optionMap: Any?): FlipOption {
     if (optionMap !is Map<*, *>) {
       return FlipOption()
     }
-
+    
     return FlipOption(optionMap["h"] as Boolean, optionMap["v"] as Boolean)
   }
-
+  
   fun convertToPorterDuffMode(type: String): PorterDuff.Mode {
     return when (type) {
       "clear" -> PorterDuff.Mode.CLEAR
@@ -182,7 +179,7 @@ object ConvertUtils {
       else -> PorterDuff.Mode.SRC_OVER
     }
   }
-
+  
   @Suppress("UNCHECKED_CAST")
   fun <T> Any.asValue(): T {
     return this as T

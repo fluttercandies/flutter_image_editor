@@ -14,7 +14,7 @@
 
 - (void)handleImage {
   outImage = self.image;
-    [self fixOrientation];
+  [self fixOrientation];
   for (NSObject<FIOption> *option in self.optionGroup.options) {
     if ([option isKindOfClass:[FIFlipOption class]]) {
       [self flip:(FIFlipOption *)option];
@@ -55,25 +55,29 @@
   }
 }
 
-- (void)fixOrientation {
-  UIImageOrientation or = outImage.imageOrientation;
++ (UIImage *)fixImageOrientation:(UIImage *)image {
+  UIImageOrientation or = image.imageOrientation;
   if (or == UIImageOrientationUp) {
-    return;
+    return image;
   }
 
-//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
-    UIGraphicsBeginImageContext(outImage.size);
+  UIGraphicsBeginImageContext(image.size);
 
-  [outImage
-      drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+  [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
 
   UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
 
   UIGraphicsEndImageContext();
 
-  if (result) {
-    outImage = result;
+  if (!result) {
+    return image;
+  } else {
+    return result;
   }
+}
+
+- (void)fixOrientation {
+  outImage = [FIUIImageHandler fixImageOrientation:outImage];
 }
 
 #pragma mark flip
@@ -87,8 +91,8 @@
 
   CGSize size = outImage.size;
 
-//  UIGraphicsBeginImageContextWithOptions(size, YES, 1);
-    UIGraphicsBeginImageContext(outImage.size);
+  //  UIGraphicsBeginImageContextWithOptions(size, YES, 1);
+  UIGraphicsBeginImageContext(outImage.size);
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
@@ -149,10 +153,10 @@
   CGAffineTransform aff = CGAffineTransformMakeRotation(redians);
   CGRect newRect = CGRectApplyAffineTransform(oldRect, aff);
   CGSize newSize = newRect.size;
-    
-    UIGraphicsBeginImageContext(outImage.size);
 
-//  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
+  UIGraphicsBeginImageContext(outImage.size);
+
+  //  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
@@ -162,8 +166,8 @@
   CGContextTranslateCTM(ctx, newSize.width / 2, newSize.height / 2);
   CGContextRotateCTM(ctx, redians);
 
-  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2,
-                                  oldSize.width, oldSize.height)];
+  [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width,
+                                  oldSize.height)];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -203,9 +207,9 @@
   [filter forceProcessingAtSize:size];
   [filter useNextFrameForImageCapture];
 
-  filter.colorMatrix = (GPUMatrix4x4){
-      [self getVector4:martix start:0], [self getVector4:martix start:5],
-      [self getVector4:martix start:10], [self getVector4:martix start:15]};
+  filter.colorMatrix =
+      (GPUMatrix4x4){[self getVector4:martix start:0], [self getVector4:martix start:5],
+                     [self getVector4:martix start:10], [self getVector4:martix start:15]};
 
   GPUImagePicture *pic = [[GPUImagePicture alloc] initWithImage:outImage];
   if (!pic) {
@@ -214,8 +218,7 @@
   [pic addTarget:filter];
   [pic processImage];
 
-  UIImage *image = [filter
-      imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
   if (image) {
     outImage = image;
   }
@@ -260,8 +263,7 @@
   [pic addTarget:filter];
   [pic processImage];
 
-  UIImage *image = [filter
-      imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
+  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
   if (image) {
     outImage = image;
   }
@@ -278,22 +280,18 @@
     return;
   }
 
-//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
-    UIGraphicsBeginImageContext(outImage.size);
+  //  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+  UIGraphicsBeginImageContext(outImage.size);
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
   }
 
-  [outImage
-      drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+  [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
 
   for (FIAddText *text in option.texts) {
-    UIColor *color = [UIColor colorWithRed:text.r
-                                     green:text.g
-                                      blue:text.b
-                                     alpha:text.a];
+    UIColor *color = [UIColor colorWithRed:text.r green:text.g blue:text.b alpha:text.a];
 
     NSDictionary *attr = @{
       NSFontAttributeName : [UIFont boldSystemFontOfSize:text.fontSizePx],
@@ -326,8 +324,8 @@
     return;
   }
 
-//  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
-    UIGraphicsBeginImageContext(outImage.size);
+  //  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
+  UIGraphicsBeginImageContext(outImage.size);
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
@@ -336,9 +334,7 @@
   CGRect srcRect = CGRectMake(option.x, option.y, option.width, option.height);
   CGRect dstRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
   if ([option.blendMode isEqualToNumber:@(kCGBlendModeDst)]) {
-    [outImage drawInRect:dstRect
-               blendMode:[option.blendMode intValue]
-                   alpha:YES];
+    [outImage drawInRect:dstRect blendMode:[option.blendMode intValue] alpha:YES];
   } else if ([option.blendMode isEqualToNumber:@(kCGBlendModeSrc)]) {
     UIImage *src = [UIImage imageWithData:option.src];
     [src drawInRect:srcRect blendMode:[option.blendMode intValue] alpha:YES];

@@ -5,9 +5,9 @@
 //  Created by Caijinglong on 2020/5/22.
 //
 
-#import "FIConvertUtils.h"
 #import <Flutter/Flutter.h>
 #import <Foundation/Foundation.h>
+#import "FIConvertUtils.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)outputFile:(NSString *)targetPath;
 
 - (NSData *)outputMemory;
+
++ (UIImage *)fixImageOrientation:(UIImage *)image;
 
 @end
 

@@ -4,6 +4,7 @@ publish_to: "none"
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.10.0 <2.0.0"
 
 dependencies:
   flutter:
@@ -17,12 +18,13 @@ dependencies:
   # extended_image_library: 0.1.8
   image_picker: ^0.6.1+8
 
+  image_editor:
+    path: ../
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  image_editor:
-    path: ../
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

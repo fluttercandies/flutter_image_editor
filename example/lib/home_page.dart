@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
+import 'package:flutter_image_editor_example/merge_image_page.dart';
 import 'package:flutter_image_editor_example/mix_image_page.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
@@ -57,6 +58,11 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.branding_watermark),
             onPressed: _mixImage,
             tooltip: "Mix image",
+          ),
+          IconButton(
+            icon: Icon(Icons.merge_type),
+            onPressed: mergeImage,
+            tooltip: 'merge image',
           ),
         ],
       ),
@@ -154,6 +160,12 @@ class _HomePageState extends State<HomePage> {
   void _mixImage() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => MixImagePage(),
+    ));
+  }
+
+  void mergeImage() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => MergeImagePage(),
     ));
   }
 }

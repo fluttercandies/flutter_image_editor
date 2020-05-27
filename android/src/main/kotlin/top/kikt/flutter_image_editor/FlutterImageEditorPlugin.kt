@@ -9,13 +9,16 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import top.kikt.flutter_image_editor.core.ImageHandler
+import top.kikt.flutter_image_editor.core.ImageMerger
 import top.kikt.flutter_image_editor.core.ResultHandler
 import top.kikt.flutter_image_editor.error.BitmapDecodeException
 import top.kikt.flutter_image_editor.option.FlipOption
 import top.kikt.flutter_image_editor.option.FormatOption
+import top.kikt.flutter_image_editor.option.MergeOption
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.util.ConvertUtils
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.util.concurrent.ExecutorService
@@ -59,6 +62,12 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
             val cachePath = registrar.activeContext().cacheDir.absolutePath
             resultHandler.reply(cachePath)
           }
+          "mergeToMemory" -> {
+            handleMerge(call, resultHandler, true)
+          }
+          "mergeToFile" -> {
+            handleMerge(call, resultHandler, false)
+          }
           else -> {
             resultHandler.notImplemented()
           }
@@ -74,6 +83,27 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
           
         }
       }
+    }
+  }
+  
+  private fun handleMerge(call: MethodCall, resultHandler: ResultHandler, memory: Boolean) {
+    val mergeOptionMap = call.argument<Any>("option") as Map<*, *>
+    val mergeOption = MergeOption(mergeOptionMap)
+    val imageMerger = ImageMerger(mergeOption)
+    val byteArray = imageMerger.process()
+    
+    if (byteArray == null) {
+      resultHandler.replyError("cannot merge image")
+      return;
+    }
+    
+    if (memory) {
+      resultHandler.reply(byteArray)
+    } else {
+      val extName = if (mergeOption.formatOption.format == 1) "jpg" else "png"
+      val f = File(registrar.context().cacheDir, "${System.currentTimeMillis()}.$extName")
+      f.writeBytes(byteArray)
+      resultHandler.reply(byteArray)
     }
   }
   
