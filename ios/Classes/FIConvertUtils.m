@@ -192,3 +192,45 @@ static NSDictionary *mixBlendModeDict;
 }
 
 @end
+
+@implementation FIMergeImage
+
++ (nonnull id)createFromDict:(nonnull NSDictionary *)dict {
+  FIMergeImage *image = [FIMergeImage new];
+
+  image.data = ((FlutterStandardTypedData *)dict[@"src"][@"memory"]).data;
+  NSDictionary *position = dict[@"position"];
+  image.x = [position[@"x"] intValue];
+  image.y = [position[@"y"] intValue];
+  image.width = [position[@"w"] intValue];
+  image.height = [position[@"h"] intValue];
+
+  return image;
+}
+
+@end
+
+@implementation FIMergeOption
+
++ (nonnull id)createFromDict:(nonnull NSDictionary *)dict {
+  FIMergeOption *opt = [FIMergeOption new];
+
+  NSArray *imageOpt = dict[@"images"];
+
+  NSMutableArray *optionArray = [NSMutableArray new];
+  opt.images = optionArray;
+  for (NSDictionary *dict in imageOpt) {
+    [optionArray addObject:[FIMergeImage createFromDict:dict]];
+  }
+
+  int w = [dict[@"w"] intValue];
+  int h = [dict[@"h"] intValue];
+
+  opt.size = CGSizeMake(w, h);
+
+  opt.format = [FIFormatOption createFromDict:dict[@"fmt"]];
+
+  return opt;
+}
+
+@end

@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/home_page.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -21,4 +24,9 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+Future<Uint8List> loadFromAsset(String key) async {
+  final byteData = await rootBundle.load(key);
+  return byteData.buffer.asUint8List();
 }

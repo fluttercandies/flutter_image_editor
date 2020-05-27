@@ -9,6 +9,8 @@ class NativeChannel {
   static const MethodChannel _channel =
       const MethodChannel('top.kikt/flutter_image_editor');
 
+  static MethodChannel get channel => _channel;
+
   static Future<Directory> getCachePath() async {
     final path = await _channel.invokeMethod("getCachePath");
     return Directory(path);

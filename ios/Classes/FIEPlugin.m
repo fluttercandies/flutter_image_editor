@@ -7,22 +7,21 @@
 
 #import "FIEPlugin.h"
 #import "FIConvertUtils.h"
+#import "FIMerger.h"
 #import "FIUIImageHandler.h"
 
 @implementation FIEPlugin
 
-+ (void)registerWithRegistrar:
-    (nonnull NSObject<FlutterPluginRegistrar> *)registrar {
++ (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {
   FIEPlugin *plugin = [FIEPlugin new];
-  FlutterMethodChannel *channel = [FlutterMethodChannel
-      methodChannelWithName:@"top.kikt/flutter_image_editor"
-            binaryMessenger:registrar.messenger];
+  FlutterMethodChannel *channel =
+      [FlutterMethodChannel methodChannelWithName:@"top.kikt/flutter_image_editor"
+                                  binaryMessenger:registrar.messenger];
 
   [registrar addMethodCallDelegate:plugin channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall *)call
-                  result:(FlutterResult)result {
+- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
   NSString *method = call.method;
   id args = call.arguments;
   if ([method isEqualToString:@"getCachePath"]) {
@@ -35,23 +34,49 @@
     [self handleArgs:args outMemory:YES result:result];
   } else if ([method isEqualToString:@"fileToFile"]) {
     [self handleArgs:args outMemory:NO result:result];
+  } else if ([method isEqualToString:@"mergeToMemory"]) {
+    [self handleMerge:args outMemory:YES result:result];
+  } else if ([method isEqualToString:@"mergeToFile"]) {
+    [self handleMerge:args outMemory:NO result:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
 }
 
-- (void)handleArgs:(id)args
-         outMemory:(BOOL)outMemory
-            result:(FlutterResult)result {
-  dispatch_queue_global_t queue =
-      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+- (void)handleMerge:(id)args outMemory:(BOOL)outMemory result:(FlutterResult)result {
+  dispatch_queue_global_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+  dispatch_async(queue, ^{
+    FIMerger *merger = [FIMerger new];
+    merger.option = [FIMergeOption createFromDict:args[@"option"]];
+    NSData *data = [merger process];
+
+    if (!data) {
+      result([FlutterError errorWithCode : @"cannot merge image" message : nil details : nil]);
+      return;
+    }
+
+    if (outMemory) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+        result(data);
+      });
+    } else {
+      NSString *filePath = [merger makeOutputPath];
+      [data writeToFile:filePath atomically:YES];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        result(filePath);
+      });
+    }
+  });
+}
+
+- (void)handleArgs:(id)args outMemory:(BOOL)outMemory result:(FlutterResult)result {
+  dispatch_queue_global_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
   dispatch_async(queue, ^{
     UIImage *image = [self getUIImage:args];
     if (!image) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        result([FlutterError errorWithCode:@"decode image error"
-                                   message:nil
-                                   details:nil]);
+        result([FlutterError errorWithCode:@"decode image error" message:nil details:nil]);
       });
       return;
     }
@@ -78,9 +103,7 @@
         if (success) {
           result(target);
         } else {
-          result([FlutterError errorWithCode:@"cannot handle"
-                                     message:nil
-                                     details:nil]);
+          result([FlutterError errorWithCode:@"cannot handle" message:nil details:nil]);
         }
       });
     }
