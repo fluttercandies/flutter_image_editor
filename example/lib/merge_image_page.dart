@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
 
@@ -39,20 +38,26 @@ class _MergeImagePageState extends State<MergeImagePage> {
               setState(() {});
             },
           ),
-          if (provider != null)
-            Container(
-              child: Image(image: provider),
-              width: 300,
-              height: 300,
-            ),
+          buildImageResult(),
         ],
       ),
     );
   }
 
+  Widget buildImageResult() {
+    if (provider != null)
+      return Container(
+        child: Image(image: provider),
+        width: 300,
+        height: 300,
+      );
+    return Container();
+  }
+
   void _merge() async {
+    final slideLength = 180.0;
     final option = ImageMergeOption(
-      canvasSize: Size(360, 360.0 * count),
+      canvasSize: Size(slideLength * count, slideLength * count),
       format: OutputFormat.png(),
     );
 
@@ -61,7 +66,22 @@ class _MergeImagePageState extends State<MergeImagePage> {
       option.addImage(
         MergeImageConfig(
           image: MemoryImageSource(memory),
-          position: ImagePosition(Offset(0, 360.0 * i), Size.square(360)),
+          position: ImagePosition(
+            Offset(slideLength * i, slideLength * i),
+            Size.square(slideLength),
+          ),
+        ),
+      );
+    }
+    for (var i = 0; i < count; i++) {
+      option.addImage(
+        MergeImageConfig(
+          image: MemoryImageSource(memory),
+          position: ImagePosition(
+            Offset(
+                slideLength * count - slideLength * (i + 1), slideLength * i),
+            Size.square(slideLength),
+          ),
         ),
       );
     }
