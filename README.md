@@ -9,7 +9,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 - [image_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Platform of support](#platform-of-support)
-  - [Usage](#usage)
+  - [ImageEditor Usage](#imageeditor-usage)
     - [ImageEditor method params](#imageeditor-method-params)
     - [ImageEditorOption](#imageeditoroption)
     - [Option](#option)
@@ -22,6 +22,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [MixOption](#mixoption)
         - [BlendMode](#blendmode)
     - [OutputFormat](#outputformat)
+  - [ImageMerge](#imagemerge)
   - [Common issue](#common-issue)
     - [iOS](#ios)
       - [Privacy of camera](#privacy-of-camera)
@@ -36,13 +37,13 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 
 Android, iOS.
 
-## Usage
+## ImageEditor Usage
 
 [![pub package](https://img.shields.io/pub/v/image_editor.svg)](https://pub.dev/packages/image_editor) [![GitHub](https://img.shields.io/github/license/fluttercandies/flutter_image_editor.svg)](https://github.com/fluttercandies/flutter_image_editor) [![GitHub stars](https://img.shields.io/github/stars/fluttercandies/flutter_image_editor.svg?style=social&label=Stars)](https://github.com/fluttercandies/flutter_image_editor)
 
 ```yaml
 dependencies:
-  image_editor: ^0.5.0
+  image_editor: ^0.6.0
 ```
 
 Import
@@ -182,6 +183,45 @@ Support next BlendMode, other will be ignored.
 var outputFormat = OutputFormat.png();
 var outputFormat = OutputFormat.jpeg(95);
 
+```
+
+## ImageMerge
+
+```dart
+    final slideLength = 180.0;
+    final option = ImageMergeOption(
+      canvasSize: Size(slideLength * count, slideLength * count),
+      format: OutputFormat.png(),
+    );
+
+    final memory = await loadFromAsset(R.ASSETS_ICON_PNG);
+    for (var i = 0; i < count; i++) {
+      option.addImage(
+        MergeImageConfig(
+          image: MemoryImageSource(memory),
+          position: ImagePosition(
+            Offset(slideLength * i, slideLength * i),
+            Size.square(slideLength),
+          ),
+        ),
+      );
+    }
+    for (var i = 0; i < count; i++) {
+      option.addImage(
+        MergeImageConfig(
+          image: MemoryImageSource(memory),
+          position: ImagePosition(
+            Offset(
+                slideLength * count - slideLength * (i + 1), slideLength * i),
+            Size.square(slideLength),
+          ),
+        ),
+      );
+    }
+
+    final result = await ImageMerger.mergeToMemory(option: option);
+    provider = MemoryImage(result);
+    setState(() {});
 ```
 
 ## Common issue
