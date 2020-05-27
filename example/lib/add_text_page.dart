@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -71,7 +70,7 @@ class _AddTextPageState extends State<AddTextPage> {
                   image: u,
                   imageEditorOption: option,
                 );
-                print(JsonEncoder.withIndent('  ').convert(option.toJson()));
+                print(option.toString());
                 this.target = MemoryImage(result);
                 setState(() {});
               },
