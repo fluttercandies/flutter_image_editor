@@ -4,7 +4,7 @@ import 'dart:typed_data';
 abstract class ImageSource {
   Uint8List get memory;
 
-  Map<String, dynamic> toJson() => {
+  Map<String, Object> toJson() => {
         "memory": memory,
       };
 }

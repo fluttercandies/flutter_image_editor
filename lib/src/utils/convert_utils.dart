@@ -1,0 +1,21 @@
+import 'package:flutter/material.dart';
+
+class ConvertUtils {
+  ConvertUtils._();
+
+  static Map<String, Object> offset(Offset offset) {
+    return {
+      'x': offset.dx.toInt(),
+      'y': offset.dy.toInt(),
+    };
+  }
+
+  static Map<String, Object> color(Color c) {
+    return {
+      'r': c.red,
+      'g': c.green,
+      'b': c.blue,
+      'a': c.alpha,
+    };
+  }
+}

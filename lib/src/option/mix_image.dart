@@ -29,7 +29,7 @@ class MixImageOption implements Option {
   String get key => 'mix_image';
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         'target': target.toJson(),
         'x': x,
         'y': y,

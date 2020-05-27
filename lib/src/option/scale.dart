@@ -15,7 +15,7 @@ class ScaleOption implements Option {
   String get key => 'scale';
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         'width': width,
         'height': height,
       };
