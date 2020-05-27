@@ -72,7 +72,7 @@
   if (!result) {
     return image;
   } else {
-    return image;
+    return result;
   }
 }
 
