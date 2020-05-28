@@ -2,13 +2,14 @@
 
 ![BUILD](https://github.com/fluttercandies/flutter_image_editor/workflows/PR/badge.svg)
 
-Support android ios, use the native way to flip, crop, rotate pictures.
-
 The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
+
+Use native(objc,kotlin) code to handle image data, it is easy to process pictures, and can be used for saving/uploading/preview images.
 
 - [image_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Platform of support](#platform-of-support)
+  - [Support](#support)
   - [ImageEditor Usage](#imageeditor-usage)
     - [ImageEditor method params](#imageeditor-method-params)
     - [ImageEditorOption](#imageeditoroption)
@@ -16,10 +17,10 @@ The version of readme pub and github may be inconsistent, please refer to [githu
       - [Flip](#flip)
       - [Clip](#clip)
       - [Rotate](#rotate)
-      - [Color](#color)
-      - [ScaleOption](#scaleoption)
-      - [AddTextOption](#addtextoption)
-      - [MixOption](#mixoption)
+      - [Color Martix](#color-martix)
+      - [Scale](#scale)
+      - [AddText](#addtext)
+      - [MixImage](#miximage)
         - [BlendMode](#blendmode)
     - [OutputFormat](#outputformat)
   - [ImageMerge](#imagemerge)
@@ -36,6 +37,25 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 ## Platform of support
 
 Android, iOS.
+
+## Support
+
+- [x] flip
+- [x] crop
+- [x] rotate
+- [x] scale
+- [x] matrix
+- [x] add text
+- [x] mix image
+- [x] merge multi image
+- [ ] draw somethings
+  - [ ] draw point
+  - [ ] draw line
+  - [ ] draw rect
+  - [ ] draw circle
+  - [ ] draw path
+  - [ ] draw Bezier
+- [ ] Gaussian blur
 
 ## ImageEditor Usage
 
@@ -105,7 +125,7 @@ ClipOption(x:0, y:0, width:1920, height:1920);
 RotateOption(degree: 180);
 ```
 
-#### Color
+#### Color Martix
 
 ```dart
 ColorOption();
@@ -127,7 +147,7 @@ f, g, h, i,
 k, l, m, n,  
 p, q, r, s
 
-#### ScaleOption
+#### Scale
 
 ```dart
 ScaleOption(width,height);
@@ -135,7 +155,7 @@ ScaleOption(width,height);
 
 After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does not maintain the aspect ratio of the image).
 
-#### AddTextOption
+#### AddText
 
 All of unit is **pixel**.
 
@@ -151,7 +171,30 @@ textOption.addText(
 );
 ```
 
-#### MixOption
+#### MixImage
+
+```dart
+void mix(BlendMode blendMode) async {
+  final src = await loadFromAsset(R.ASSETS_SRC_PNG);
+  final dst = await loadFromAsset(R.ASSETS_DST_PNG);
+  final optionGroup = ImageEditorOption();
+  optionGroup.outputFormat = OutputFormat.png();
+  optionGroup.addOption(
+    MixImageOption(
+      x: 300,
+      y: 300,
+      width: 150,
+      height: 150,
+      target: MemoryImageSource(src),
+      blendMode: blendMode,
+    ),
+  );
+  final result =
+      await ImageEditor.editImage(image: dst, imageEditorOption: optionGroup);
+  this.image = MemoryImage(result);
+  setState(() {});
+}
+```
 
 ##### BlendMode
 
