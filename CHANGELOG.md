@@ -1,6 +1,7 @@
 # CHANGELOG
 
 - [CHANGELOG](#changelog)
+  - [0.6.1](#061)
   - [0.6.0](#060)
   - [0.5.1](#051)
   - [0.5.0](#050)
@@ -17,6 +18,10 @@
   - [0.1.2](#012)
   - [0.1.1](#011)
   - [0.1.0](#010)
+
+## 0.6.1
+
+The ImageSource code has been slightly optimized.
 
 ## 0.6.0
 
