@@ -18,4 +18,13 @@ class ConvertUtils {
       'a': c.alpha,
     };
   }
+
+  static Map<String, Object> rect(Rect rect) {
+    return {
+      'left': rect.left.toInt(),
+      'top': rect.top.toInt(),
+      'width': rect.width.toInt(),
+      'height': rect.height.toInt(),
+    };
+  }
 }

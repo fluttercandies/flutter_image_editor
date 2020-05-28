@@ -76,3 +76,25 @@ class PointDrawPart extends DrawPart {
         'color': ConvertUtils.color(color),
       };
 }
+
+class RectDrawPart extends DrawPart {
+  final Rect rect;
+  final Color color;
+
+  RectDrawPart({
+    @required this.rect,
+    this.color = Colors.black,
+  });
+
+  @override
+  bool get canIgnore => false;
+
+  @override
+  String get key => 'rect';
+
+  @override
+  Map<String, Object> get transferValue => {
+        'rect': ConvertUtils.rect(rect),
+        'color': ConvertUtils.color(color),
+      };
+}
