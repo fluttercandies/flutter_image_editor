@@ -2,13 +2,14 @@
 
 ![BUILD](https://github.com/fluttercandies/flutter_image_editor/workflows/PR/badge.svg)
 
-Support android ios, use the native way to flip, crop, rotate pictures.
-
 The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
+
+Use native(objc,kotlin) code to handle image data, it is easy to process pictures, and can be used for saving/uploading/preview images.
 
 - [image_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Platform of support](#platform-of-support)
+  - [Support](#support)
   - [ImageEditor Usage](#imageeditor-usage)
     - [ImageEditor method params](#imageeditor-method-params)
     - [ImageEditorOption](#imageeditoroption)
@@ -36,6 +37,25 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 ## Platform of support
 
 Android, iOS.
+
+## Support
+
+- [x] flip
+- [x] crop
+- [x] rotate
+- [x] scale
+- [x] matrix
+- [x] add text
+- [x] mix image
+- [x] merge multi image
+- [ ] draw somethings
+  - [ ] draw point
+  - [ ] draw line
+  - [ ] draw rect
+  - [ ] draw circle
+  - [ ] draw path
+  - [ ] draw Bezier
+- [ ] Gaussian blur
 
 ## ImageEditor Usage
 
