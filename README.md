@@ -17,10 +17,10 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
       - [Flip](#flip)
       - [Clip](#clip)
       - [Rotate](#rotate)
-      - [Color](#color)
-      - [ScaleOption](#scaleoption)
-      - [AddTextOption](#addtextoption)
-      - [MixOption](#mixoption)
+      - [Color Martix](#color-martix)
+      - [Scale](#scale)
+      - [AddText](#addtext)
+      - [MixImage](#miximage)
         - [BlendMode](#blendmode)
     - [OutputFormat](#outputformat)
   - [ImageMerge](#imagemerge)
@@ -125,7 +125,7 @@ ClipOption(x:0, y:0, width:1920, height:1920);
 RotateOption(degree: 180);
 ```
 
-#### Color
+#### Color Martix
 
 ```dart
 ColorOption();
@@ -147,7 +147,7 @@ f, g, h, i,
 k, l, m, n,  
 p, q, r, s
 
-#### ScaleOption
+#### Scale
 
 ```dart
 ScaleOption(width,height);
@@ -155,7 +155,7 @@ ScaleOption(width,height);
 
 After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does not maintain the aspect ratio of the image).
 
-#### AddTextOption
+#### AddText
 
 All of unit is **pixel**.
 
@@ -171,7 +171,30 @@ textOption.addText(
 );
 ```
 
-#### MixOption
+#### MixImage
+
+```dart
+void mix(BlendMode blendMode) async {
+  final src = await loadFromAsset(R.ASSETS_SRC_PNG);
+  final dst = await loadFromAsset(R.ASSETS_DST_PNG);
+  final optionGroup = ImageEditorOption();
+  optionGroup.outputFormat = OutputFormat.png();
+  optionGroup.addOption(
+    MixImageOption(
+      x: 300,
+      y: 300,
+      width: 150,
+      height: 150,
+      target: MemoryImageSource(src),
+      blendMode: blendMode,
+    ),
+  );
+  final result =
+      await ImageEditor.editImage(image: dst, imageEditorOption: optionGroup);
+  this.image = MemoryImage(result);
+  setState(() {});
+}
+```
 
 ##### BlendMode
 
