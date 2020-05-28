@@ -111,21 +111,12 @@ RotateOption(degree: 180);
 ColorOption();
 ```
 
-In android, it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html
+it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html Although it is an Android document, the color matrix is also applicable to iOS.
 
 a, b, c, d, e,  
 f, g, h, i, j,  
 k, l, m, n, o,  
 p, q, r, s, t
-
----
-
-In iOS, it's use 4x4 matrix. The last of line will be ignored.
-
-a, b, c, d,  
-f, g, h, i,  
-k, l, m, n,  
-p, q, r, s
 
 #### ScaleOption
 
