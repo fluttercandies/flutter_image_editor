@@ -4,25 +4,46 @@ import 'dart:typed_data';
 abstract class ImageSource {
   Uint8List get memory;
 
+  const ImageSource();
+
+  factory ImageSource.memory(Uint8List uint8list) {
+    return MemoryImageSource(uint8list);
+  }
+
+  factory ImageSource.file(File file) {
+    return FileImageSource(file);
+  }
+
+  factory ImageSource.path(String path) {
+    return FileImageSource.path(path);
+  }
+
   Map<String, dynamic> toJson() => {
         "memory": memory,
       };
 }
 
 class MemoryImageSource extends ImageSource {
-  MemoryImageSource(Uint8List uint8list) : memory = uint8list;
-
   @override
   final Uint8List memory;
+
+  const MemoryImageSource(Uint8List uint8list)
+      : assert(uint8list != null),
+        memory = uint8list;
 }
 
 class FileImageSource extends ImageSource {
   final File file;
 
-  FileImageSource(this.file);
+  const FileImageSource(this.file);
 
-  FileImageSource.path(String path) : file = File(path);
+  FileImageSource.path(String path)
+      : assert(path != null),
+        file = File(path);
 
   @override
-  Uint8List get memory => file.readAsBytesSync();
+  Uint8List get memory {
+    assert(file.existsSync(), 'The file must exists');
+    return file.readAsBytesSync();
+  }
 }
