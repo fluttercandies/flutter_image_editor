@@ -39,9 +39,11 @@ class FileImageSource extends ImageSource {
 
   FileImageSource.path(String path)
       : assert(path != null),
-        file = File(path),
-        assert(file.existsSync(), 'The file must exists');
+        file = File(path);
 
   @override
-  Uint8List get memory => file.readAsBytesSync();
+  Uint8List get memory {
+    assert(file.existsSync(), 'The file must exists');
+    return file.readAsBytesSync();
+  }
 }
