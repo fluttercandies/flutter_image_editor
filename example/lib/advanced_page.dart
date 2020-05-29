@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -197,10 +198,10 @@ class _AdvancedPageState extends State<AdvancedPage> {
   }
 
   void _pick() async {
-    final result = await ImagePicker.pickImage(source: ImageSource.camera);
+    final result = await ImagePicker().getImage(source: ImageSource.camera);
     if (result != null) {
-      print(result.absolute.path);
-      provider = ExtendedFileImageProvider(result);
+      print(result.path);
+      provider = ExtendedFileImageProvider(File(result.path));
       setState(() {});
     }
   }
