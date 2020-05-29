@@ -131,7 +131,7 @@ RotateOption(degree: 180);
 ColorOption();
 ```
 
-In android, it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html
+it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html Although it is an Android document, the color matrix is also applicable to iOS.
 
 a, b, c, d, e,  
 f, g, h, i, j,  

@@ -7,6 +7,7 @@
 
 #import "FIUIImageHandler.h"
 #import <GPUImage/GPUImage.h>
+#import <CoreImage/CIFilterBuiltins.h>
 
 @implementation FIUIImageHandler {
   UIImage *outImage;
@@ -23,7 +24,7 @@
     } else if ([option isKindOfClass:[FIRotateOption class]]) {
       [self rotate:(FIRotateOption *)option];
     } else if ([option isKindOfClass:[FIColorOption class]]) {
-      [self color:(FIColorOption *)option];
+      [self colorMatrix:(FIColorOption *)option];
     } else if ([option isKindOfClass:[FIScaleOption class]]) {
       [self scale:(FIScaleOption *)option];
     } else if ([option isKindOfClass:[FIAddTextOption class]]) {
@@ -185,53 +186,59 @@
 
 #pragma mark color matrix
 
-- (void)color:(FIColorOption *)option {
+
+- (void)colorMatrix:(FIColorOption *)option {
   if (!outImage) {
     return;
   }
-  GPUImageColorMatrixFilter *filter = [GPUImageColorMatrixFilter new];
+  
+   CIFilter *filter = [CIFilter filterWithName:@"CIColorMatrix"];
+    NSObject<CIColorMatrix>* matrix = (NSObject<CIColorMatrix>*)filter;
+    
+    [filter setDefaults];
+    
+    CIImage *inputCIImage =  [[CIImage alloc]initWithImage:outImage options:nil];
+    NSLog(@"input size = %@", NSStringFromCGRect([inputCIImage extent]));
+    [matrix setValue:inputCIImage forKey:kCIInputImageKey];
+//    [matrix setRVector:[self getCIVector:option start:0]];
+    [matrix setValue:[self getCIVector:option start:0]  forKey:@"inputRVector"];
+    [matrix setValue:[self getCIVector:option start:5]  forKey:@"inputGVector"];
+    [matrix setValue:[self getCIVector:option start:10] forKey:@"inputBVector"];
+    [matrix setValue:[self getCIVector:option start:15] forKey:@"inputAVector"];
+    [matrix setValue:[self getOffsetCIVector:option] forKey:@"inputBiasVector"];
+    
+    CIImage *outputCIImage = [matrix outputImage];
+    
+    if(!outputCIImage){
+        return;
+    }
+    
+    CIContext *ctx = [CIContext contextWithOptions:nil];
+    CGImageRef cgImage = [ctx createCGImage:outputCIImage fromRect:[outputCIImage extent]];
 
-  CGSize size;
+    UIImage *newImage = [UIImage imageWithCGImage:cgImage];
 
-  if (outImage.imageOrientation == UIImageOrientationLeft ||
-      outImage.imageOrientation == UIImageOrientationRight ||
-      outImage.imageOrientation == UIImageOrientationLeftMirrored ||
-      outImage.imageOrientation == UIImageOrientationRightMirrored) {
-    size = CGSizeMake(outImage.size.height, outImage.size.width);
-  } else {
-    size = outImage.size;
-  }
-
-  NSArray *martix = option.matrix;
-
-  [filter forceProcessingAtSize:size];
-  [filter useNextFrameForImageCapture];
-
-  filter.colorMatrix =
-      (GPUMatrix4x4){[self getVector4:martix start:0], [self getVector4:martix start:5],
-                     [self getVector4:martix start:10], [self getVector4:martix start:15]};
-
-  GPUImagePicture *pic = [[GPUImagePicture alloc] initWithImage:outImage];
-  if (!pic) {
-    return;
-  }
-  [pic addTarget:filter];
-  [pic processImage];
-
-  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
-  if (image) {
-    outImage = image;
-  }
+    if(!newImage){
+        return;
+    }
+    
+    outImage = newImage;
 }
 
-- (GPUVector4)getVector4:(NSArray *)array start:(int)start {
-  GPUVector4 vector = {
-      [array[start] floatValue],
-      [array[start + 1] floatValue],
-      [array[start + 2] floatValue],
-      [array[start + 3] floatValue],
-  };
-  return vector;
+-(CIVector*) getCIVector:(FIColorOption*)option start:(int)start{
+    CGFloat v1 = [option getValue:start];
+    CGFloat v2 = [option getValue:start+1];
+    CGFloat v3 = [option getValue:start+2];
+    CGFloat v4 = [option getValue:start+3];
+    return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
+}
+
+-(CIVector*) getOffsetCIVector:(FIColorOption*)option{
+    CGFloat v1 = [option getValue:4];
+    CGFloat v2 = [option getValue:9];
+    CGFloat v3 = [option getValue:14];
+    CGFloat v4 = [option getValue:19];
+     return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
 }
 
 #pragma mark scale

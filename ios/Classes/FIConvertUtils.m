@@ -93,6 +93,10 @@
   return option;
 }
 
+-(CGFloat)getValue:(int)index{
+    return [self.matrix[index] floatValue];
+}
+
 @end
 
 @implementation FIScaleOption

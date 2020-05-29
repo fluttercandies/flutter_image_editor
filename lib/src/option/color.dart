@@ -33,22 +33,13 @@ const defaultColorMatrix = const <double>[
 class ColorOption implements Option {
   /// 5x4 matrix. See [Document of android](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html)
   ///
-  /// In android:
+  /// Although it is an Android document, the color matrix is also applicable to iOS.
+  ///
   /// ```
   /// [ a, b, c, d, e,
   ///   f, g, h, i, j,
   ///   k, l, m, n, o,
   ///   p, q, r, s, t ]
-  /// ```
-  ///
-  /// Since iOS uses the GPUImage library to handle matrix color changes
-  ///
-  /// GPUImage only supports 4x4 matrix, so in iOS, the same matrix is as follows:
-  /// ```
-  /// [ a, b, c, d,
-  ///   f, g, h, i,
-  ///   k, l, m, n,
-  ///   p, q, r, s ]
   /// ```
   ///
   final List<double> matrix;

@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FIColorOption : NSObject <FIOption>
 @property(strong, nonatomic) NSArray *matrix;
+
+-(CGFloat)getValue:(int)index;
 @end
 
 @interface FIScaleOption : NSObject <FIOption>

@@ -21,6 +21,7 @@
 
 ## 0.6.1
 
+Support 5x4 color matrix
 The ImageSource code has been slightly optimized.
 
 ## 0.6.0
