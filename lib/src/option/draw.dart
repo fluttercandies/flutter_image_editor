@@ -50,9 +50,10 @@ class DrawPaint extends DrawPart {
   }
 
   @override
-  bool get canIgnore => throw UnimplementedError();
+  bool get canIgnore => false;
 
-  void p() {
+  // ignore: unused_element
+  void _p() {
     var paint = Paint(); // ignore: unused_local_variable
     var canvas = Canvas(PictureRecorder()); // ignore: unused_local_variable
 
