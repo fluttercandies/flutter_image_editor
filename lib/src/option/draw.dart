@@ -136,6 +136,7 @@ class PointDrawPart extends DrawPart with _HavePaint {
   @override
   Map<String, Object> get values => {
         'offset': points.map((e) => ConvertUtils.offset(e)).toList(),
+        'mode': pointMode.index,
       };
 }
 
@@ -263,7 +264,12 @@ class PathDrawPart extends DrawPart {
 
   @override
   Map<String, Object> get transferValue => {
-        'parts': parts.map((e) => e.transferValue).toList(),
+        'parts': parts
+            .map((e) => {
+                  'key': e.key,
+                  'value': e.transferValue,
+                })
+            .toList(),
       };
 }
 
