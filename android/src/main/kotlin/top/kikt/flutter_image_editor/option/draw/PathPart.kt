@@ -1,6 +1,6 @@
 package top.kikt.flutter_image_editor.option.draw
 
-class PathDrawPart(map: Map<*, *>) : DrawPart(map) {
+class PathDrawPart(map: Map<*, *>) : DrawPart(map), IHavePaint {
 
   val paths: List<PathPart>
 
@@ -27,7 +27,7 @@ class PathDrawPart(map: Map<*, *>) : DrawPart(map) {
 
 }
 
-abstract class PathPart(map: Map<*, *>) : TransferValue(map), IHavePaint
+abstract class PathPart(map: Map<*, *>) : TransferValue(map)
 
 class MovePathPart(map: Map<*, *>) : PathPart(map) {
   val offset = getOffset("offset")
@@ -41,7 +41,7 @@ class BezierPathPart(map: Map<*, *>) : PathPart(map) {
   val kind = map["kind"] as Int
   val target = getOffset("target")
   val control1 = getOffset("c1")
-  val c2 = if (kind == 3) getOffset("c2") else null
+  val control2 = if (kind == 3) getOffset("c2") else null
 }
 
 class ArcToPathPart(map: Map<*, *>) : PathPart(map) {

@@ -14,7 +14,12 @@ class DrawOption extends Option {
 
   @override
   Map<String, Object> get transferValue => {
-        "parts": parts.map((e) => e.transferValue).toList(),
+        "parts": parts
+            .map((e) => {
+                  'key': e.key,
+                  'value': e.transferValue,
+                })
+            .toList(),
       };
 
   void addDrawPart(DrawPart part) {
@@ -113,7 +118,6 @@ class LineDrawPart extends DrawPart with _HavePaint {
   Map<String, Object> get values => {
         'start': offsetValue(start),
         'end': offsetValue(end),
-        paint.key: paint.transferValue,
       };
 }
 
@@ -174,7 +178,7 @@ class OvalDrawPart extends DrawPart with _HavePaint {
   bool get canIgnore => false;
 
   @override
-  String get key => 'circle';
+  String get key => 'oval';
 
   @override
   Map<String, Object> get values => {
@@ -182,21 +186,30 @@ class OvalDrawPart extends DrawPart with _HavePaint {
       };
 }
 
-class PathDrawPart extends DrawPart {
+class PathDrawPart extends DrawPart with _HavePaint {
   final List<_PathPart> parts = [];
+
+  final DrawPaint paint;
+
+  final bool autoClose;
+
+  PathDrawPart({
+    this.autoClose = false,
+    this.paint = const DrawPaint(),
+  });
 
   @override
   bool get canIgnore => parts.isEmpty;
 
   void move(Offset point) {
     parts.add(
-      _MovePathPart(const DrawPaint(), point),
+      _MovePathPart(point),
     );
   }
 
   void lineTo(Offset point, DrawPaint paint) {
     parts.add(
-      _LineToPathPart(const DrawPaint(), point),
+      _LineToPathPart(point),
     );
   }
 
@@ -204,7 +217,6 @@ class PathDrawPart extends DrawPart {
       DrawPaint paint) {
     parts.add(
       _ArcToPathPart(
-        paint: paint,
         rect: rect,
         startAngle: startAngle,
         sweepAngle: sweepAngle,
@@ -213,10 +225,9 @@ class PathDrawPart extends DrawPart {
     );
   }
 
-  void bezier2To(Offset target, Offset control, DrawPaint paint) {
+  void bezier2To(Offset target, Offset control) {
     parts.add(
       _BezierPathPart(
-        paint: paint,
         target: target,
         control1: control,
         control2: null,
@@ -225,11 +236,9 @@ class PathDrawPart extends DrawPart {
     );
   }
 
-  void bezier3To(
-      Offset target, Offset control1, Offset control2, DrawPaint paint) {
+  void bezier3To(Offset target, Offset control1, Offset control2) {
     parts.add(
       _BezierPathPart(
-        paint: paint,
         target: target,
         control1: control1,
         control2: control2,
@@ -253,17 +262,18 @@ class PathDrawPart extends DrawPart {
       return;
     }
     if (control2 == null) {
-      bezier2To(target, control1, paint);
+      bezier2To(target, control1);
       return;
     }
-    bezier3To(target, control1, control2, paint);
+    bezier3To(target, control1, control2);
   }
 
   @override
   String get key => 'path';
 
   @override
-  Map<String, Object> get transferValue => {
+  Map<String, Object> get values => {
+        'autoClose': autoClose,
         'parts': parts
             .map((e) => {
                   'key': e.key,
@@ -273,50 +283,46 @@ class PathDrawPart extends DrawPart {
       };
 }
 
-abstract class _PathPart extends TransferValue with _HavePaint {
+abstract class _PathPart extends TransferValue {
   @override
   bool get canIgnore => false;
 }
 
 class _MovePathPart extends _PathPart {
-  final DrawPaint paint;
   final Offset offset;
 
-  _MovePathPart(this.paint, this.offset);
+  _MovePathPart(this.offset);
 
   @override
   String get key => 'move';
 
   @override
-  Map<String, Object> get values => {
+  Map<String, Object> get transferValue => {
         'offset': ConvertUtils.offset(offset),
       };
 }
 
 class _LineToPathPart extends _PathPart {
-  final DrawPaint paint;
   final Offset offset;
 
-  _LineToPathPart(this.paint, this.offset);
+  _LineToPathPart(this.offset);
 
   @override
   String get key => 'lineTo';
 
   @override
-  Map<String, Object> get values => {
+  Map<String, Object> get transferValue => {
         'offset': ConvertUtils.offset(offset),
       };
 }
 
 class _BezierPathPart extends _PathPart {
-  final DrawPaint paint;
   final Offset target;
   final Offset control1;
   final Offset control2;
   final int kind;
 
   _BezierPathPart({
-    @required this.paint,
     @required this.target,
     @required this.control1,
     @required this.control2,
@@ -327,7 +333,7 @@ class _BezierPathPart extends _PathPart {
   String get key => 'bezier';
 
   @override
-  Map<String, Object> get values {
+  Map<String, Object> get transferValue {
     final value = <String, Object>{
       'target': ConvertUtils.offset(target),
       'c1': ConvertUtils.offset(control1),
@@ -343,14 +349,12 @@ class _BezierPathPart extends _PathPart {
 }
 
 class _ArcToPathPart extends _PathPart {
-  final DrawPaint paint;
   final Rect rect;
   final double startAngle;
   final double sweepAngle;
   final bool useCenter;
 
   _ArcToPathPart({
-    @required this.paint,
     @required this.rect,
     @required this.startAngle,
     @required this.sweepAngle,
@@ -361,7 +365,7 @@ class _ArcToPathPart extends _PathPart {
   String get key => 'arcTo';
 
   @override
-  Map<String, Object> get values => {
+  Map<String, Object> get transferValue => {
         'rect': ConvertUtils.rect(rect),
         'start': startAngle,
         'sweep': sweepAngle,

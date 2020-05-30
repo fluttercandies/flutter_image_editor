@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.Rect
+import top.kikt.flutter_image_editor.option.Option
 
 interface ITransferValue {
 
@@ -43,8 +44,33 @@ interface ITransferValue {
 
 abstract class TransferValue(override val map: Map<*, *>) : ITransferValue
 
-class DrawOption(map: Map<*, *>) : TransferValue(map) {
+class DrawOption(map: Map<*, *>) : TransferValue(map), Option {
 
+  val drawPart: List<DrawPart>
+
+  init {
+    val list = ArrayList<DrawPart>()
+
+    val partList = map["parts"] as List<*>
+    for (any in partList) {
+      if (any is Map<*, *>) {
+        val key = any["key"]
+        val value = any["value"] as Map<*, *>
+        val part: DrawPart =
+                when (key) {
+                  "rect" -> RectDrawPart(value)
+                  "oval" -> OvalDrawPart(value)
+                  "line" -> LineDrawPart(value)
+                  "point" -> PointsDrawPart(value)
+                  "path" -> PathDrawPart(value)
+                  else -> null
+                } ?: continue
+        list.add(part)
+      }
+    }
+
+    drawPart = list
+  }
 
 }
 
