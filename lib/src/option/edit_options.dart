@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +32,14 @@ abstract class IgnoreAble {
   bool get canIgnore;
 }
 
-abstract class Option implements IgnoreAble {
+abstract class TransferValue implements IgnoreAble{
   String get key;
 
   Map<String, Object> get transferValue;
+}
+
+abstract class Option implements IgnoreAble, TransferValue {
+  const Option();
 }
 
 class ImageEditorOption implements IgnoreAble {
