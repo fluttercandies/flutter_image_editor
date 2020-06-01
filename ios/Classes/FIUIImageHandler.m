@@ -6,31 +6,29 @@
 //
 
 #import "FIUIImageHandler.h"
-#import <GPUImage/GPUImage.h>
 #import <CoreImage/CIFilterBuiltins.h>
 
 @implementation FIUIImageHandler {
   UIImage *outImage;
-}
 
 - (void)handleImage {
   outImage = self.image;
   [self fixOrientation];
-  for (NSObject<FIOption> *option in self.optionGroup.options) {
+  for (NSObject <FIOption> *option in self.optionGroup.options) {
     if ([option isKindOfClass:[FIFlipOption class]]) {
-      [self flip:(FIFlipOption *)option];
+      [self flip:(FIFlipOption *) option];
     } else if ([option isKindOfClass:[FIClipOption class]]) {
-      [self clip:(FIClipOption *)option];
+      [self clip:(FIClipOption *) option];
     } else if ([option isKindOfClass:[FIRotateOption class]]) {
-      [self rotate:(FIRotateOption *)option];
+      [self rotate:(FIRotateOption *) option];
     } else if ([option isKindOfClass:[FIColorOption class]]) {
-      [self colorMatrix:(FIColorOption *)option];
+      [self colorMatrix:(FIColorOption *) option];
     } else if ([option isKindOfClass:[FIScaleOption class]]) {
-      [self scale:(FIScaleOption *)option];
+      [self scale:(FIScaleOption *) option];
     } else if ([option isKindOfClass:[FIAddTextOption class]]) {
-      [self addText:(FIAddTextOption *)option];
+      [self addText:(FIAddTextOption *) option];
     } else if ([option isKindOfClass:[FIMixImageOption class]]) {
-      [self mixImage:(FIMixImageOption *)option];
+      [self mixImage:(FIMixImageOption *) option];
     }
   }
 }
@@ -52,7 +50,7 @@
   if (fmt.format == 0) {
     return UIImagePNGRepresentation(outImage);
   } else {
-    return UIImageJPEGRepresentation(outImage, ((CGFloat)fmt.quality) / 100);
+    return UIImageJPEGRepresentation(outImage, ((CGFloat) fmt.quality) / 100);
   }
 }
 
@@ -168,7 +166,7 @@
   CGContextRotateCTM(ctx, redians);
 
   [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width,
-                                  oldSize.height)];
+          oldSize.height)];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -191,54 +189,54 @@
   if (!outImage) {
     return;
   }
-  
-   CIFilter *filter = [CIFilter filterWithName:@"CIColorMatrix"];
-    NSObject<CIColorMatrix>* matrix = (NSObject<CIColorMatrix>*)filter;
-    
-    [filter setDefaults];
-    
-    CIImage *inputCIImage =  [[CIImage alloc]initWithImage:outImage options:nil];
-    NSLog(@"input size = %@", NSStringFromCGRect([inputCIImage extent]));
-    [matrix setValue:inputCIImage forKey:kCIInputImageKey];
+
+  CIFilter *filter = [CIFilter filterWithName:@"CIColorMatrix"];
+  NSObject <CIColorMatrix> *matrix = (NSObject <CIColorMatrix> *) filter;
+
+  [filter setDefaults];
+
+  CIImage *inputCIImage = [[CIImage alloc] initWithImage:outImage options:nil];
+  NSLog(@"input size = %@", NSStringFromCGRect([inputCIImage extent]));
+  [matrix setValue:inputCIImage forKey:kCIInputImageKey];
 //    [matrix setRVector:[self getCIVector:option start:0]];
-    [matrix setValue:[self getCIVector:option start:0]  forKey:@"inputRVector"];
-    [matrix setValue:[self getCIVector:option start:5]  forKey:@"inputGVector"];
-    [matrix setValue:[self getCIVector:option start:10] forKey:@"inputBVector"];
-    [matrix setValue:[self getCIVector:option start:15] forKey:@"inputAVector"];
-    [matrix setValue:[self getOffsetCIVector:option] forKey:@"inputBiasVector"];
-    
-    CIImage *outputCIImage = [matrix outputImage];
-    
-    if(!outputCIImage){
-        return;
-    }
-    
-    CIContext *ctx = [CIContext contextWithOptions:nil];
-    CGImageRef cgImage = [ctx createCGImage:outputCIImage fromRect:[outputCIImage extent]];
+  [matrix setValue:[self getCIVector:option start:0] forKey:@"inputRVector"];
+  [matrix setValue:[self getCIVector:option start:5] forKey:@"inputGVector"];
+  [matrix setValue:[self getCIVector:option start:10] forKey:@"inputBVector"];
+  [matrix setValue:[self getCIVector:option start:15] forKey:@"inputAVector"];
+  [matrix setValue:[self getOffsetCIVector:option] forKey:@"inputBiasVector"];
 
-    UIImage *newImage = [UIImage imageWithCGImage:cgImage];
+  CIImage *outputCIImage = [matrix outputImage];
 
-    if(!newImage){
-        return;
-    }
-    
-    outImage = newImage;
+  if (!outputCIImage) {
+    return;
+  }
+
+  CIContext *ctx = [CIContext contextWithOptions:nil];
+  CGImageRef cgImage = [ctx createCGImage:outputCIImage fromRect:[outputCIImage extent]];
+
+  UIImage *newImage = [UIImage imageWithCGImage:cgImage];
+
+  if (!newImage) {
+    return;
+  }
+
+  outImage = newImage;
 }
 
--(CIVector*) getCIVector:(FIColorOption*)option start:(int)start{
-    CGFloat v1 = [option getValue:start];
-    CGFloat v2 = [option getValue:start+1];
-    CGFloat v3 = [option getValue:start+2];
-    CGFloat v4 = [option getValue:start+3];
-    return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
+- (CIVector *)getCIVector:(FIColorOption *)option start:(int)start {
+  CGFloat v1 = [option getValue:start];
+  CGFloat v2 = [option getValue:start + 1];
+  CGFloat v3 = [option getValue:start + 2];
+  CGFloat v4 = [option getValue:start + 3];
+  return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
 }
 
--(CIVector*) getOffsetCIVector:(FIColorOption*)option{
-    CGFloat v1 = [option getValue:4];
-    CGFloat v2 = [option getValue:9];
-    CGFloat v3 = [option getValue:14];
-    CGFloat v4 = [option getValue:19];
-     return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
+- (CIVector *)getOffsetCIVector:(FIColorOption *)option {
+  CGFloat v1 = [option getValue:4];
+  CGFloat v2 = [option getValue:9];
+  CGFloat v3 = [option getValue:14];
+  CGFloat v4 = [option getValue:19];
+  return [CIVector vectorWithX:v1 Y:v2 Z:v3 W:v4];
 }
 
 #pragma mark scale
@@ -248,32 +246,23 @@
     return;
   }
 
-  GPUImageFilter *filter = [GPUImageFilter new];
-  CGSize size;
+  UIGraphicsBeginImageContext(outImage.size);
 
-  if (outImage.imageOrientation == UIImageOrientationLeft ||
-      outImage.imageOrientation == UIImageOrientationRight ||
-      outImage.imageOrientation == UIImageOrientationLeftMirrored ||
-      outImage.imageOrientation == UIImageOrientationRightMirrored) {
-    size = CGSizeMake(option.height, option.width);
-  } else {
-    size = CGSizeMake(option.width, option.height);
-  }
-
-  [filter forceProcessingAtSize:size];
-  [filter useNextFrameForImageCapture];
-
-  GPUImagePicture *pic = [[GPUImagePicture alloc] initWithImage:outImage];
-  if (!pic) {
+  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  if (!ctx) {
     return;
   }
-  [pic addTarget:filter];
-  [pic processImage];
 
-  UIImage *image = [filter imageFromCurrentFramebufferWithOrientation:outImage.imageOrientation];
-  if (image) {
-    outImage = image;
+  [outImage drawInRect:CGRectMake(0, 0, option.width, option.height)];
+
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
+  if (!newImage) {
+    return;
   }
+
+  outImage = newImage;
 }
 
 #pragma mark add text
@@ -301,9 +290,9 @@
     UIColor *color = [UIColor colorWithRed:text.r green:text.g blue:text.b alpha:text.a];
 
     NSDictionary *attr = @{
-      NSFontAttributeName : [UIFont boldSystemFontOfSize:text.fontSizePx],
-      NSForegroundColorAttributeName : color,
-      NSBackgroundColorAttributeName : UIColor.clearColor,
+            NSFontAttributeName: [UIFont boldSystemFontOfSize:text.fontSizePx],
+            NSForegroundColorAttributeName: color,
+            NSBackgroundColorAttributeName: UIColor.clearColor,
     };
 
     CGFloat w = outImage.size.width - text.x;

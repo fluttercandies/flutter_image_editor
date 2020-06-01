@@ -238,3 +238,16 @@ static NSDictionary *mixBlendModeDict;
 }
 
 @end
+
+@implementation FIDrawOption
+@synthesize values;
+
++ (nonnull id)createFromDict:(nonnull NSDictionary *)dict {
+   FIDrawOption *option = [FIDrawOption new];
+    option.values = dict;
+   return option;
+}
+
+@end
+
+

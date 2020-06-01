@@ -100,4 +100,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol FIValues <NSObject>
+@property(nonatomic, strong)NSDictionary *values;
+@end
+
+@interface FIDrawOption : NSObject <FIOption,FIValues>
+
+@property(nonatomic,strong) NSArray *parts;
+
+@end
+
+@protocol FIHavePaint <NSObject,FIValues>
+
+@end
+
 NS_ASSUME_NONNULL_END
