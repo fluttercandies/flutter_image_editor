@@ -10,7 +10,7 @@
 
 @implementation FIUIImageHandler {
   UIImage *outImage;
-
+}
 - (void)handleImage {
   outImage = self.image;
   [self fixOrientation];
