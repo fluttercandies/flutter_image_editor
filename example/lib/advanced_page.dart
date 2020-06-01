@@ -14,7 +14,7 @@ class ExtendedImageExample extends StatefulWidget {
 }
 
 class _ExtendedImageExampleState extends State<ExtendedImageExample> {
-  final editorKey = GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey<ExtendedImageEditorState>();
 
   ImageProvider provider;
 
@@ -28,7 +28,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Use extended_image library"),
+          title: const Text('Use extended_image library'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.photo),
@@ -52,7 +52,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
               ),
               Expanded(
                 child: SliderTheme(
-                  data: SliderThemeData(
+                  data: const SliderThemeData(
                     showValueIndicator: ShowValueIndicator.always,
                   ),
                   child: Column(
@@ -78,10 +78,10 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       extendedImageEditorKey: editorKey,
       mode: ExtendedImageMode.editor,
       fit: BoxFit.contain,
-      initEditorConfigHandler: (state) {
+      initEditorConfigHandler: (ExtendedImageState state) {
         return EditorConfig(
           maxScale: 8.0,
-          cropRectPadding: EdgeInsets.all(20.0),
+          cropRectPadding: const EdgeInsets.all(20.0),
           hitTestSize: 20.0,
           cropAspectRatio: 2 / 1,
         );
@@ -94,18 +94,18 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.flip),
-          title: Text("Flip"),
+          title: const Text('Flip'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_left),
-          title: Text("Rotate left"),
+          title: const Text('Rotate left'),
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_right),
-          title: Text("Rotate right"),
+          title: const Text('Rotate right'),
         ),
       ],
-      onTap: (index) {
+      onTap: (int index) {
         switch (index) {
           case 0:
             flip();
@@ -125,17 +125,17 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> crop([bool test = false]) async {
-    final state = editorKey.currentState;
-    final rect = state.getCropRect();
-    final action = state.editAction;
-    final radian = action.rotateAngle;
+    final ExtendedImageEditorState state = editorKey.currentState;
+    final Rect rect = state.getCropRect();
+    final EditActionDetails action = state.editAction;
+    final double radian = action.rotateAngle;
 
-    final flipHorizontal = action.flipY;
-    final flipVertical = action.flipX;
+    final bool flipHorizontal = action.flipY;
+    final bool flipVertical = action.flipX;
     // final img = await getImageFromEditorKey(editorKey);
-    final img = state.rawImageData;
+    final Uint8List img = state.rawImageData;
 
-    ImageEditorOption option = ImageEditorOption();
+    final ImageEditorOption option = ImageEditorOption();
 
     option.addOption(ClipOption.fromRect(rect));
     option.addOption(
@@ -148,23 +148,23 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     option.addOption(ColorOption.brightness(bright));
     option.addOption(ColorOption.contrast(con));
 
-    option.outputFormat = OutputFormat.png(88);
+    option.outputFormat = const OutputFormat.png(88);
 
-    print(JsonEncoder.withIndent('  ').convert(option.toJson()));
+    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
 
-    final start = DateTime.now();
-    final result = await ImageEditor.editImage(
+    final DateTime start = DateTime.now();
+    final Uint8List result = await ImageEditor.editImage(
       image: img,
       imageEditorOption: option,
     );
 
-    print("result.length = ${result.length}");
+    print('result.length = ${result.length}');
 
-    final diff = DateTime.now().difference(start);
+    final Duration diff = DateTime.now().difference(start);
 
-    print("image_editor time : $diff");
-    showToast("handle duration: $diff",
-        duration: Duration(seconds: 5), dismissOtherToast: true);
+    print('image_editor time : $diff');
+    showToast('handle duration: $diff',
+        duration: const Duration(seconds: 5), dismissOtherToast: true);
 
     showPreviewDialog(result);
   }
@@ -173,20 +173,20 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     editorKey.currentState.flip();
   }
 
-  rotate(bool right) {
+  void rotate(bool right) {
     editorKey.currentState.rotate(right: right);
   }
 
   void showPreviewDialog(Uint8List image) {
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (ctx) => GestureDetector(
+      builder: (BuildContext ctx) => GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Container(
           color: Colors.grey.withOpacity(0.5),
           child: Center(
             child: SizedBox.fromSize(
-              size: Size.square(200),
+              size: const Size.square(200),
               child: Container(
                 child: Image.memory(image),
               ),
@@ -197,8 +197,8 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     );
   }
 
-  void _pick() async {
-    final result = await ImagePicker().getImage(source: ImageSource.camera);
+  Future<void> _pick() async {
+    final PickedFile result = await ImagePicker().getImage(source: ImageSource.camera);
     if (result != null) {
       print(result.path);
       provider = ExtendedFileImageProvider(File(result.path));
@@ -210,7 +210,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   double bright = 1;
   double con = 1;
 
-  _buildSat() {
+  Widget _buildSat() {
     return Slider(
       label: 'sat : ${sat.toStringAsFixed(2)}',
       onChanged: (double value) {
@@ -224,7 +224,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     );
   }
 
-  _buildBrightness() {
+  Widget _buildBrightness() {
     return Slider(
       label: 'brightness : ${bright.toStringAsFixed(2)}',
       onChanged: (double value) {
@@ -238,7 +238,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     );
   }
 
-  _buildCon() {
+  Widget _buildCon() {
     return Slider(
       label: 'con : ${con.toStringAsFixed(2)}',
       onChanged: (double value) {

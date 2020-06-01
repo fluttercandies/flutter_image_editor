@@ -7,9 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/widget/examples.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
-import 'const/resource.dart';
-import 'package:image_editor/image_editor.dart';
+import 'package:image_editor/image_editor.dart'
+    show
+        ClipOption,
+        FlipOption,
+        ImageEditor,
+        ImageEditorOption,
+        Option,
+        OutputFormat,
+        RotateOption;
 
+import 'const/resource.dart';
 import 'widget/clip_widget.dart';
 import 'widget/flip_widget.dart';
 import 'widget/rotate_widget.dart';
@@ -24,7 +32,7 @@ class IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Index'),
+        title: const Text('Index'),
       ),
       body: Examples(),
     );
@@ -49,12 +57,12 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Simple usage"),
+        title: const Text('Simple usage'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.settings_backup_restore),
             onPressed: restore,
-            tooltip: "Restore image to default.",
+            tooltip: 'Restore image to default.',
           ),
         ],
       ),
@@ -103,48 +111,49 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
   }
 
   Future<Uint8List> getAssetImage() async {
-    final byteData = await rootBundle.load(R.ASSETS_ICON_PNG);
+    final ByteData byteData = await rootBundle.load(R.ASSETS_ICON_PNG);
     return byteData.buffer.asUint8List();
   }
 
-  void _flip(FlipOption flipOption) async {
-    handleOption([flipOption]);
+  Future<void> _flip(FlipOption flipOption) async {
+    handleOption(<Option>[flipOption]);
   }
 
-  _clip(ClipOption clipOpt) async {
-    handleOption([clipOpt]);
+  Future<void> _clip(ClipOption clipOpt) async {
+    handleOption(<Option>[clipOpt]);
   }
 
-  void _rotate(RotateOption rotateOpt) async {
-    handleOption([rotateOpt]);
+  Future<void> _rotate(RotateOption rotateOpt) async {
+    handleOption(<Option>[rotateOpt]);
   }
 
   void _scale(Option value) {
-    handleOption([value]);
+    handleOption(<Option>[value]);
   }
 
-  void handleOption(List<Option> options) async {
-    ImageEditorOption option = ImageEditorOption();
-    for (final o in options) {
+  Future<void> handleOption(List<Option> options) async {
+    final ImageEditorOption option = ImageEditorOption();
+    for (int i = 0; i < options.length; i++) {
+      final Option o = options[i];
       option.addOption(o);
     }
 
-    option.outputFormat = OutputFormat.png();
+    option.outputFormat = const OutputFormat.png();
 
-    final assetImage = await getAssetImage();
+    final Uint8List assetImage = await getAssetImage();
 
-    print(JsonEncoder.withIndent('  ').convert(option.toJson()));
-    final result = await ImageEditor.editImage(
+    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
+    final Uint8List result = await ImageEditor.editImage(
       image: assetImage,
       imageEditorOption: option,
     );
 
-    final img = MemoryImage(result);
+    final MemoryImage img = MemoryImage(result);
     setProvider(img);
   }
 }
 
-Widget buildButton(String text, Function onTap) {
+Widget buildButton(String text, VoidCallback onTap) {
   return FlatButton(
     child: Text(text),
     onPressed: onTap,

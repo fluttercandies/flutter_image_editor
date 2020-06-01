@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
@@ -17,7 +19,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'merge',
         ),
       ),
@@ -25,7 +27,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
         children: <Widget>[
           FlatButton(
             onPressed: _merge,
-            child: Text('merge'),
+            child: const Text('merge'),
           ),
           Slider(
             value: count.toDouble(),
@@ -33,8 +35,8 @@ class _MergeImagePageState extends State<MergeImagePage> {
             label: 'count : $count',
             min: 2,
             max: 6,
-            onChanged: (v) {
-              this.count = v.toInt();
+            onChanged: (double v) {
+              count = v.toInt();
               setState(() {});
             },
           ),
@@ -54,39 +56,39 @@ class _MergeImagePageState extends State<MergeImagePage> {
     return Container();
   }
 
-  void _merge() async {
-    final slideLength = 180.0;
-    final option = ImageMergeOption(
+  Future<void> _merge() async {
+    const double slideLength = 180.0;
+    final ImageMergeOption option = ImageMergeOption(
       canvasSize: Size(slideLength * count, slideLength * count),
-      format: OutputFormat.png(),
+      format: const OutputFormat.png(),
     );
 
-    final memory = await loadFromAsset(R.ASSETS_ICON_PNG);
-    for (var i = 0; i < count; i++) {
+    final Uint8List memory = await loadFromAsset(R.ASSETS_ICON_PNG);
+    for (int i = 0; i < count; i++) {
       option.addImage(
         MergeImageConfig(
           image: MemoryImageSource(memory),
           position: ImagePosition(
             Offset(slideLength * i, slideLength * i),
-            Size.square(slideLength),
+            const Size.square(slideLength),
           ),
         ),
       );
     }
-    for (var i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       option.addImage(
         MergeImageConfig(
           image: MemoryImageSource(memory),
           position: ImagePosition(
             Offset(
                 slideLength * count - slideLength * (i + 1), slideLength * i),
-            Size.square(slideLength),
+            const Size.square(slideLength),
           ),
         ),
       );
     }
 
-    final result = await ImageMerger.mergeToMemory(option: option);
+    final Uint8List result = await ImageMerger.mergeToMemory(option: option);
     provider = MemoryImage(result);
     setState(() {});
   }

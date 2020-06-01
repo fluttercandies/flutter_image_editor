@@ -27,6 +27,6 @@ class _MyAppState extends State<MyApp> {
 }
 
 Future<Uint8List> loadFromAsset(String key) async {
-  final byteData = await rootBundle.load(key);
+  final ByteData byteData = await rootBundle.load(key);
   return byteData.buffer.asUint8List();
 }

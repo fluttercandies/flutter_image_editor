@@ -3,13 +3,11 @@ import 'package:flutter_image_editor_example/widget/expand_container.dart';
 import 'package:image_editor/image_editor.dart';
 
 class ClipWidget extends StatefulWidget {
-  final ValueChanged<ClipOption> onTap;
-
   const ClipWidget({
     Key key,
     this.onTap,
   }) : super(key: key);
-
+  final ValueChanged<ClipOption> onTap;
   @override
   _ClipWidgetState createState() => _ClipWidgetState();
 }
@@ -23,17 +21,17 @@ class _ClipWidgetState extends State<ClipWidget> {
   @override
   Widget build(BuildContext context) {
     return ExpandContainer(
-      title: "clip",
+      title: 'clip',
       child: Column(
         children: <Widget>[
-          buildSlider("x", onChanged: (v) => x = v, value: x),
-          buildSlider("y", onChanged: (v) => y = v, value: y),
-          buildSlider("width",
-              onChanged: (v) => width = v, value: width, min: 1),
-          buildSlider("height",
-              onChanged: (v) => height = v, value: height, min: 1),
+          buildSlider('x', onChanged: (int v) => x = v, value: x),
+          buildSlider('y', onChanged: (int v) => y = v, value: y),
+          buildSlider('width',
+              onChanged: (int v) => width = v, value: width, min: 1),
+          buildSlider('height',
+              onChanged: (int v) => height = v, value: height, min: 1),
           FlatButton(
-            child: Text("clip"),
+            child: const Text('clip'),
             onPressed: clip,
           ),
         ],
@@ -65,14 +63,14 @@ class _ClipWidgetState extends State<ClipWidget> {
         ),
         SizedBox(
           width: 50,
-          child: Text("$title:$value"),
+          child: Text('$title:$value'),
         ),
       ],
     );
   }
 
   void clip() {
-    final opt = ClipOption(
+    final ClipOption opt = ClipOption(
       x: x,
       y: y,
       width: width,

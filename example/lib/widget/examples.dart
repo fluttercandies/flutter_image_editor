@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/add_text_page.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
+import 'package:flutter_image_editor_example/draw_example_page.dart';
 import 'package:flutter_image_editor_example/home_page.dart';
 import 'package:flutter_image_editor_example/merge_image_page.dart';
 import 'package:flutter_image_editor_example/mix_image_page.dart';
@@ -11,12 +12,13 @@ class Examples extends StatefulWidget {
 }
 
 class _ExamplesState extends State<Examples> {
-  static get widgets => <Widget>[
+  static List<Widget> get widgets => <Widget>[
         SimpleExamplePage(),
         ExtendedImageExample(),
         AddTextPage(),
         MixImagePage(),
         MergeImagePage(),
+        DrawExamplePage(),
       ];
 
   @override
@@ -32,7 +34,7 @@ class _ExamplesState extends State<Examples> {
   Widget _buildButton(Widget widget) {
     return RaisedButton(
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (ctx) => widget));
+        Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
       },
       child: Text(widget.runtimeType.toString()),
     );
