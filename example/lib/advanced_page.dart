@@ -8,12 +8,12 @@ import 'package:image_editor/image_editor.dart' hide ImageSource;
 import 'package:image_picker/image_picker.dart';
 import 'package:oktoast/oktoast.dart';
 
-class AdvancedPage extends StatefulWidget {
+class ExtendedImageExample extends StatefulWidget {
   @override
-  _AdvancedPageState createState() => _AdvancedPageState();
+  _ExtendedImageExampleState createState() => _ExtendedImageExampleState();
 }
 
-class _AdvancedPageState extends State<AdvancedPage> {
+class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   final editorKey = GlobalKey<ExtendedImageEditorState>();
 
   ImageProvider provider;

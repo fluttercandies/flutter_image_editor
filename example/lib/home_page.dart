@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/advanced_page.dart';
 import 'package:flutter_image_editor_example/merge_image_page.dart';
 import 'package:flutter_image_editor_example/mix_image_page.dart';
+import 'package:flutter_image_editor_example/widget/examples.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
 import 'add_text_page.dart';
@@ -17,12 +18,29 @@ import 'widget/clip_widget.dart';
 import 'widget/flip_widget.dart';
 import 'widget/rotate_widget.dart';
 
-class HomePage extends StatefulWidget {
+class IndexPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  IndexPageState createState() => IndexPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class IndexPageState extends State<IndexPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Index'),
+      ),
+      body: Examples(),
+    );
+  }
+}
+
+class SimpleExamplePage extends StatefulWidget {
+  @override
+  _SimpleExamplePageState createState() => _SimpleExamplePageState();
+}
+
+class _SimpleExamplePageState extends State<SimpleExamplePage> {
   ImageProvider provider;
 
   @override
@@ -38,31 +56,9 @@ class _HomePageState extends State<HomePage> {
         title: Text("Simple usage"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.extension),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => AdvancedPage(),
-            )),
-            tooltip: "Use extended_image library",
-          ),
-          IconButton(
             icon: Icon(Icons.settings_backup_restore),
             onPressed: restore,
             tooltip: "Restore image to default.",
-          ),
-          IconButton(
-            icon: Icon(Icons.text_fields),
-            onPressed: _addText,
-            tooltip: "Add text",
-          ),
-          IconButton(
-            icon: Icon(Icons.branding_watermark),
-            onPressed: _mixImage,
-            tooltip: "Mix image",
-          ),
-          IconButton(
-            icon: Icon(Icons.merge_type),
-            onPressed: mergeImage,
-            tooltip: 'merge image',
           ),
         ],
       ),
@@ -149,24 +145,6 @@ class _HomePageState extends State<HomePage> {
 
     final img = MemoryImage(result);
     setProvider(img);
-  }
-
-  void _addText() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => AddTextPage(),
-    ));
-  }
-
-  void _mixImage() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => MixImagePage(),
-    ));
-  }
-
-  void mergeImage() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => MergeImagePage(),
-    ));
   }
 }
 

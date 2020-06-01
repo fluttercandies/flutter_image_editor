@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
     return OKToast(
       position: ToastPosition.bottom,
       child: MaterialApp(
-        home: HomePage(),
+        home: IndexPage(),
       ),
     );
   }
