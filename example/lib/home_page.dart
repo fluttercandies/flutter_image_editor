@@ -45,13 +45,7 @@ class SimpleExamplePage extends StatefulWidget {
 }
 
 class _SimpleExamplePageState extends State<SimpleExamplePage> {
-  ImageProvider provider;
-
-  @override
-  void initState() {
-    super.initState();
-    provider = AssetImage(R.ASSETS_ICON_PNG);
-  }
+  ImageProvider provider = AssetImage(R.ASSETS_ICON_PNG);
 
   @override
   Widget build(BuildContext context) {
