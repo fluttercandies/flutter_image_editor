@@ -14,7 +14,7 @@ class DrawPaint(map: Map<*, *>) : TransferValue(map) {
     return Paint()
             .apply {
               color = this@DrawPaint.getColor("color")
-              strokeWidth = map["lineWeight"] as Float
+              strokeWidth = (map["lineWeight"] as Number).toFloat()
               style = if (map["paintStyleFill"] as Boolean) Paint.Style.FILL else Paint.Style.STROKE
             }
   }
@@ -42,7 +42,7 @@ class PointsDrawPart(map: Map<*, *>) : DrawPart(map), IHavePaint {
       return list
     }
 
-  val mode: Int = map["mode"] as Int
+//  val mode: Int = map["mode"] as Int
 }
 
 class RectDrawPart(map: Map<*, *>) : DrawPart(map), IHavePaint {

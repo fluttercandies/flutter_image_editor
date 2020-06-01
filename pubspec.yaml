@@ -5,7 +5,7 @@ author: Caijinglong<cjl_spy@163.com>
 homepage: https://github.com/fluttercandies/flutter_image_editor
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.5.0 <3.0.0"
 
 dependencies:
   flutter:

@@ -33,6 +33,11 @@ abstract class DrawPart implements TransferValue {
   Map<String, Object> offsetValue(Offset o) {
     return ConvertUtils.offset(o);
   }
+
+  @override
+  String toString() {
+    return JsonEncoder.withIndent('  ').convert(transferValue);
+  }
 }
 
 class DrawPaint extends DrawPart {
@@ -124,11 +129,9 @@ class LineDrawPart extends DrawPart with _HavePaint {
 class PointDrawPart extends DrawPart with _HavePaint {
   final List<Offset> points = [];
   final DrawPaint paint;
-  final PointMode pointMode;
 
   PointDrawPart({
     this.paint = const DrawPaint(),
-    this.pointMode = PointMode.points,
   });
 
   @override
@@ -140,7 +143,6 @@ class PointDrawPart extends DrawPart with _HavePaint {
   @override
   Map<String, Object> get values => {
         'offset': points.map((e) => ConvertUtils.offset(e)).toList(),
-        'mode': pointMode.index,
       };
 }
 
