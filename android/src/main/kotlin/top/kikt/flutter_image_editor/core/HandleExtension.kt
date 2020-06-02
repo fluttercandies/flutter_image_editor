@@ -26,6 +26,7 @@ fun Bitmap.draw(option: DrawOption): Bitmap {
 
 fun drawPath(canvas: Canvas, drawPart: PathDrawPart) {
   val path = Path()
+  val close = drawPart.autoClose
   for (p in drawPart.paths) {
     when (p) {
       is MovePathPart -> {
@@ -58,6 +59,10 @@ fun drawPath(canvas: Canvas, drawPart: PathDrawPart) {
         }
       }
     }
+  }
+
+  if (close) {
+    path.close()
   }
 
   canvas.drawPath(path, drawPart.getPaint())

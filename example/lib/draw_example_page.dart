@@ -40,6 +40,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
           addRect(),
           addOval(),
           addPoints(),
+          buildDrawPath(),
         ],
       ),
     );
@@ -95,7 +96,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
     );
   }
 
-  void addDrawPart(DrawPart part) async {
+  Future<void> addDrawPart(DrawPart part) async {
     print(part.toString());
 
     final tu = TimeUtils();
@@ -160,6 +161,29 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
         addDrawPart(dp);
       },
       child: Text('add points'),
+    );
+  }
+
+  Widget buildDrawPath() {
+    return RaisedButton.icon(
+      onPressed: () async {
+        final paint = DrawPaint(
+          lineWeight: 10,
+          paintingStyle: PaintingStyle.stroke,
+          color: randomColor(),
+        );
+        final path = PathDrawPart(
+          autoClose: false,
+          paint: paint,
+        );
+        path.lineTo(randomOffset(), paint);
+        path.lineTo(randomOffset(), paint);
+        path.bezier2To(randomOffset(), randomOffset());
+        path.bezier3To(randomOffset(), randomOffset(), randomOffset());
+        await addDrawPart(path);
+      },
+      icon: Icon(Icons.format_paint),
+      label: Text('paint'),
     );
   }
 }

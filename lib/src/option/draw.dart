@@ -84,7 +84,7 @@ class DrawPaint extends DrawPart {
   Map<String, Object> get transferValue => {
         'color': ConvertUtils.color(color),
         'lineWeight': lineWeight,
-        'paintStyleFill': paintingStyle == paintingStyle,
+        'paintStyleFill': paintingStyle == PaintingStyle.fill,
       };
 
   Map<String, Object> get values => {
@@ -191,6 +191,7 @@ class OvalDrawPart extends DrawPart with _HavePaint {
 class PathDrawPart extends DrawPart with _HavePaint {
   final List<_PathPart> parts = [];
 
+  @override
   final DrawPaint paint;
 
   final bool autoClose;

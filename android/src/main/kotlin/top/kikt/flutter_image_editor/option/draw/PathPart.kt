@@ -2,6 +2,8 @@ package top.kikt.flutter_image_editor.option.draw
 
 class PathDrawPart(map: Map<*, *>) : DrawPart(map), IHavePaint {
 
+  val autoClose: Boolean
+    get() = map["autoClose"] as Boolean
   val paths: List<PathPart>
 
   init {
@@ -13,11 +15,16 @@ class PathDrawPart(map: Map<*, *>) : DrawPart(map), IHavePaint {
       if (partMap is Map<*, *>) {
         val key = partMap["key"]
         val value = partMap["value"] as Map<*, *>
-        when (key) {
+        val part = when (key) {
           "move" -> MovePathPart(value)
           "lineTo" -> LineToPathPart(value)
           "bezier" -> BezierPathPart(value)
           "arcTo" -> ArcToPathPart(value)
+          else -> null
+        }
+
+        if (part != null) {
+          list.add(part)
         }
       }
     }
