@@ -12,9 +12,9 @@
   NSMutableArray *optionArray = [NSMutableArray new];
   group.options = optionArray;
   for (NSDictionary *map in dict) {
-    NSString *type = (NSString *)map[@"type"];
+    NSString *type = (NSString *) map[@"type"];
     NSDictionary *value = map[@"value"];
-    NSObject<FIOption> *option;
+    NSObject <FIOption> *option;
     if ([@"flip" isEqualToString:type]) {
       option = [FIFlipOption createFromDict:value];
     } else if ([@"clip" isEqualToString:type]) {
@@ -93,8 +93,8 @@
   return option;
 }
 
--(CGFloat)getValue:(int)index{
-    return [self.matrix[index] floatValue];
+- (CGFloat)getValue:(int)index {
+  return [self.matrix[index] floatValue];
 }
 
 @end
@@ -156,23 +156,23 @@ static NSDictionary *mixBlendModeDict;
 + (id)createFromDict:(NSDictionary *)dict {
   if (!mixBlendModeDict) {
     mixBlendModeDict = @{
-      @"clear" : @(kCGBlendModeClear),
-      @"src" : @(kCGBlendModeSrc),
-      @"dst" : @(kCGBlendModeDst),
-      @"srcOver" : @(kCGBlendModeNormal),
-      @"dstOver" : @(kCGBlendModeDestinationOver),
-      @"srcIn" : @(kCGBlendModeSourceIn),
-      @"dstIn" : @(kCGBlendModeDestinationIn),
-      @"srcOut" : @(kCGBlendModeSourceOut),
-      @"dstOut" : @(kCGBlendModeDestinationOver),
-      @"srcATop" : @(kCGBlendModeSourceAtop),
-      @"dstATop" : @(kCGBlendModeDestinationAtop),
-      @"xor" : @(kCGBlendModeXOR),
-      @"darken" : @(kCGBlendModeDarken),
-      @"lighten" : @(kCGBlendModeLighten),
-      @"multiply" : @(kCGBlendModeMultiply),
-      @"screen" : @(kCGBlendModeScreen),
-      @"overlay" : @(kCGBlendModeOverlay),
+            @"clear": @(kCGBlendModeClear),
+            @"src": @(kCGBlendModeSrc),
+            @"dst": @(kCGBlendModeDst),
+            @"srcOver": @(kCGBlendModeNormal),
+            @"dstOver": @(kCGBlendModeDestinationOver),
+            @"srcIn": @(kCGBlendModeSourceIn),
+            @"dstIn": @(kCGBlendModeDestinationIn),
+            @"srcOut": @(kCGBlendModeSourceOut),
+            @"dstOut": @(kCGBlendModeDestinationOver),
+            @"srcATop": @(kCGBlendModeSourceAtop),
+            @"dstATop": @(kCGBlendModeDestinationAtop),
+            @"xor": @(kCGBlendModeXOR),
+            @"darken": @(kCGBlendModeDarken),
+            @"lighten": @(kCGBlendModeLighten),
+            @"multiply": @(kCGBlendModeMultiply),
+            @"screen": @(kCGBlendModeScreen),
+            @"overlay": @(kCGBlendModeOverlay),
 
     };
   }
@@ -184,7 +184,7 @@ static NSDictionary *mixBlendModeDict;
   option.width = [dict[@"w"] intValue];
   option.height = [dict[@"h"] intValue];
 
-  option.src = ((FlutterStandardTypedData *)dict[@"target"][@"memory"]).data;
+  option.src = ((FlutterStandardTypedData *) dict[@"target"][@"memory"]).data;
   NSString *modeString = dict[@"mixMode"];
   option.blendMode = mixBlendModeDict[modeString];
 
@@ -202,7 +202,7 @@ static NSDictionary *mixBlendModeDict;
 + (nonnull id)createFromDict:(nonnull NSDictionary *)dict {
   FIMergeImage *image = [FIMergeImage new];
 
-  image.data = ((FlutterStandardTypedData *)dict[@"src"][@"memory"]).data;
+  image.data = ((FlutterStandardTypedData *) dict[@"src"][@"memory"]).data;
   NSDictionary *position = dict[@"position"];
   image.x = [position[@"x"] intValue];
   image.y = [position[@"y"] intValue];
@@ -240,14 +240,104 @@ static NSDictionary *mixBlendModeDict;
 @end
 
 @implementation FIDrawOption
-@synthesize values;
 
 + (nonnull id)createFromDict:(nonnull NSDictionary *)dict {
-   FIDrawOption *option = [FIDrawOption new];
-    option.values = dict;
-   return option;
+  FIDrawOption *option = [FIDrawOption new];
+  option.map = dict;
+  return option;
+}
+
+- (NSArray<FIDrawPart *> *)parts {
+  NSMutableArray *array = [NSMutableArray new];
+  for (NSDictionary *dict in self.map[@"parts"]) {
+    NSString *key = dict[@"key"];
+    NSDictionary *value = dict[@"value"];
+    if (key) {
+      FIDrawPart *part;
+      if ([key isEqualToString:@"rect"]) {
+        part = [FIRectDrawPart createFromDict:value];
+      } else if ([key isEqualToString:@"oval"]) {
+
+      } else if ([key isEqualToString:@"line"]) {
+
+      } else if ([key isEqualToString:@"point"]) {
+
+      } else if ([key isEqualToString:@"path"]) {
+
+      }
+
+      if (part) {
+        [array addObject:part];
+      }
+    }
+  }
+
+  return array;
 }
 
 @end
 
+@implementation FIPaint
 
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPaint *ins = [FIPaint new];
+  ins.map = dict;
+
+  ins.fill = [dict[@"paintStyleFill"] boolValue];
+  ins.paintWeight = [dict[@"lineWeight"] intValue];
+  NSDictionary *colorMap = dict[@"color"];
+  int r = [colorMap[@"r"] intValue];
+  int g = [colorMap[@"g"] intValue];
+  int b = [colorMap[@"b"] intValue];
+  int a = [colorMap[@"a"] intValue];
+  ins.color = [UIColor colorWithRed:r green:g blue:b alpha:a];
+
+  return ins;
+}
+
+
+@end
+
+@implementation FIDrawPart
++ (id)createFromDict:(NSDictionary *)dict {
+  FIDrawPart *ins = [FIDrawPart new];
+  ins.map = dict;
+  return ins;
+}
+
+- (FIPaint *)paint {
+  return [FIPaint createFromDict:self.map[@"paint"]];
+}
+
+- (CGRect)rect:(NSString *)key {
+  NSDictionary *m = self.map[key];
+  float left = [m[@"left"] floatValue];
+  float top = [m[@"top"] floatValue];
+  float w = [m[@"width"] floatValue];
+  float h = [m[@"height"] floatValue];
+  CGRect result = CGRectMake(left, top, w, h);
+  return result;
+}
+
+- (CGPoint)point:(NSString *)key {
+  NSDictionary *m = self.map[key];
+  float x = [m[@"x"] floatValue];
+  float y = [m[@"y"] floatValue];
+  return CGPointMake(x, y);
+}
+
+
+@end
+
+@implementation FIValueOption
+@end
+
+@implementation FIRectDrawPart
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIRectDrawPart *part = [FIRectDrawPart new];
+  part.map = dict;
+  return part;
+}
+
+@end

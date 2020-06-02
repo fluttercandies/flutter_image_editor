@@ -3,6 +3,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define kCGBlendModeSrc 12345
@@ -46,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FIColorOption : NSObject <FIOption>
 @property(strong, nonatomic) NSArray *matrix;
 
--(CGFloat)getValue:(int)index;
+- (CGFloat)getValue:(int)index;
 @end
 
 @interface FIScaleOption : NSObject <FIOption>
@@ -100,17 +102,35 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol FIValues <NSObject>
-@property(nonatomic, strong)NSDictionary *values;
+@interface FIValueOption : NSObject
+@property(nonatomic, strong) NSDictionary *map;
 @end
 
-@interface FIDrawOption : NSObject <FIOption,FIValues>
+@interface FIPaint : FIValueOption <FIOption>
 
-@property(nonatomic,strong) NSArray *parts;
+@property(nonatomic, assign) UIColor *color;
+@property(nonatomic, assign) int paintWeight;
+@property(nonatomic, assign) bool fill;
 
 @end
 
-@protocol FIHavePaint <NSObject,FIValues>
+@interface FIDrawPart : FIValueOption <FIOption>
+
+- (FIPaint *)paint;
+
+- (CGRect)rect:(NSString *)key;
+
+- (CGPoint)point:(NSString *)key;
+
+@end
+
+@interface FIDrawOption : FIValueOption <FIOption>
+
+- (NSArray<FIDrawPart *> *)parts;
+
+@end
+
+@interface FIRectDrawPart : FIDrawPart
 
 @end
 
