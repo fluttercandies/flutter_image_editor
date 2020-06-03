@@ -130,8 +130,65 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface FILineDrawPart : FIDrawPart
+
+- (CGPoint)start;
+
+- (CGPoint)end;
+@end
+
+@interface FIPointsDrawPart : FIDrawPart
+
+- (NSArray *)points;
+@end
+
 @interface FIRectDrawPart : FIDrawPart
 
+- (CGRect)rect;
 @end
+
+@interface FIOvalDrawPart : FIDrawPart
+
+- (CGRect)rect;
+@end
+
+@interface FIPathDrawPart : FIDrawPart
+
+- (NSArray<FIDrawPart *> *)parts;
+@end
+
+@interface FIPathMove : FIDrawPart
+
+- (CGPoint)offset;
+@end
+
+
+@interface FIPathLine : FIDrawPart
+
+- (CGPoint)offset;
+@end
+
+@interface FIPathArc : FIDrawPart
+
+- (CGFloat)start;
+
+- (CGFloat)sweep;
+
+- (BOOL)useCenter;
+
+- (CGRect)rect;
+@end
+
+@interface FIPathBezier : FIDrawPart
+
+- (int)kind;
+
+- (CGPoint)target;
+
+- (CGPoint)control1;
+
+- (CGPoint)control2;
+@end
+
 
 NS_ASSUME_NONNULL_END

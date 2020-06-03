@@ -136,8 +136,8 @@
   NSArray *src = dict[@"texts"];
   NSMutableArray<FIAddText *> *arr = [NSMutableArray new];
 
-  for (NSDictionary *dict in src) {
-    FIAddText *addText = [FIAddText createFromDict:dict];
+  for (NSDictionary *value in src) {
+    FIAddText *addText = [FIAddText createFromDict:value];
     [arr addObject:addText];
   }
 
@@ -223,8 +223,8 @@ static NSDictionary *mixBlendModeDict;
 
   NSMutableArray *optionArray = [NSMutableArray new];
   opt.images = optionArray;
-  for (NSDictionary *dict in imageOpt) {
-    [optionArray addObject:[FIMergeImage createFromDict:dict]];
+  for (NSDictionary *value in imageOpt) {
+    [optionArray addObject:[FIMergeImage createFromDict:value]];
   }
 
   int w = [dict[@"w"] intValue];
@@ -332,6 +332,47 @@ static NSDictionary *mixBlendModeDict;
 @implementation FIValueOption
 @end
 
+@implementation FILineDrawPart
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FILineDrawPart *part = [FILineDrawPart new];
+  part.map = dict;
+  return part;
+}
+
+- (CGPoint)start {
+  return [self point:@"start"];
+}
+
+
+- (CGPoint)end {
+  return [self point:@"end"];
+}
+
+@end
+
+@implementation FIPointsDrawPart
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPointsDrawPart *part = [FIPointsDrawPart new];
+  part.map = dict;
+  return part;
+}
+
+- (NSArray *)points {
+  NSMutableArray *arr = self.map[@"offset"];
+  for (NSDictionary *map in arr) {
+    int x = [map[@"x"] intValue];
+    int y = [map[@"y"] intValue];
+    CGPoint point = CGPointMake(x, y);
+    [arr addObject:[NSValue valueWithCGPoint:point]];
+  }
+
+  return arr;
+}
+
+@end
+
 @implementation FIRectDrawPart
 
 + (id)createFromDict:(NSDictionary *)dict {
@@ -340,4 +381,151 @@ static NSDictionary *mixBlendModeDict;
   return part;
 }
 
+- (CGRect)rect {
+  return [self rect:@"rect"];
+}
+
 @end
+
+@implementation FIOvalDrawPart
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIOvalDrawPart *part = [FIOvalDrawPart new];
+  part.map = dict;
+  return part;
+}
+
+- (CGRect)rect {
+  return [self rect:@"rect"];
+}
+
+@end
+
+@implementation FIPathDrawPart
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPathDrawPart *part = [FIPathDrawPart new];
+  part.map = dict;
+  return part;
+}
+
+- (BOOL)autoClose {
+  return [self.map[@"autoClose"] boolValue];
+}
+
+- (NSArray<FIDrawPart *> *)parts {
+  NSMutableArray *result = [NSMutableArray new];
+
+  NSArray *arr = self.map[@"parts"];
+
+  for (int i = 0; i < arr.count; ++i) {
+    NSDictionary *kv = arr[(NSUInteger) i];
+    NSString *key = kv[@"key"];
+    NSDictionary *value = kv[@"value"];
+    if (key && value) {
+      FIDrawPart *part;
+      if ([key isEqualToString:@"move"]) {
+        part = [FIPathMove createFromDict:value];
+      } else if ([key isEqualToString:@"lineTo"]) {
+        part = [FIPathLine createFromDict:value];
+      } else if ([key isEqualToString:@"bezier"]) {
+        part = [FIPathBezier createFromDict:value];
+      } else if ([key isEqualToString:@"arcTo"]) {
+        part = [FIPathArc createFromDict:value];
+      }
+
+      if (part) {
+        [result addObject:part];
+      }
+    }
+  }
+
+  return result;
+}
+
+@end
+
+
+@implementation FIPathMove
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPathMove *ins = [FIPathMove new];
+  ins.map = dict;
+  return ins;
+}
+
+- (CGPoint)offset {
+  return [self point:@"offset"];
+}
+
+@end
+
+
+@implementation FIPathLine
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPathLine *ins = [FIPathLine new];
+  ins.map = dict;
+  return ins;
+}
+
+- (CGPoint)offset {
+  return [self point:@"offset"];
+}
+
+@end
+
+@implementation FIPathArc
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPathArc *ins = [FIPathArc new];
+  ins.map = dict;
+  return ins;
+}
+
+- (CGFloat)start {
+  return [self.map[@"start"] floatValue];
+}
+
+- (CGFloat)sweep {
+  return [self.map[@"sweep"] floatValue];
+}
+
+- (BOOL)useCenter {
+  return [self.map[@"sweep"] boolValue];
+}
+
+- (CGRect)rect {
+  return [self rect:@"rect"];
+}
+
+@end
+
+@implementation FIPathBezier
+
++ (id)createFromDict:(NSDictionary *)dict {
+  FIPathBezier *ins = [FIPathBezier new];
+  ins.map = dict;
+  return ins;
+}
+
+- (int)kind {
+  return [self.map[@"kind"] intValue];
+}
+
+- (CGPoint)target {
+  return [self point:@"target"];
+}
+
+
+- (CGPoint)control1 {
+  return [self point:@"c1"];
+}
+
+
+- (CGPoint)control2 {
+  return [self point:@"c2"];
+}
+
+@end
+
