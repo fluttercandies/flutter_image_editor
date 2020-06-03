@@ -29,6 +29,8 @@
       option = [FIAddTextOption createFromDict:value];
     } else if ([@"mix_image" isEqualToString:type]) {
       option = [FIMixImageOption createFromDict:value];
+    } else if ([@"draw" isEqualToString:type]) {
+      option = [FIDrawOption createFromDict:value];
     }
     if (option) {
       [optionArray addObject:option];
@@ -257,13 +259,13 @@ static NSDictionary *mixBlendModeDict;
       if ([key isEqualToString:@"rect"]) {
         part = [FIRectDrawPart createFromDict:value];
       } else if ([key isEqualToString:@"oval"]) {
-
+        part = [FIOvalDrawPart createFromDict:value];
       } else if ([key isEqualToString:@"line"]) {
-
+        part = [FILineDrawPart createFromDict:value];
       } else if ([key isEqualToString:@"point"]) {
-
+        part = [FIPointsDrawPart createFromDict:value];
       } else if ([key isEqualToString:@"path"]) {
-
+        part = [FIPathDrawPart createFromDict:value];
       }
 
       if (part) {
