@@ -378,15 +378,16 @@
       [self draw:ctx path:(FIPathDrawPart *) part];
     }
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-
-    UIGraphicsEndImageContext();
-    if (!newImage) {
-      return;
-    }
-
-    outImage = newImage;
   }
+
+  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+
+  UIGraphicsEndImageContext();
+  if (!newImage) {
+    return;
+  }
+
+  outImage = newImage;
 }
 
 - (void)draw:(CGContextRef)pContext path:(FIPathDrawPart *)path {
@@ -424,18 +425,14 @@
   CGMutablePathRef path = CGPathCreateMutable();
   CGContextSetLineWidth(ctx, paint.paintWeight);
   CGPathAddPath(path, nil, [bezier CGPath]);
-  UIColor *color = paint.color; // TODO fix error
-  CGFloat r;
-  CGFloat g;
-  CGFloat b;
-  CGFloat a;
-  [color getRed:&r green:&g blue:&b alpha:&a];
+  UIColor *color = paint.color;
   if (paint.fill) {
-    CGContextSetRGBFillColor(ctx, r, g, b, a);
-    CGContextDrawPath(ctx, kCGPathStroke);
-  } else {
-    CGContextSetRGBStrokeColor(ctx, r, g, b, a);
+    CGContextSetFillColorWithColor(ctx, color.CGColor);
     CGContextDrawPath(ctx, kCGPathFill);
+  } else {
+    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+//    CGContextSetFillColorWithColor(ctx, UIColor.clearColor.CGColor);
+    CGContextDrawPath(ctx, kCGPathStroke);
   }
 
 }

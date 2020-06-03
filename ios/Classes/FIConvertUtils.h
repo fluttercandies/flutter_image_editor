@@ -108,7 +108,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FIPaint : FIValueOption <FIOption>
 
-@property(nonatomic, assign) UIColor *color;
+@property(nonatomic, strong) UIColor *color;
 @property(nonatomic, assign) int paintWeight;
 @property(nonatomic, assign) bool fill;
 
