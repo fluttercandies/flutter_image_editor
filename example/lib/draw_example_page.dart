@@ -189,6 +189,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
           autoClose: false,
           paint: paint,
         );
+        path.move(Offset.zero);
         path.lineTo(randomOffset(), paint);
         path.lineTo(randomOffset(), paint);
         path.bezier2To(randomOffset(), randomOffset());

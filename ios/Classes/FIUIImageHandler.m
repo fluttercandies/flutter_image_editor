@@ -393,7 +393,60 @@
 }
 
 - (void)draw:(CGContextRef)pContext path:(FIPathDrawPart *)path {
+  NSArray<FIDrawPart *> *parts = [path parts];
 
+  UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+
+  for (FIDrawPart *part in parts) {
+    if ([part isMemberOfClass:[FIPathMove class]]) {
+      FIPathMove *move = (FIPathMove *) part;
+      [bezierPath moveToPoint:[move offset]];
+    } else if ([part isMemberOfClass:[FIPathLine class]]) {
+      FIPathLine *line = (FIPathLine *) part;
+      [bezierPath addLineToPoint:[line offset]];
+    } else if ([part isMemberOfClass:[FIPathArc class]]) {
+      FIPathArc *arc = (FIPathArc *) part;
+      CGRect rect = [arc rect];
+      CGPoint point = rect.origin;
+      CGFloat start = [arc start];
+      CGFloat sweep = [arc sweep];
+      CGFloat end = start + sweep;
+      BOOL closeWise = [arc useCenter];
+
+      CGPoint center = CGPointMake(point.x + rect.size.width / 2, point.y + rect.size.height / 2);
+      // TODO: fix: calc radius
+      [bezierPath addArcWithCenter:center radius:1 startAngle:start endAngle:end clockwise:closeWise];
+    } else if ([part isMemberOfClass:[FIPathBezier class]]) {
+      FIPathBezier *bezier = (FIPathBezier *) part;
+
+      int kind = [bezier kind];
+      CGPoint point = [bezier target];
+      CGPoint c1 = [bezier control1];
+      if (kind == 2) {
+        [bezierPath addQuadCurveToPoint:point controlPoint:c1];
+      } else if (kind == 3) {
+        CGPoint c2 = [bezier control2];
+        [bezierPath addCurveToPoint:point controlPoint1:c1 controlPoint2:c2];
+      }
+    }
+
+  }
+
+  if ([path autoClose]) {
+    [bezierPath closePath];
+  }
+
+  [self drawWithPaint:pContext paint:[path paint]];
+
+  CGPathRef pPath = [bezierPath CGPath];
+  CGContextAddPath(pContext, pPath);
+  CGPathDrawingMode mode;
+  if ([path paint].fill) {
+    mode = kCGPathFill;
+  } else {
+    mode = kCGPathStroke;
+  }
+  CGContextDrawPath(pContext, mode);
 }
 
 - (void)draw:(CGContextRef)pContext points:(FIPointsDrawPart *)points {

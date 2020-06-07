@@ -112,10 +112,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int paintWeight;
 @property(nonatomic, assign) bool fill;
 
--(float)r;
--(float)g;
--(float)b;
--(float)a;
+- (float)r;
+
+- (float)g;
+
+- (float)b;
+
+- (float)a;
 
 @end
 
@@ -160,6 +163,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FIPathDrawPart : FIDrawPart
 
 - (NSArray<FIDrawPart *> *)parts;
+
+- (BOOL) autoClose;
+
 @end
 
 @interface FIPathMove : FIDrawPart
