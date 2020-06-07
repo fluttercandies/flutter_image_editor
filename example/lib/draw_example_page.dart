@@ -61,6 +61,10 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
     return Color.fromARGB(a, r, g, b);
   }
 
+  PaintingStyle randomPaintStyle(){
+    return  PaintingStyle.values[Random().nextInt(10) % 2];
+  }
+
   Widget addRect() {
     return RaisedButton(
       onPressed: () async {
@@ -159,7 +163,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
       onPressed: () {
         final dp = PointDrawPart(
           paint: DrawPaint(
-            paintingStyle: PaintingStyle.values[Random().nextInt(10) % 2],
+            paintingStyle: randomPaintStyle(),
             color: randomColor(),
             lineWeight: 150,
           ),
@@ -182,7 +186,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
       onPressed: () async {
         final paint = DrawPaint(
           lineWeight: 10,
-          paintingStyle: PaintingStyle.stroke,
+          paintingStyle: randomPaintStyle(),
           color: randomColor(),
         );
         final path = PathDrawPart(
