@@ -289,7 +289,7 @@
   [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
 
   for (FIAddText *text in option.texts) {
-    UIColor *color = [UIColor colorWithRed:text.r green:text.g blue:text.b alpha:text.a];
+    UIColor *color = [UIColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
 
     NSDictionary *attr = @{
             NSFontAttributeName: [UIFont boldSystemFontOfSize:text.fontSizePx],
@@ -365,6 +365,8 @@
     return;
   }
 
+  [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+
   for (FIDrawPart *part in [option parts]) {
     if ([part isMemberOfClass:FILineDrawPart.class]) {
       [self draw:ctx line:(FILineDrawPart *) part];
@@ -411,30 +413,45 @@
 }
 
 - (void)draw:(CGContextRef)pContext line:(FILineDrawPart *)line {
-  FIPaint *paint = [line paint];
+  CGPoint start = [line start];
+  const CGPoint anEnd = [line end];
+  CGContextMoveToPoint(pContext, start.x, start.y);
+  CGContextAddLineToPoint(pContext, anEnd.x, anEnd.y);
+  [self setDrawPaint:pContext paint:[line paint]];
+  CGContextStrokePath(pContext);
+}
 
-  UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-
-  [bezierPath moveToPoint:[line start]];
-  [bezierPath addLineToPoint:[line end]];
-
-  [self draw:pContext bezier:bezierPath paint:paint];
+- (void)setDrawPaint:(CGContextRef)ctx paint:(FIPaint *)paint {
+  CGContextSetLineWidth(ctx, paint.paintWeight);
+  if (paint.fill) {
+    CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+  } else {
+    CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+  }
 }
 
 - (void)draw:(CGContextRef)ctx bezier:(UIBezierPath *)bezier paint:(FIPaint *)paint {
   CGMutablePathRef path = CGPathCreateMutable();
-  CGContextSetLineWidth(ctx, paint.paintWeight);
-  CGPathAddPath(path, nil, [bezier CGPath]);
-  UIColor *color = paint.color;
+//  UIColor *color = paint.color;
   if (paint.fill) {
-    CGContextSetFillColorWithColor(ctx, color.CGColor);
+//    [bezier fill];
+//    CGContextSetFillColorWithColor(ctx, color.CGColor);
+    CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+    CGContextSetLineWidth(ctx, paint.paintWeight);
+    CGPathAddPath(path, nil, [bezier CGPath]);
     CGContextDrawPath(ctx, kCGPathFill);
+    CGContextFillPath(ctx);
   } else {
-    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
-//    CGContextSetFillColorWithColor(ctx, UIColor.clearColor.CGColor);
+//    [bezier stroke];
+//    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+    CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+    CGContextSetLineWidth(ctx, paint.paintWeight);
+    CGPathAddPath(path, nil, [bezier CGPath]);
     CGContextDrawPath(ctx, kCGPathStroke);
+    CGContextStrokePath(ctx);
   }
 
+  CGPathRelease(path);
 }
 
 @end

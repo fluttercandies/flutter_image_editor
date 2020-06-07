@@ -287,14 +287,29 @@ static NSDictionary *mixBlendModeDict;
 
   ins.fill = [dict[@"paintStyleFill"] boolValue];
   ins.paintWeight = [dict[@"lineWeight"] intValue];
-  NSDictionary *colorMap = dict[@"color"];
-  int r = [colorMap[@"r"] intValue];
-  int g = [colorMap[@"g"] intValue];
-  int b = [colorMap[@"b"] intValue];
-  int a = [colorMap[@"a"] intValue];
-  ins.color = [UIColor colorWithRed:r green:g blue:b alpha:a];
+  CGFloat r = [ins r];
+  CGFloat g = [ins g];
+  CGFloat b = [ins b];
+  CGFloat a = [ins a];
+  ins.color = [UIColor colorWithRed:r / 255.0 green:g / 255.0 blue:b / 255.0 alpha:a / 255.0];
 
   return ins;
+}
+
+- (float)r {
+  return [self.map[@"color"][@"r"] floatValue] / 255;
+}
+
+- (float)g {
+  return [self.map[@"color"][@"b"] floatValue] / 255;
+}
+
+- (float)b {
+  return [self.map[@"color"][@"b"] floatValue] / 255 ;
+}
+
+- (float)a {
+  return [self.map[@"color"][@"a"] floatValue] / 255;
 }
 
 

@@ -112,6 +112,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int paintWeight;
 @property(nonatomic, assign) bool fill;
 
+-(float)r;
+-(float)g;
+-(float)b;
+-(float)a;
+
 @end
 
 @interface FIDrawPart : FIValueOption <FIOption>

@@ -59,6 +59,7 @@ class _AddTextPageState extends State<AddTextPage> {
                     offset: const Offset(0, 0),
                     text: _controller.text,
                     fontSizePx: size,
+                    textColor: const Color(0xFF995555),
                   ),
                 );
                 option.outputFormat = const OutputFormat.png();
