@@ -397,19 +397,26 @@
 }
 
 - (void)draw:(CGContextRef)pContext points:(FIPointsDrawPart *)points {
+  FIPaint *paint = [points paint];
+  paint.fill = YES;
+  int weight = paint.paintWeight;
 
+  for (NSValue *value in [points points]) {
+    CGPoint point = [value CGPointValue];
+    CGRect rect = CGRectMake(point.x - weight / 2, point.y - weight / 2, weight, weight);
+    CGContextAddEllipseInRect(pContext, rect);
+  }
+  [self drawWithPaint:pContext paint:paint];
 }
 
 - (void)draw:(CGContextRef)pContext rect:(FIRectDrawPart *)rect {
-
+  CGContextAddRect(pContext, [rect rect]);
+  [self drawWithPaint:pContext paint:[rect paint]];
 }
 
 - (void)draw:(CGContextRef)pContext oval:(FIOvalDrawPart *)oval {
-  FIPaint *paint = [oval paint];
-
-  UIBezierPath *bezierPath = [UIBezierPath bezierPathWithOvalInRect:oval.rect];
-
-  [self draw:pContext bezier:bezierPath paint:paint];
+  CGContextAddEllipseInRect(pContext, [oval rect]);
+  [self drawWithPaint:pContext paint:[oval paint]];
 }
 
 - (void)draw:(CGContextRef)pContext line:(FILineDrawPart *)line {
@@ -417,16 +424,17 @@
   const CGPoint anEnd = [line end];
   CGContextMoveToPoint(pContext, start.x, start.y);
   CGContextAddLineToPoint(pContext, anEnd.x, anEnd.y);
-  [self setDrawPaint:pContext paint:[line paint]];
-  CGContextStrokePath(pContext);
+  [self drawWithPaint:pContext paint:[line paint]];
 }
 
-- (void)setDrawPaint:(CGContextRef)ctx paint:(FIPaint *)paint {
+- (void)drawWithPaint:(CGContextRef)ctx paint:(FIPaint *)paint {
   CGContextSetLineWidth(ctx, paint.paintWeight);
   if (paint.fill) {
     CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+    CGContextFillPath(ctx);
   } else {
     CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+    CGContextStrokePath(ctx);
   }
 }
 

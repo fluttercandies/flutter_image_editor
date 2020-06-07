@@ -377,15 +377,16 @@ static NSDictionary *mixBlendModeDict;
 }
 
 - (NSArray *)points {
-  NSMutableArray *arr = self.map[@"offset"];
-  for (NSDictionary *map in arr) {
+  NSMutableArray *result = [NSMutableArray new];
+  NSArray *offsets = self.map[@"offset"];
+  for (NSDictionary *map in offsets) {
     int x = [map[@"x"] intValue];
     int y = [map[@"y"] intValue];
     CGPoint point = CGPointMake(x, y);
-    [arr addObject:[NSValue valueWithCGPoint:point]];
+    [result addObject:[NSValue valueWithCGPoint:point]];
   }
 
-  return arr;
+  return result;
 }
 
 @end

@@ -82,22 +82,33 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
   Widget addLine() {
     return RaisedButton(
       onPressed: () async {
-        final startOffset = randomOffset();
-        final endOffset = randomOffset();
-        addDrawPart(
-          LineDrawPart(
-            start: startOffset,
-            end: endOffset,
-            paint: DrawPaint(lineWeight: 5),
-          ),
-        );
+        List<DrawPart> parts = [];
+        for (var i = 0; i < 5; i++) {
+          final startOffset = randomOffset();
+          final endOffset = randomOffset();
+          parts.add(
+            LineDrawPart(
+              start: startOffset,
+              end: endOffset,
+              paint: DrawPaint(
+                  lineWeight: 30,
+                  paintingStyle: PaintingStyle.stroke,
+                  color: randomColor()),
+            ),
+          );
+        }
+        addDrawParts(parts);
       },
       child: Text('add line'),
     );
   }
 
   Future<void> addDrawPart(DrawPart part) async {
-    print(part.toString());
+    await addDrawParts([part]);
+  }
+
+  Future<void> addDrawParts(List<DrawPart> parts) async {
+    print(parts.map((e) => e.toString()).join('\n'));
 
     final tu = TimeUtils();
 
@@ -107,9 +118,11 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
     final opt = ImageEditorOption();
     opt.outputFormat = OutputFormat.png(100);
 
-    opt.addOption(
-      DrawOption()..addDrawPart(part),
-    );
+    for (var item in parts) {
+      opt.addOption(
+        DrawOption()..addDrawPart(item),
+      );
+    }
 
     tu.start();
 
@@ -127,7 +140,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
           OvalDrawPart(
             rect: Rect.fromCenter(
               center: randomOffset(),
-              width: 300,
+              width: randomOffset().dx,
               height: 300,
             ),
             paint: DrawPaint(
