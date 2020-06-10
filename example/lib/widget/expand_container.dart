@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ExpandContainer extends StatefulWidget {
-  final Widget child;
-
-  final String title;
-
   const ExpandContainer({
     Key key,
     this.child,
     this.title,
   }) : super(key: key);
+  final Widget child;
 
+  final String title;
   @override
   _ExpandContainerState createState() => _ExpandContainerState();
 }
@@ -44,7 +42,7 @@ class _ExpandContainerState extends State<ExpandContainer> {
                   Expanded(
                     child: Text(
                       widget.title,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                       ),
                     ),
@@ -54,7 +52,7 @@ class _ExpandContainerState extends State<ExpandContainer> {
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
           child,
         ],
       ),

@@ -14,7 +14,7 @@ class AddTextOption implements Option {
   String get key => 'add_text';
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         'texts': _text.map((e) => e.toJson()).toList(),
       };
 }
@@ -39,7 +39,7 @@ class EditorText {
     return offset.dy.toInt();
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'text': text,
       'x': offset.dx.toInt(),

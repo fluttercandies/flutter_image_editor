@@ -4,6 +4,7 @@ import android.graphics.PorterDuff
 import io.flutter.plugin.common.MethodCall
 import top.kikt.flutter_image_editor.BitmapWrapper
 import top.kikt.flutter_image_editor.option.*
+import top.kikt.flutter_image_editor.option.draw.DrawOption
 
 /// create 2019-10-08 by cai
 
@@ -63,6 +64,10 @@ object ConvertUtils {
         "mix_image" -> {
           val mixImageOpt = MixImageOpt(valueMap)
           list.add(mixImageOpt)
+        }
+        "draw"->{
+          val drawOption = DrawOption(valueMap)
+          list.add(drawOption)
         }
         else -> {
         }

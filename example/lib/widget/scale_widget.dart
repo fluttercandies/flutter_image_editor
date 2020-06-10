@@ -3,13 +3,12 @@ import 'package:flutter_image_editor_example/widget/expand_container.dart';
 import 'package:image_editor/image_editor.dart';
 
 class ScaleWidget extends StatefulWidget {
-  final ValueChanged<Option> onTap;
-
   const ScaleWidget({
     Key key,
     this.onTap,
   }) : super(key: key);
 
+  final ValueChanged<Option> onTap;
   @override
   _ScaleWidgetState createState() => _ScaleWidgetState();
 }
@@ -21,17 +20,17 @@ class _ScaleWidgetState extends State<ScaleWidget> {
   @override
   Widget build(BuildContext context) {
     return ExpandContainer(
-      title: "width: $width, height: $height",
+      title: 'width: $width, height: $height',
       child: Column(
         children: <Widget>[
           Slider(
-            onChanged: (v) => setState(() => width = v.toInt()),
+            onChanged: (double v) => setState(() => width = v.toInt()),
             value: width.toDouble(),
             min: 1,
             max: 1920,
           ),
           Slider(
-            onChanged: (v) => setState(() => height = v.toInt()),
+            onChanged: (double v) => setState(() => height = v.toInt()),
             value: height.toDouble(),
             min: 1,
             max: 1920,
@@ -39,7 +38,7 @@ class _ScaleWidgetState extends State<ScaleWidget> {
           SizedBox(
             width: double.infinity,
             child: FlatButton(
-              child: Text("scale"),
+              child: const Text('scale'),
               onPressed: _rotate,
             ),
           ),
@@ -49,7 +48,7 @@ class _ScaleWidgetState extends State<ScaleWidget> {
   }
 
   void _rotate() {
-    final opt = ScaleOption(width, height);
+    final ScaleOption opt = ScaleOption(width, height);
     widget.onTap?.call(opt);
   }
 }

@@ -4,9 +4,8 @@ import 'package:image_editor/image_editor.dart';
 import 'expand_container.dart';
 
 class FlipWidget extends StatefulWidget {
-  final ValueChanged<FlipOption> onTap;
-
   const FlipWidget({Key key, this.onTap}) : super(key: key);
+  final ValueChanged<FlipOption> onTap;
 
   @override
   _FlipWidgetState createState() => _FlipWidgetState();
@@ -19,17 +18,17 @@ class _FlipWidgetState extends State<FlipWidget> {
   @override
   Widget build(BuildContext context) {
     return ExpandContainer(
-      title: "flip",
+      title: 'flip',
       child: Column(
         children: <Widget>[
-          buildCheck("horizontal", horizontal, (v) => horizontal = v),
-          buildCheck("vertical", vertical, (v) => vertical = v),
+          buildCheck('horizontal', horizontal, (bool v) => horizontal = v),
+          buildCheck('vertical', vertical, (bool v) => vertical = v),
           SizedBox(
             width: double.infinity,
             child: FlatButton(
-              child: Text("flip"),
+              child: const Text('flip'),
               onPressed: () {
-                final opt = FlipOption(
+                final FlipOption opt = FlipOption(
                   horizontal: horizontal,
                   vertical: vertical,
                 );
@@ -44,7 +43,7 @@ class _FlipWidgetState extends State<FlipWidget> {
 
   Widget buildCheck(String title, bool value, ValueChanged<bool> onChanged) {
     return CheckboxListTile(
-      onChanged: (v) {
+      onChanged: (bool v) {
         setState(() {
           onChanged?.call(v);
         });

@@ -11,7 +11,7 @@ class ImagePosition with JsonAble {
   );
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),

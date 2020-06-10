@@ -12,7 +12,7 @@ class RotateOption implements Option {
   String get key => "rotate";
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         "degree": degree,
       };
 

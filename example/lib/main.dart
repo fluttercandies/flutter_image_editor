@@ -20,13 +20,13 @@ class _MyAppState extends State<MyApp> {
     return OKToast(
       position: ToastPosition.bottom,
       child: MaterialApp(
-        home: HomePage(),
+        home: IndexPage(),
       ),
     );
   }
 }
 
 Future<Uint8List> loadFromAsset(String key) async {
-  final byteData = await rootBundle.load(key);
+  final ByteData byteData = await rootBundle.load(key);
   return byteData.buffer.asUint8List();
 }

@@ -1,31 +1,45 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_editor/src/image_source.dart';
+import 'package:image_editor/src/utils/convert_utils.dart';
 import 'dart:math' as math;
 
 import '../output_format.dart';
 
 part 'flip.dart';
+
 part 'clip.dart';
+
 part 'rotate.dart';
+
 part 'color.dart';
+
 part 'scale.dart';
+
 part 'add_text.dart';
+
 part 'mix_image.dart';
+
+part 'draw.dart';
 
 abstract class IgnoreAble {
   bool get canIgnore;
 }
 
-abstract class Option implements IgnoreAble {
+abstract class TransferValue implements IgnoreAble{
   String get key;
 
-  Map<String, dynamic> get transferValue;
+  Map<String, Object> get transferValue;
+}
+
+abstract class Option implements IgnoreAble, TransferValue {
+  const Option();
 }
 
 class ImageEditorOption implements IgnoreAble {
@@ -73,8 +87,8 @@ class ImageEditorOption implements IgnoreAble {
     group.addOptions(options);
   }
 
-  List<Map<String, dynamic>> toJson() {
-    List<Map<String, dynamic>> result = [];
+  List<Map<String, Object>> toJson() {
+    List<Map<String, Object>> result = [];
     for (final option in options) {
       if (option.canIgnore) {
         continue;

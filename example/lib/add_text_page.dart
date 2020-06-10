@@ -16,14 +16,14 @@ class _AddTextPageState extends State<AddTextPage> {
 
   String get asset => R.ASSETS_ICON_PNG;
 
-  TextEditingController _controller =
-      TextEditingController(text: "输入文字, 添加足够长的字数, 以测试换行的效果是怎么样的.");
+  final TextEditingController _controller =
+      TextEditingController(text: '输入文字, 添加足够长的字数, 以测试换行的效果是怎么样的.');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('add text'),
+        title: const Text('add text'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -51,30 +51,31 @@ class _AddTextPageState extends State<AddTextPage> {
             ),
             RaisedButton(
               onPressed: () async {
-                final size = 120;
-                final option = ImageEditorOption();
-                final textOption = AddTextOption();
+                const int size = 120;
+                final ImageEditorOption option = ImageEditorOption();
+                final AddTextOption textOption = AddTextOption();
                 textOption.addText(
                   EditorText(
-                    offset: Offset(0, 0),
-                    text: this._controller.text,
+                    offset: const Offset(0, 0),
+                    text: _controller.text,
                     fontSizePx: size,
+                    textColor: const Color(0xFF995555),
                   ),
                 );
-                option.outputFormat = OutputFormat.png();
+                option.outputFormat = const OutputFormat.png();
 
                 option.addOption(textOption);
 
-                final u = await getAssetImage();
-                final result = await ImageEditor.editImage(
+                final Uint8List u = await getAssetImage();
+                final Uint8List result = await ImageEditor.editImage(
                   image: u,
                   imageEditorOption: option,
                 );
                 print(option.toString());
-                this.target = MemoryImage(result);
+                target = MemoryImage(result);
                 setState(() {});
               },
-              child: Text('add'),
+              child: const Text('add'),
             ),
             TextField(
               controller: _controller,
@@ -87,7 +88,7 @@ class _AddTextPageState extends State<AddTextPage> {
   }
 
   Future<Uint8List> getAssetImage() async {
-    final byteData = await rootBundle.load(asset);
+    final ByteData byteData = await rootBundle.load(asset);
     return byteData.buffer.asUint8List();
   }
 }

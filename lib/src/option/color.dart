@@ -154,5 +154,5 @@ class ColorOption implements Option {
   String get key => 'color';
 
   @override
-  Map<String, dynamic> get transferValue => {'matrix': matrix};
+  Map<String, Object> get transferValue => {'matrix': matrix};
 }

@@ -40,7 +40,7 @@ class ClipOption implements Option {
   String get key => "clip";
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         "x": x.round(),
         "y": y.round(),
         "width": width.round(),

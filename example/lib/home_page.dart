@@ -4,65 +4,59 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_image_editor_example/advanced_page.dart';
-import 'package:flutter_image_editor_example/merge_image_page.dart';
-import 'package:flutter_image_editor_example/mix_image_page.dart';
+import 'package:flutter_image_editor_example/widget/examples.dart';
 import 'package:flutter_image_editor_example/widget/scale_widget.dart';
 
-import 'add_text_page.dart';
-import 'const/resource.dart';
-import 'package:image_editor/image_editor.dart';
+import 'package:image_editor/image_editor.dart'
+    show
+        ClipOption,
+        FlipOption,
+        ImageEditor,
+        ImageEditorOption,
+        Option,
+        OutputFormat,
+        RotateOption;
 
+import 'const/resource.dart';
 import 'widget/clip_widget.dart';
 import 'widget/flip_widget.dart';
 import 'widget/rotate_widget.dart';
 
-class HomePage extends StatefulWidget {
+class IndexPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  IndexPageState createState() => IndexPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  ImageProvider provider;
-
+class IndexPageState extends State<IndexPage> {
   @override
-  void initState() {
-    super.initState();
-    provider = AssetImage(R.ASSETS_ICON_PNG);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Index'),
+      ),
+      body: Examples(),
+    );
   }
+}
+
+class SimpleExamplePage extends StatefulWidget {
+  @override
+  _SimpleExamplePageState createState() => _SimpleExamplePageState();
+}
+
+class _SimpleExamplePageState extends State<SimpleExamplePage> {
+  ImageProvider provider = AssetImage(R.ASSETS_ICON_PNG);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Simple usage"),
+        title: const Text('Simple usage'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.extension),
-            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => AdvancedPage(),
-            )),
-            tooltip: "Use extended_image library",
-          ),
           IconButton(
             icon: Icon(Icons.settings_backup_restore),
             onPressed: restore,
-            tooltip: "Restore image to default.",
-          ),
-          IconButton(
-            icon: Icon(Icons.text_fields),
-            onPressed: _addText,
-            tooltip: "Add text",
-          ),
-          IconButton(
-            icon: Icon(Icons.branding_watermark),
-            onPressed: _mixImage,
-            tooltip: "Mix image",
-          ),
-          IconButton(
-            icon: Icon(Icons.merge_type),
-            onPressed: mergeImage,
-            tooltip: 'merge image',
+            tooltip: 'Restore image to default.',
           ),
         ],
       ),
@@ -111,66 +105,49 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Uint8List> getAssetImage() async {
-    final byteData = await rootBundle.load(R.ASSETS_ICON_PNG);
+    final ByteData byteData = await rootBundle.load(R.ASSETS_ICON_PNG);
     return byteData.buffer.asUint8List();
   }
 
-  void _flip(FlipOption flipOption) async {
-    handleOption([flipOption]);
+  Future<void> _flip(FlipOption flipOption) async {
+    handleOption(<Option>[flipOption]);
   }
 
-  _clip(ClipOption clipOpt) async {
-    handleOption([clipOpt]);
+  Future<void> _clip(ClipOption clipOpt) async {
+    handleOption(<Option>[clipOpt]);
   }
 
-  void _rotate(RotateOption rotateOpt) async {
-    handleOption([rotateOpt]);
+  Future<void> _rotate(RotateOption rotateOpt) async {
+    handleOption(<Option>[rotateOpt]);
   }
 
   void _scale(Option value) {
-    handleOption([value]);
+    handleOption(<Option>[value]);
   }
 
-  void handleOption(List<Option> options) async {
-    ImageEditorOption option = ImageEditorOption();
-    for (final o in options) {
+  Future<void> handleOption(List<Option> options) async {
+    final ImageEditorOption option = ImageEditorOption();
+    for (int i = 0; i < options.length; i++) {
+      final Option o = options[i];
       option.addOption(o);
     }
 
-    option.outputFormat = OutputFormat.png();
+    option.outputFormat = const OutputFormat.png();
 
-    final assetImage = await getAssetImage();
+    final Uint8List assetImage = await getAssetImage();
 
-    print(JsonEncoder.withIndent('  ').convert(option.toJson()));
-    final result = await ImageEditor.editImage(
+    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
+    final Uint8List result = await ImageEditor.editImage(
       image: assetImage,
       imageEditorOption: option,
     );
 
-    final img = MemoryImage(result);
+    final MemoryImage img = MemoryImage(result);
     setProvider(img);
-  }
-
-  void _addText() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => AddTextPage(),
-    ));
-  }
-
-  void _mixImage() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => MixImagePage(),
-    ));
-  }
-
-  void mergeImage() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => MergeImagePage(),
-    ));
   }
 }
 
-Widget buildButton(String text, Function onTap) {
+Widget buildButton(String text, VoidCallback onTap) {
   return FlatButton(
     child: Text(text),
     onPressed: onTap,

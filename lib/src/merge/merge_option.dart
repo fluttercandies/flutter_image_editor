@@ -23,7 +23,7 @@ class ImageMergeOption with JsonAble {
   }
 
   @override
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'images': mergeImageConfig.map((e) => e.toJson()).toList(),
       'fmt': format.toJson(),
@@ -42,7 +42,7 @@ class MergeImageConfig with JsonAble {
     @required this.position,
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       'src': image.toJson(),
       'position': position.toJson(),

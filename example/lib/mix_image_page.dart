@@ -13,13 +13,13 @@ class MixImagePage extends StatefulWidget {
 class _MixImagePageState extends State<MixImagePage> {
   ImageProvider image;
 
-  var blendMode = BlendMode.srcOver;
+  BlendMode blendMode = BlendMode.srcOver;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('mix image'),
+        title: const Text('mix image'),
       ),
       body: Column(
         children: <Widget>[
@@ -48,12 +48,12 @@ class _MixImagePageState extends State<MixImagePage> {
                 : Container(),
           ),
           DropdownButton<BlendMode>(
-            items: supportBlendModes.map((e) => _buildItem(e)).toList(),
+            items: supportBlendModes.map((BlendMode e) => _buildItem(e)).toList(),
             onChanged: _onChange,
             value: blendMode,
           ),
           RaisedButton(
-            child: Text('mix'),
+            child: const Text('mix'),
             onPressed: () {
               mix();
             },
@@ -64,7 +64,7 @@ class _MixImagePageState extends State<MixImagePage> {
   }
 
   DropdownMenuItem<BlendMode> _buildItem(BlendMode e) {
-    return DropdownMenuItem(
+    return DropdownMenuItem<BlendMode>(
       child: Text(e.toString()),
       value: e,
     );
@@ -72,15 +72,15 @@ class _MixImagePageState extends State<MixImagePage> {
 
   void _onChange(BlendMode value) {
     setState(() {
-      this.blendMode = value;
+      blendMode = value;
     });
   }
 
-  void mix() async {
-    final src = await loadFromAsset(R.ASSETS_SRC_PNG);
-    final dst = await loadFromAsset(R.ASSETS_DST_PNG);
-    final optionGroup = ImageEditorOption();
-    optionGroup.outputFormat = OutputFormat.png();
+  Future<void> mix() async {
+    final Uint8List src = await loadFromAsset(R.ASSETS_SRC_PNG);
+    final Uint8List dst = await loadFromAsset(R.ASSETS_DST_PNG);
+    final ImageEditorOption optionGroup = ImageEditorOption();
+    optionGroup.outputFormat = const OutputFormat.png();
     optionGroup.addOption(
       MixImageOption(
         x: 300,
@@ -91,14 +91,14 @@ class _MixImagePageState extends State<MixImagePage> {
         blendMode: blendMode,
       ),
     );
-    final result =
+    final Uint8List result =
         await ImageEditor.editImage(image: dst, imageEditorOption: optionGroup);
-    this.image = MemoryImage(result);
+    image = MemoryImage(result);
     setState(() {});
   }
 
   Future<Uint8List> loadFromAsset(String key) async {
-    final byteData = await rootBundle.load(key);
+    final ByteData byteData = await rootBundle.load(key);
     return byteData.buffer.asUint8List();
   }
 }

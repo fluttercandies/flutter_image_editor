@@ -18,7 +18,7 @@ abstract class ImageSource {
     return FileImageSource.path(path);
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, Object> toJson() => {
         "memory": memory,
       };
 }

@@ -3,13 +3,13 @@ import 'package:flutter_image_editor_example/widget/expand_container.dart';
 import 'package:image_editor/image_editor.dart';
 
 class RotateWidget extends StatefulWidget {
-  final ValueChanged<RotateOption> onTap;
-
   const RotateWidget({
     Key key,
     this.onTap,
   }) : super(key: key);
 
+  final ValueChanged<RotateOption> onTap;
+  
   @override
   _RotateWidgetState createState() => _RotateWidgetState();
 }
@@ -20,11 +20,11 @@ class _RotateWidgetState extends State<RotateWidget> {
   @override
   Widget build(BuildContext context) {
     return ExpandContainer(
-      title: "rotate: $angle",
+      title: 'rotate: $angle',
       child: Column(
         children: <Widget>[
           Slider(
-            onChanged: (v) => setState(() => angle = v.toInt()),
+            onChanged: (double v) => setState(() => angle = v.toInt()),
             value: angle.toDouble(),
             min: 0,
             max: 359,
@@ -32,7 +32,7 @@ class _RotateWidgetState extends State<RotateWidget> {
           SizedBox(
             width: double.infinity,
             child: FlatButton(
-              child: Text("rotate"),
+              child: const Text('rotate'),
               onPressed: _rotate,
             ),
           ),
@@ -42,7 +42,7 @@ class _RotateWidgetState extends State<RotateWidget> {
   }
 
   void _rotate() {
-    final opt = RotateOption(angle);
+    final RotateOption opt = RotateOption(angle);
     widget.onTap?.call(opt);
   }
 }

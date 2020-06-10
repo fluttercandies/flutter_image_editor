@@ -3,6 +3,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define kCGBlendModeSrc 12345
@@ -46,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FIColorOption : NSObject <FIOption>
 @property(strong, nonatomic) NSArray *matrix;
 
--(CGFloat)getValue:(int)index;
+- (CGFloat)getValue:(int)index;
 @end
 
 @interface FIScaleOption : NSObject <FIOption>
@@ -99,5 +101,105 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong) FIFormatOption *format;
 
 @end
+
+@interface FIValueOption : NSObject
+@property(nonatomic, strong) NSDictionary *map;
+@end
+
+@interface FIPaint : FIValueOption <FIOption>
+
+@property(nonatomic, strong) UIColor *color;
+@property(nonatomic, assign) int paintWeight;
+@property(nonatomic, assign) bool fill;
+
+- (float)r;
+
+- (float)g;
+
+- (float)b;
+
+- (float)a;
+
+@end
+
+@interface FIDrawPart : FIValueOption <FIOption>
+
+- (FIPaint *)paint;
+
+- (CGRect)rect:(NSString *)key;
+
+- (CGPoint)point:(NSString *)key;
+
+@end
+
+@interface FIDrawOption : FIValueOption <FIOption>
+
+- (NSArray<FIDrawPart *> *)parts;
+
+@end
+
+@interface FILineDrawPart : FIDrawPart
+
+- (CGPoint)start;
+
+- (CGPoint)end;
+@end
+
+@interface FIPointsDrawPart : FIDrawPart
+
+- (NSArray *)points;
+@end
+
+@interface FIRectDrawPart : FIDrawPart
+
+- (CGRect)rect;
+@end
+
+@interface FIOvalDrawPart : FIDrawPart
+
+- (CGRect)rect;
+@end
+
+@interface FIPathDrawPart : FIDrawPart
+
+- (NSArray<FIDrawPart *> *)parts;
+
+- (BOOL) autoClose;
+
+@end
+
+@interface FIPathMove : FIDrawPart
+
+- (CGPoint)offset;
+@end
+
+
+@interface FIPathLine : FIDrawPart
+
+- (CGPoint)offset;
+@end
+
+@interface FIPathArc : FIDrawPart
+
+- (CGFloat)start;
+
+- (CGFloat)sweep;
+
+- (BOOL)useCenter;
+
+- (CGRect)rect;
+@end
+
+@interface FIPathBezier : FIDrawPart
+
+- (int)kind;
+
+- (CGPoint)target;
+
+- (CGPoint)control1;
+
+- (CGPoint)control2;
+@end
+
 
 NS_ASSUME_NONNULL_END

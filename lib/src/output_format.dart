@@ -12,7 +12,7 @@ class OutputFormat {
 
   const OutputFormat.png([this.quality = 100]) : format = ImageFormat.png;
 
-  Map<String, dynamic> toJson() {
+  Map<String, Object> toJson() {
     return {
       "format": format.index,
       "quality": quality,

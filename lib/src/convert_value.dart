@@ -1,3 +1,3 @@
 mixin JsonAble {
-  Map<String, dynamic> toJson();
+  Map<String, Object> toJson();
 }

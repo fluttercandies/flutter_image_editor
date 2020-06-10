@@ -13,7 +13,7 @@ class FlipOption implements Option {
   String get key => "flip";
 
   @override
-  Map<String, dynamic> get transferValue => {
+  Map<String, Object> get transferValue => {
         'h': horizontal,
         'v': vertical,
       };
