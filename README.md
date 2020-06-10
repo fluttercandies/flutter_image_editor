@@ -22,6 +22,7 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
       - [AddText](#addtext)
       - [MixImage](#miximage)
         - [BlendMode](#blendmode)
+    - [DrawOption](#drawoption)
     - [OutputFormat](#outputformat)
   - [ImageMerge](#imagemerge)
   - [Common issue](#common-issue)
@@ -220,6 +221,26 @@ Support next BlendMode, other will be ignored.
 | kCGBlendModeScreen          | SCREEN                   | screen             |
 | kCGBlendModeOverlay         | OVERLAY                  | overlay            |
 
+### DrawOption
+
+Main class : `DrawOption`
+
+Support:
+
+- Line
+- Rect
+- Oval
+- Points
+- Path
+  - move
+  - line
+  - bezier2
+  - bezier3
+
+[Example](https://github.com/fluttercandies/flutter_image_editor/blob/master/example/lib/draw_example_page.dart)
+
+Style of paint: `DrawPaint`, user can set lineWeight,color,style(stroke,fill).
+
 ### OutputFormat
 
 ```dart
@@ -283,9 +304,6 @@ Because, I include [GPUImage](https://github.com/BradLarson/GPUImage.git) to han
 MIT Style.
 
 ### Third party
-
-Under BSD3 style:
-[GPUImage](https://github.com/BradLarson/GPUImage.git)
 
 Under Apache 2.0 style:
 Some martix code come from android sdk.
