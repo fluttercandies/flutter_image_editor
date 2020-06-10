@@ -355,6 +355,7 @@ class _BezierPathPart extends _PathPart {
   }
 }
 
+/// ignore: unused_element
 class _ArcToPathPart extends _PathPart {
   final Rect rect;
   final double startAngle;
