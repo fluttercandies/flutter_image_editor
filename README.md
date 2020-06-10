@@ -139,14 +139,7 @@ f, g, h, i, j,
 k, l, m, n, o,  
 p, q, r, s, t
 
----
-
-In iOS, it's use 4x4 matrix. The last of line will be ignored.
-
-a, b, c, d,  
-f, g, h, i,  
-k, l, m, n,  
-p, q, r, s
+`ColorOption` has some factory constructor to help use change brightness, saturation and contrast. If you have more color matrix, you can open Pull Requests or issue.
 
 #### Scale
 
