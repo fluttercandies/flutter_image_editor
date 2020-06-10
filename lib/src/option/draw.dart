@@ -216,17 +216,21 @@ class PathDrawPart extends DrawPart with _HavePaint {
     );
   }
 
-  void arcTo(Rect rect, double startAngle, double sweepAngle, bool useCenter,
-      DrawPaint paint) {
-    parts.add(
-      _ArcToPathPart(
-        rect: rect,
-        startAngle: startAngle,
-        sweepAngle: sweepAngle,
-        useCenter: useCenter,
-      ),
-    );
-  }
+  /// The parameters of iOS and Android/flutter are inconsistent and need to be converted. 
+  /// For the time being, consistency cannot be guaranteed, delete it first.
+  /// 
+  /// Consider adding back in future versions (may not)
+  // void arcTo(Rect rect, double startAngle, double sweepAngle, bool useCenter,
+  //     DrawPaint paint) {
+  //   parts.add(
+  //     _ArcToPathPart(
+  //       rect: rect,
+  //       startAngle: startAngle,
+  //       sweepAngle: sweepAngle,
+  //       useCenter: useCenter,
+  //     ),
+  //   );
+  // }
 
   void bezier2To(Offset target, Offset control) {
     parts.add(
