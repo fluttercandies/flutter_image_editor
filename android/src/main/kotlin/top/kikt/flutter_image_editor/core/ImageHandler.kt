@@ -1,5 +1,6 @@
 package top.kikt.flutter_image_editor.core
 
+import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.text.Layout
@@ -15,7 +16,7 @@ import kotlin.math.min
 
 /// create 2019-10-08 by cai
 
-class ImageHandler(private var bitmap: Bitmap) {
+class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
 
   fun handle(options: List<Option>) {
     for (option in options) {
@@ -138,6 +139,14 @@ class ImageHandler(private var bitmap: Bitmap) {
     val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
     textPaint.textSize = text.fontSizePx.toFloat()
+
+    if (text.fontName.isNotEmpty()) {
+      try {
+        val typefaceFromAsset = Typeface.createFromAsset(context.assets, text.fontName)
+        textPaint.typeface = typefaceFromAsset
+      } catch (e: Exception) {
+      }
+    }
 //    canvas.drawText(text.text, text.x.toFloat(), text.y.toFloat(), textPaint)
 
     val staticLayout = getStaticLayout(text, textPaint, canvas.width - text.x)

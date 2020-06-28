@@ -65,6 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int g;
 @property(nonatomic, assign) int b;
 @property(nonatomic, assign) int a;
+@property(nonatomic, assign) NSString *fontName;
 @end
 
 @interface FIAddTextOption : NSObject <FIOption>

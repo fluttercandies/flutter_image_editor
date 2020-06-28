@@ -125,6 +125,7 @@
   text.g = [dict[@"g"] intValue];
   text.b = [dict[@"b"] intValue];
   text.a = [dict[@"a"] intValue];
+  text.fontName = dict[@"fontName"];
 
   return text;
 }

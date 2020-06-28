@@ -31,16 +31,16 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       val channel = MethodChannel(registrar.messenger(), "top.kikt/flutter_image_editor")
       channel.setMethodCallHandler(FlutterImageEditorPlugin(registrar))
     }
-    
+
     val threadPool: ExecutorService = Executors.newCachedThreadPool()
-    
+
     inline fun runOnBackground(crossinline block: () -> Unit) {
       threadPool.execute {
         block()
       }
     }
   }
-  
+
   override fun onMethodCall(call: MethodCall, result: Result) {
     val resultHandler = ResultHandler(result)
     runOnBackground {
@@ -80,23 +80,23 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
         printWriter.use {
           e.printStackTrace(printWriter)
           resultHandler.replyError(writer.buffer.toString(), "", null)
-          
+
         }
       }
     }
   }
-  
+
   private fun handleMerge(call: MethodCall, resultHandler: ResultHandler, memory: Boolean) {
     val mergeOptionMap = call.argument<Any>("option") as Map<*, *>
     val mergeOption = MergeOption(mergeOptionMap)
     val imageMerger = ImageMerger(mergeOption)
     val byteArray = imageMerger.process()
-    
+
     if (byteArray == null) {
       resultHandler.replyError("cannot merge image")
       return;
     }
-    
+
     if (memory) {
       resultHandler.reply(byteArray)
     } else {
@@ -106,47 +106,47 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       resultHandler.reply(byteArray)
     }
   }
-  
+
   private fun MethodCall.getSrc(): String? {
     return this.argument<String>("src")
   }
-  
+
   private fun MethodCall.getTarget(): String? {
     return this.argument<String>("target")
   }
-  
+
   private fun MethodCall.getOptions(bitmapWrapper: BitmapWrapper): List<Option> {
     val optionMap = this.argument<List<Any>>("options")!!
     return ConvertUtils.convertMapOption(optionMap, bitmapWrapper)
   }
-  
+
   private fun MethodCall.getMemory(): ByteArray? {
     return this.argument<ByteArray>("image")
   }
-  
+
   private fun MethodCall.getBitmap(): BitmapWrapper {
     val src = getSrc()
-    
+
     if (src != null) {
       val bitmap = BitmapFactory.decodeFile(src)
       val exifInterface = ExifInterface(src)
       return wrapperBitmapWrapper(bitmap, exifInterface)
     }
-    
+
     val memory = getMemory()
     if (memory != null) {
       val bitmap = BitmapFactory.decodeByteArray(memory, 0, memory.count())
       val exifInterface = ExifInterface(ByteArrayInputStream(memory))
       return wrapperBitmapWrapper(bitmap, exifInterface)
     }
-    
+
     throw BitmapDecodeException()
   }
-  
+
   private fun wrapperBitmapWrapper(bitmap: Bitmap, exifInterface: ExifInterface): BitmapWrapper {
     var degree = 0
     var flipOption = FlipOption(horizontal = false)
-    
+
     when (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
       ExifInterface.ORIENTATION_NORMAL -> {
         degree = 0
@@ -176,15 +176,15 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       }
     }
     return BitmapWrapper(bitmap, degree, flipOption)
-    
+
   }
-  
-  
+
+
   private fun MethodCall.getFormatOption(): FormatOption {
     return ConvertUtils.getFormatOption(this)
   }
-  
-  
+
+
   private fun handle(imageHandler: ImageHandler, formatOption: FormatOption, outputMemory: Boolean, resultHandler: ResultHandler, targetPath: String? = null) {
     if (outputMemory) {
       val byteArray = imageHandler.outputByteArray(formatOption)
@@ -198,10 +198,10 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       }
     }
   }
-  
+
   private fun handle(call: MethodCall, resultHandler: ResultHandler, outputMemory: Boolean) {
     val bitmapWrapper = call.getBitmap()
-    val imageHandler = ImageHandler(bitmapWrapper.bitmap)
+    val imageHandler = ImageHandler(registrar.context(), bitmapWrapper.bitmap)
     imageHandler.handle(call.getOptions(bitmapWrapper))
     handle(imageHandler, call.getFormatOption(), outputMemory, resultHandler, call.getTarget())
   }

@@ -1,11 +1,11 @@
 package top.kikt.flutter_image_editor.option
 
 class AddTextOpt() : Option {
-  val texts = ArrayList<Text>()
+    val texts = ArrayList<Text>()
 
-  fun addText(text: Text) {
-    texts.add(text)
-  }
+    fun addText(text: Text) {
+        texts.add(text)
+    }
 }
 
 data class Text(
@@ -16,5 +16,7 @@ data class Text(
         val r: Int,
         val g: Int,
         val b: Int,
-        val a: Int
-)
+        val a: Int,
+        val fontName: String
+) {
+}
