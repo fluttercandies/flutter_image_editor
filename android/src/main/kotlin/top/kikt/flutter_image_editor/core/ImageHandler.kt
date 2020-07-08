@@ -6,6 +6,7 @@ import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import top.kikt.flutter_image_editor.common.font.FontUtils
 import top.kikt.flutter_image_editor.option.*
 import top.kikt.flutter_image_editor.option.draw.DrawOption
 import java.io.ByteArrayOutputStream
@@ -142,7 +143,7 @@ class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
 
     if (text.fontName.isNotEmpty()) {
       try {
-        val typefaceFromAsset = Typeface.createFromAsset(context.assets, text.fontName)
+        val typefaceFromAsset = FontUtils.getFont(text.fontName)
         textPaint.typeface = typefaceFromAsset
       } catch (e: Exception) {
       }

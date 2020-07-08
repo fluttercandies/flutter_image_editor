@@ -2,12 +2,16 @@ package top.kikt.flutter_image_editor
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Typeface
+import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import top.kikt.flutter_image_editor.common.font.FontUtils
+import top.kikt.flutter_image_editor.common.font.ReusableBufferedInputStream
 import top.kikt.flutter_image_editor.core.ImageHandler
 import top.kikt.flutter_image_editor.core.ImageMerger
 import top.kikt.flutter_image_editor.core.ResultHandler
@@ -17,10 +21,7 @@ import top.kikt.flutter_image_editor.option.FormatOption
 import top.kikt.flutter_image_editor.option.MergeOption
 import top.kikt.flutter_image_editor.option.Option
 import top.kikt.flutter_image_editor.util.ConvertUtils
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.io.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -68,6 +69,11 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
           "mergeToFile" -> {
             handleMerge(call, resultHandler, false)
           }
+          "registerFont" -> {
+            val fontPath = call.argument<String>("path")!!
+            val name = FontUtils.registerFont(fontPath)
+            resultHandler.reply(name)
+          }
           else -> {
             resultHandler.notImplemented()
           }
@@ -85,6 +91,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       }
     }
   }
+
 
   private fun handleMerge(call: MethodCall, resultHandler: ResultHandler, memory: Boolean) {
     val mergeOptionMap = call.argument<Any>("option") as Map<*, *>
