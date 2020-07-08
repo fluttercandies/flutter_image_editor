@@ -32,7 +32,7 @@ abstract class IgnoreAble {
   bool get canIgnore;
 }
 
-abstract class TransferValue implements IgnoreAble{
+abstract class TransferValue implements IgnoreAble {
   String get key;
 
   Map<String, Object> get transferValue;

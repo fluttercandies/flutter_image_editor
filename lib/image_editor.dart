@@ -6,3 +6,4 @@ export 'src/image_source.dart';
 export 'src/position.dart';
 export 'src/merge/image_merger.dart';
 export 'src/merge/merge_option.dart';
+export 'src/font_manager.dart';

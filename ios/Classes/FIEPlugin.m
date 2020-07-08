@@ -9,19 +9,28 @@
 #import "FIConvertUtils.h"
 #import "FIMerger.h"
 #import "FIUIImageHandler.h"
+#import <CoreText/CoreText.h>
 
-@implementation FIEPlugin
+typedef void (^FontBlock)(UIFont *font,NSString* name);
+typedef void (^VoidBlock)(void);
 
-+ (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {
+@implementation FIEPlugin {
+  dispatch_queue_global_t _queue;
+}
+
++ (void)registerWithRegistrar:
+    (nonnull NSObject<FlutterPluginRegistrar> *)registrar {
   FIEPlugin *plugin = [FIEPlugin new];
-  FlutterMethodChannel *channel =
-      [FlutterMethodChannel methodChannelWithName:@"top.kikt/flutter_image_editor"
-                                  binaryMessenger:registrar.messenger];
+  [plugin initQueue];
+  FlutterMethodChannel *channel = [FlutterMethodChannel
+      methodChannelWithName:@"top.kikt/flutter_image_editor"
+            binaryMessenger:registrar.messenger];
 
   [registrar addMethodCallDelegate:plugin channel:channel];
 }
 
-- (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
+- (void)handleMethodCall:(FlutterMethodCall *)call
+                  result:(FlutterResult)result {
   NSString *method = call.method;
   id args = call.arguments;
   if ([method isEqualToString:@"getCachePath"]) {
@@ -38,21 +47,40 @@
     [self handleMerge:args outMemory:YES result:result];
   } else if ([method isEqualToString:@"mergeToFile"]) {
     [self handleMerge:args outMemory:NO result:result];
+  } else if ([method isEqualToString:@"registerFont"]) {
+    [self asyncExec:^{
+      NSString *path = args[@"path"];
+      NSData *data = [NSData dataWithContentsOfFile:path];
+      [self registerFontWithData:data
+                           block:^(UIFont *font,NSString* name) {
+                             result(name);
+                           }];
+    }];
   } else {
     result(FlutterMethodNotImplemented);
   }
 }
 
-- (void)handleMerge:(id)args outMemory:(BOOL)outMemory result:(FlutterResult)result {
-  dispatch_queue_global_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+- (void)initQueue {
+  _queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+}
 
-  dispatch_async(queue, ^{
+- (void)asyncExec:(VoidBlock)block {
+  dispatch_async(_queue, block);
+}
+
+- (void)handleMerge:(id)args
+          outMemory:(BOOL)outMemory
+             result:(FlutterResult)result {
+  [self asyncExec:^{
     FIMerger *merger = [FIMerger new];
     merger.option = [FIMergeOption createFromDict:args[@"option"]];
     NSData *data = [merger process];
 
     if (!data) {
-      result([FlutterError errorWithCode : @"cannot merge image" message : nil details : nil]);
+      result([FlutterError errorWithCode:@"cannot merge image"
+                                 message:nil
+                                 details:nil]);
       return;
     }
 
@@ -67,16 +95,19 @@
         result(filePath);
       });
     }
-  });
+  }];
 }
 
-- (void)handleArgs:(id)args outMemory:(BOOL)outMemory result:(FlutterResult)result {
-  dispatch_queue_global_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-  dispatch_async(queue, ^{
+- (void)handleArgs:(id)args
+         outMemory:(BOOL)outMemory
+            result:(FlutterResult)result {
+  [self asyncExec:^{
     UIImage *image = [self getUIImage:args];
     if (!image) {
       dispatch_async(dispatch_get_main_queue(), ^{
-        result([FlutterError errorWithCode:@"decode image error" message:nil details:nil]);
+        result([FlutterError errorWithCode:@"decode image error"
+                                   message:nil
+                                   details:nil]);
       });
       return;
     }
@@ -103,11 +134,13 @@
         if (success) {
           result(target);
         } else {
-          result([FlutterError errorWithCode:@"cannot handle" message:nil details:nil]);
+          result([FlutterError errorWithCode:@"cannot handle"
+                                     message:nil
+                                     details:nil]);
         }
       });
     }
-  });
+  }];
 }
 
 - (UIImage *)getUIImage:(id)args {
@@ -132,6 +165,27 @@
   }
 
   return [UIImage imageWithData:data];
+}
+
+- (void)registerFontWithData:(NSData *)data block:(FontBlock)block {
+
+  CFErrorRef error;
+  CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)data);
+  CGFontRef font = CGFontCreateWithDataProvider(provider);
+  NSString *name =
+      (NSString *)CFBridgingRelease(CGFontCopyPostScriptName(font));
+
+  if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
+    CFStringRef errorDescription = CFErrorCopyDescription(error);
+    NSLog(@"Failed to load font: %@", errorDescription);
+    CFRelease(errorDescription);
+  } else {
+    NSLog(@"register font success : %@", name);
+  }
+  UIFont *uiFont = [UIFont fontWithName:name size:14];
+  CFRelease(font);
+  CFRelease(provider);
+  block(uiFont, name);
 }
 
 @end

@@ -24,8 +24,6 @@ class EditorText {
   final Offset offset;
   final int fontSizePx;
   final Color textColor;
-
-  /// android, it is must be asset name.
   final String fontName;
 
   EditorText({
@@ -33,7 +31,7 @@ class EditorText {
     @required this.offset,
     this.fontSizePx = 14,
     this.textColor = Colors.black,
-    this.fontName = "",
+    this.fontName = '',
   });
 
   int get y {
@@ -46,7 +44,7 @@ class EditorText {
   Map<String, Object> toJson() {
     return {
       'text': text,
-      'fontName': fontName,
+      'fontName': fontName ?? '',
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
       'size': fontSizePx,

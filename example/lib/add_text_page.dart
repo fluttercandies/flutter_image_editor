@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:path_provider/path_provider.dart' as pp;
+import 'package:http/http.dart' as http;
 
 import 'const/resource.dart';
 
@@ -18,6 +22,8 @@ class _AddTextPageState extends State<AddTextPage> {
 
   final TextEditingController _controller =
       TextEditingController(text: '输入文字, 添加足够长的字数, 以测试换行的效果是怎么样的.');
+
+  String fontName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -49,33 +55,41 @@ class _AddTextPageState extends State<AddTextPage> {
                 ],
               ),
             ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  onPressed: () async {
+                    await addText(fontName);
+                  },
+                  child: const Text('add'),
+                ),
+                RaisedButton(
+                  onPressed: () async {
+                    await addText('');
+                  },
+                  child: const Text('add use defaultFont'),
+                ),
+              ],
+            ),
             RaisedButton(
+              child: Text('download and register font'),
               onPressed: () async {
-                const int size = 120;
-                final ImageEditorOption option = ImageEditorOption();
-                final AddTextOption textOption = AddTextOption();
-                textOption.addText(
-                  EditorText(
-                    offset: const Offset(0, 0),
-                    text: _controller.text,
-                    fontSizePx: size,
-                    textColor: const Color(0xFF995555),
-                  ),
-                );
-                option.outputFormat = const OutputFormat.png();
+                final aliFontUrl =
+                    'https://cdn.jsdelivr.net/gh/kikt-blog/ali_font@master/Alibaba-PuHuiTi-Medium.ttf';
 
-                option.addOption(textOption);
+                final body = await http.get(aliFontUrl);
 
-                final Uint8List u = await getAssetImage();
-                final Uint8List result = await ImageEditor.editImage(
-                  image: u,
-                  imageEditorOption: option,
-                );
-                print(option.toString());
-                target = MemoryImage(result);
-                setState(() {});
+                final tmpDir = await pp.getTemporaryDirectory();
+                final f = File(
+                    '${tmpDir.absolute.path}/${DateTime.now().millisecondsSinceEpoch}.ttf');
+                f.writeAsBytesSync(body.bodyBytes);
+
+                fontName = await FontManager.registerFont(f);
+
+                showToast('register $fontName success');
               },
-              child: const Text('add'),
             ),
             TextField(
               controller: _controller,
@@ -85,6 +99,33 @@ class _AddTextPageState extends State<AddTextPage> {
         ),
       ),
     );
+  }
+
+  Future addText(String fontName) async {
+    const int size = 120;
+    final ImageEditorOption option = ImageEditorOption();
+    final AddTextOption textOption = AddTextOption();
+    textOption.addText(
+      EditorText(
+        offset: const Offset(0, 0),
+        text: _controller.text,
+        fontSizePx: size,
+        textColor: const Color(0xFF995555),
+        fontName: fontName,
+      ),
+    );
+    option.outputFormat = const OutputFormat.png();
+
+    option.addOption(textOption);
+
+    final Uint8List u = await getAssetImage();
+    final Uint8List result = await ImageEditor.editImage(
+      image: u,
+      imageEditorOption: option,
+    );
+    print(option.toString());
+    target = MemoryImage(result);
+    setState(() {});
   }
 
   Future<Uint8List> getAssetImage() async {
