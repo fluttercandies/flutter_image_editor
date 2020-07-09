@@ -26,9 +26,6 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
     - [DrawOption](#drawoption)
     - [OutputFormat](#outputformat)
   - [ImageMerge](#imagemerge)
-  - [Common issue](#common-issue)
-    - [iOS](#ios)
-      - [Privacy of camera](#privacy-of-camera)
   - [LICENSE](#license)
     - [Third party](#third-party)
 
@@ -305,17 +302,6 @@ var outputFormat = OutputFormat.jpeg(95);
     provider = MemoryImage(result);
     setState(() {});
 ```
-
-## Common issue
-
-### iOS
-
-#### Privacy of camera
-
-Because, I include [GPUImage](https://github.com/BradLarson/GPUImage.git) to handle image data, and the library have Camera api, so you must add next Usage String in info.plist. It was introduced in version 0.3.x, if you don't need the new features added after 0.3, you can keep using the old version.
-
-[Why need add it by apple](https://developer.apple.com/library/archive/qa/qa1937/_index.html)  
-[How to add it by apple](https://help.apple.com/xcode/mac/8.0/#/dev3f399a2a6)
 
 ## LICENSE
 
