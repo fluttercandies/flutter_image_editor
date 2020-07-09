@@ -5,6 +5,9 @@ import android.os.Build;
 
 import com.jaredrummler.truetypeparser.TTFFile;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,4 +40,8 @@ public class FontUtils {
     }
 
 
+    @Nullable
+    public static Typeface getFont(@NotNull String fontName) {
+        return map.get(fontName);
+    }
 }
