@@ -20,6 +20,7 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
       - [Color Martix](#color-martix)
       - [Scale](#scale)
       - [AddText](#addtext)
+        - [FontManager](#fontmanager)
       - [MixImage](#miximage)
         - [BlendMode](#blendmode)
     - [DrawOption](#drawoption)
@@ -64,7 +65,7 @@ Android, iOS.
 
 ```yaml
 dependencies:
-  image_editor: ^0.6.0
+  image_editor: ^0.7.0
 ```
 
 Import
@@ -161,6 +162,28 @@ textOption.addText(
     text: this._controller.text,
     fontSizePx: size,
     color: Colors.red,
+    fontName: '', // You must register font before use. If the fontName is empty string, the text will use default system font.
+  ),
+);
+```
+
+##### FontManager
+
+Here we can use `FontManager` to register font.
+
+```dart
+File fontFile = File(path)//;
+final String fontName = await FontManager.registerFont(fontFile);
+
+// the fontName can be use int EditorText.
+final textOption = AddTextOption();
+textOption.addText(
+  EditorText(
+    offset: Offset(0, 0),
+    text: this._controller.text,
+    fontSizePx: size,
+    color: Colors.red,
+    fontName: fontName, // You must register font before use.
   ),
 );
 ```
@@ -299,4 +322,7 @@ MIT Style.
 ### Third party
 
 Under Apache 2.0 style:
+
 Some martix code come from android sdk.
+
+[TrueTypeParser](https://github.com/jaredrummler/TrueTypeParser) : Use it to read font name.

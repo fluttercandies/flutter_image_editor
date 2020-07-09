@@ -291,8 +291,17 @@
   for (FIAddText *text in option.texts) {
     UIColor *color = [UIColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
 
+    UIFont *font;
+      
+      if ([@"" isEqualToString: text.fontName ]){
+        font = [UIFont systemFontOfSize:text.fontSizePx];
+      }else{
+          font = [UIFont fontWithName:text.fontName size:text.fontSizePx];
+      }
+
+      
     NSDictionary *attr = @{
-            NSFontAttributeName: [UIFont boldSystemFontOfSize:text.fontSizePx],
+            NSFontAttributeName: font,
             NSForegroundColorAttributeName: color,
             NSBackgroundColorAttributeName: UIColor.clearColor,
     };

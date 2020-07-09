@@ -129,7 +129,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.6.1"
+    version: "0.7.1"
   image_picker:
     dependency: "direct main"
     description:
@@ -173,7 +173,7 @@ packages:
     source: hosted
     version: "1.6.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.flutter-io.cn"
