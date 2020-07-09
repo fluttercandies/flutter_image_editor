@@ -50,13 +50,13 @@ Android, iOS.
 - [x] add text
 - [x] mix image
 - [x] merge multi image
-- [ ] draw somethings
-  - [ ] draw point
-  - [ ] draw line
-  - [ ] draw rect
-  - [ ] draw circle
-  - [ ] draw path
-  - [ ] draw Bezier
+- [x] draw somethings
+  - [x] draw point
+  - [x] draw line
+  - [x] draw rect
+  - [x] draw circle
+  - [x] draw path
+  - [x] draw Bezier
 - [ ] Gaussian blur
 
 ## ImageEditor Usage
@@ -65,8 +65,10 @@ Android, iOS.
 
 ```yaml
 dependencies:
-  image_editor: ^0.7.0
+  image_editor: $latest
 ```
+
+About version, please find it from [pub](https://pub.dev/packages/image_edito).
 
 Import
 
