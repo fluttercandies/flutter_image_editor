@@ -1,11 +1,11 @@
 name: image_editor
 description: Edit your image data and output to file/memory, Use objc/kotlin to handle it.
 version: 0.7.2
-author: Caijinglong<cjl_spy@163.com>
 homepage: https://github.com/fluttercandies/flutter_image_editor
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
+  flutter: ">=1.10.0 <2.0.0"
 
 dependencies:
   flutter:
@@ -17,5 +17,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: top.kikt.flutter_image_editor
-    pluginClass: FlutterImageEditorPlugin
+    platforms:
+      android: 
+        package: top.kikt.flutter_image_editor
+        pluginClass: FlutterImageEditorPlugin
+      ios:
+        pluginClass: FlutterImageEditorPlugin
