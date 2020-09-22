@@ -214,7 +214,7 @@ void mix(BlendMode blendMode) async {
 
 ##### BlendMode
 
-Support next BlendMode, other will be ignored.
+Support next `BlendMode`, other will be ignored. You can also see [the document of flutter](https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html).
 
 | iOS                         | android(PorterDuff.Mode) | flutter(BlendMode) |
 | --------------------------- | ------------------------ | ------------------ |
