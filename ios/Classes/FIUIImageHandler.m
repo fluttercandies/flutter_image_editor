@@ -155,7 +155,7 @@
   CGRect newRect = CGRectApplyAffineTransform(oldRect, aff);
   CGSize newSize = newRect.size;
 
-  UIGraphicsBeginImageContext(outImage.size);
+  UIGraphicsBeginImageContext(newSize);
 
   //  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
 
