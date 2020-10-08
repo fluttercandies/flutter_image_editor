@@ -302,7 +302,7 @@ static NSDictionary *mixBlendModeDict;
 }
 
 - (float)g {
-  return [self.map[@"color"][@"b"] floatValue] / 255;
+  return [self.map[@"color"][@"g"] floatValue] / 255;
 }
 
 - (float)b {
