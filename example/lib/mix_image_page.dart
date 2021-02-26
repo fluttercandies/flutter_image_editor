@@ -11,7 +11,7 @@ class MixImagePage extends StatefulWidget {
 }
 
 class _MixImagePageState extends State<MixImagePage> {
-  ImageProvider image;
+  ImageProvider? image;
 
   BlendMode blendMode = BlendMode.srcOver;
 
@@ -43,7 +43,7 @@ class _MixImagePageState extends State<MixImagePage> {
             height: 270,
             child: image != null
                 ? Image(
-                    image: image,
+                    image: image!,
                   )
                 : Container(),
           ),
@@ -71,7 +71,10 @@ class _MixImagePageState extends State<MixImagePage> {
     );
   }
 
-  void _onChange(BlendMode value) {
+  void _onChange(BlendMode? value) {
+    if (value == null) {
+      return;
+    }
     setState(() {
       blendMode = value;
     });
@@ -92,9 +95,13 @@ class _MixImagePageState extends State<MixImagePage> {
         blendMode: blendMode,
       ),
     );
-    final Uint8List result =
+    final Uint8List? result =
         await ImageEditor.editImage(image: dst, imageEditorOption: optionGroup);
-    image = MemoryImage(result);
+    if (result == null) {
+      image = null;
+    } else {
+      image = MemoryImage(result);
+    }
     setState(() {});
   }
 

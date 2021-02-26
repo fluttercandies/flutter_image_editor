@@ -10,11 +10,11 @@ import 'option/edit_options.dart';
 class ImageEditor {
   /// [image] Uint8List
   /// [imageEditorOption] option of
-  static Future<Uint8List> editImage({
-    @required Uint8List image,
-    @required ImageEditorOption imageEditorOption,
+  static Future<Uint8List?> editImage({
+    required Uint8List image,
+    required ImageEditorOption imageEditorOption,
   }) async {
-    Uint8List tmp = image;
+    Uint8List? tmp = image;
     for (final group in imageEditorOption.groupList) {
       if (group.canIgnore) {
         continue;
@@ -32,11 +32,11 @@ class ImageEditor {
     return tmp;
   }
 
-  static Future<Uint8List> editFileImage({
-    @required File file,
-    @required ImageEditorOption imageEditorOption,
+  static Future<Uint8List?> editFileImage({
+    required File file,
+    required ImageEditorOption imageEditorOption,
   }) async {
-    Uint8List tmp;
+    Uint8List? tmp;
     bool isHandle = false;
 
     for (final group in imageEditorOption.groupList) {
@@ -63,11 +63,11 @@ class ImageEditor {
     }
   }
 
-  static Future<File> editFileImageAndGetFile({
-    @required File file,
-    @required ImageEditorOption imageEditorOption,
+  static Future<File?> editFileImageAndGetFile({
+    required File file,
+    required ImageEditorOption imageEditorOption,
   }) async {
-    File tmp = file;
+    File? tmp = file;
     for (final group in imageEditorOption.groupList) {
       if (group.canIgnore) {
         continue;
@@ -88,10 +88,10 @@ class ImageEditor {
   }
 
   static Future<File> editImageAndGetFile({
-    @required Uint8List image,
-    @required ImageEditorOption imageEditorOption,
+    required Uint8List image,
+    required ImageEditorOption imageEditorOption,
   }) async {
-    Uint8List tmp = image;
+    Uint8List? tmp = image;
 
     for (final group in imageEditorOption.groupList) {
       if (group.canIgnore) {
@@ -110,7 +110,11 @@ class ImageEditor {
 
     final file = File(await _createTmpFilePath());
 
-    return file.writeAsBytes(tmp);
+    if (tmp != null) {
+      await file.writeAsBytes(tmp);
+    }
+
+    return file;
   }
 
   static Future<String> _createTmpFilePath() async {

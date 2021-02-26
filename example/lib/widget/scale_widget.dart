@@ -4,11 +4,11 @@ import 'package:image_editor/image_editor.dart';
 
 class ScaleWidget extends StatefulWidget {
   const ScaleWidget({
-    Key key,
+    Key? key,
     this.onTap,
   }) : super(key: key);
 
-  final ValueChanged<Option> onTap;
+  final ValueChanged<Option>? onTap;
   @override
   _ScaleWidgetState createState() => _ScaleWidgetState();
 }

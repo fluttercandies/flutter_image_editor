@@ -13,7 +13,7 @@ class MergeImagePage extends StatefulWidget {
 
 class _MergeImagePageState extends State<MergeImagePage> {
   int count = 2;
-  ImageProvider provider;
+  ImageProvider? provider;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
   Widget buildImageResult() {
     if (provider != null)
       return Container(
-        child: Image(image: provider),
+        child: Image(image: provider!),
         width: 300,
         height: 300,
       );
@@ -88,8 +88,12 @@ class _MergeImagePageState extends State<MergeImagePage> {
       );
     }
 
-    final Uint8List result = await ImageMerger.mergeToMemory(option: option);
-    provider = MemoryImage(result);
+    final Uint8List? result = await ImageMerger.mergeToMemory(option: option);
+    if (result == null) {
+      provider = null;
+    } else {
+      provider = MemoryImage(result);
+    }
     setState(() {});
   }
 }

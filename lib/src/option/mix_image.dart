@@ -9,21 +9,16 @@ class MixImageOption implements Option {
   final BlendMode blendMode;
 
   MixImageOption({
-    @required this.target,
-    @required this.x,
-    @required this.y,
-    @required this.width,
-    @required this.height,
+    required this.target,
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
     this.blendMode = BlendMode.srcOver,
-  })  : assert(target != null),
-        assert(x != null),
-        assert(y != null),
-        assert(width != null),
-        assert(height != null),
-        assert(supportBlendModes.contains(blendMode));
+  }) : assert(supportBlendModes.contains(blendMode));
 
   @override
-  bool get canIgnore => target == null;
+  bool get canIgnore => false;
 
   @override
   String get key => 'mix_image';

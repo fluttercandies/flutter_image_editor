@@ -4,11 +4,11 @@ import 'package:image_editor/image_editor.dart';
 
 class RotateWidget extends StatefulWidget {
   const RotateWidget({
-    Key key,
+    Key? key,
     this.onTap,
   }) : super(key: key);
 
-  final ValueChanged<RotateOption> onTap;
+  final ValueChanged<RotateOption>? onTap;
 
   @override
   _RotateWidgetState createState() => _RotateWidgetState();

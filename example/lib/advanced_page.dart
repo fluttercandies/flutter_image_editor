@@ -17,7 +17,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   final GlobalKey<ExtendedImageEditorState> editorKey =
       GlobalKey<ExtendedImageEditorState>();
 
-  ImageProvider provider;
+  ImageProvider? provider;
 
   @override
   void initState() {
@@ -126,7 +126,10 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> crop([bool test = false]) async {
-    final ExtendedImageEditorState state = editorKey.currentState;
+    final ExtendedImageEditorState? state = editorKey.currentState;
+    if (state == null) {
+      return;
+    }
     final Rect rect = state.getCropRect();
     final EditActionDetails action = state.editAction;
     final double radian = action.rotateAngle;
@@ -154,12 +157,12 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
 
     final DateTime start = DateTime.now();
-    final Uint8List result = await ImageEditor.editImage(
+    final Uint8List? result = await ImageEditor.editImage(
       image: img,
       imageEditorOption: option,
     );
 
-    print('result.length = ${result.length}');
+    print('result.length = ${result?.length}');
 
     final Duration diff = DateTime.now().difference(start);
 
@@ -167,15 +170,17 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     showToast('handle duration: $diff',
         duration: const Duration(seconds: 5), dismissOtherToast: true);
 
+    if (result == null) return;
+
     showPreviewDialog(result);
   }
 
   void flip() {
-    editorKey.currentState.flip();
+    editorKey.currentState?.flip();
   }
 
   void rotate(bool right) {
-    editorKey.currentState.rotate(right: right);
+    editorKey.currentState?.rotate(right: right);
   }
 
   void showPreviewDialog(Uint8List image) {
@@ -201,11 +206,9 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   Future<void> _pick() async {
     final PickedFile result =
         await ImagePicker().getImage(source: ImageSource.camera);
-    if (result != null) {
-      print(result.path);
-      provider = ExtendedFileImageProvider(File(result.path));
-      setState(() {});
-    }
+    print(result.path);
+    provider = ExtendedFileImageProvider(File(result.path));
+    setState(() {});
   }
 
   double sat = 1;

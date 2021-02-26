@@ -16,7 +16,7 @@ class AddTextPage extends StatefulWidget {
 }
 
 class _AddTextPageState extends State<AddTextPage> {
-  ImageProvider target;
+  ImageProvider? target;
 
   String get asset => R.ASSETS_ICON_PNG;
 
@@ -48,7 +48,7 @@ class _AddTextPageState extends State<AddTextPage> {
                     aspectRatio: 1,
                     child: target != null
                         ? Image(
-                            image: target,
+                            image: target!,
                           )
                         : Container(),
                   ),
@@ -119,11 +119,15 @@ class _AddTextPageState extends State<AddTextPage> {
     option.addOption(textOption);
 
     final Uint8List u = await getAssetImage();
-    final Uint8List result = await ImageEditor.editImage(
+    final Uint8List? result = await ImageEditor.editImage(
       image: u,
       imageEditorOption: option,
     );
     print(option.toString());
+
+    if (result == null) {
+      return;
+    }
     target = MemoryImage(result);
     setState(() {});
   }

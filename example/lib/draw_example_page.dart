@@ -15,7 +15,7 @@ class DrawExamplePage extends StatefulWidget {
 }
 
 class _DrawExamplePageState extends State<DrawExamplePage> {
-  Uint8List bytes;
+  Uint8List? bytes;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
                 Image.asset(
                   R.ASSETS_ICON_PNG,
                 ),
-                bytes == null ? Container() : Image.memory(bytes),
+                bytes == null ? Container() : Image.memory(bytes!),
               ],
             ),
           ),
@@ -130,7 +130,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
 
     tu.start();
 
-    bytes = await ImageEditor.editImage(image: bytes, imageEditorOption: opt);
+    bytes = await ImageEditor.editImage(image: bytes!, imageEditorOption: opt);
 
     print(tu.currentMs());
 

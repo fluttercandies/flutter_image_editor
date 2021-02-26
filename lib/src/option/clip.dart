@@ -9,9 +9,9 @@ class ClipOption implements Option {
   ClipOption({
     this.x = 0,
     this.y = 0,
-    @required this.width,
-    @required this.height,
-  })  : assert(width > 0 && height > 0),
+    required this.width,
+    required this.height,
+  })   : assert(width > 0 && height > 0),
         assert(x >= 0, y >= 0);
 
   factory ClipOption.fromRect(Rect rect) {

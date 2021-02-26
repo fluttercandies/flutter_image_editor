@@ -7,25 +7,25 @@ import 'option/edit_options.dart';
 import 'type.dart';
 
 class ImageHandler {
-  SrcType _type;
+  final SrcType _type;
 
-  File _file;
+  File? _file;
 
-  Uint8List _memory;
+  Uint8List? _memory;
 
   ImageHandler.memory(this._memory) : _type = SrcType.memory;
 
   ImageHandler.file(this._file) : _type = SrcType.file;
 
-  Future<File> handleAndGetFile(
+  Future<File?> handleAndGetFile(
       ImageEditorOption option, String targetPath) async {
     try {
       if (_type == SrcType.file) {
         return File(
-            await NativeChannel.fileToFile(_file.path, option, targetPath));
+            await NativeChannel.fileToFile(_file!.path, option, targetPath));
       } else if (_type == SrcType.memory) {
         return File(
-            await NativeChannel.memoryToFile(_memory, option, targetPath));
+            await NativeChannel.memoryToFile(_memory!, option, targetPath));
       } else {
         return null;
       }
@@ -40,12 +40,12 @@ class ImageHandler {
     }
   }
 
-  Future<Uint8List> handleAndGetUint8List(ImageEditorOption option) async {
+  Future<Uint8List?> handleAndGetUint8List(ImageEditorOption option) async {
     try {
       if (_type == SrcType.file) {
-        return NativeChannel.fileToMemory(_file.path, option);
+        return NativeChannel.fileToMemory(_file!.path, option);
       } else if (_type == SrcType.memory) {
-        return NativeChannel.memoryToMemory(_memory, option);
+        return NativeChannel.memoryToMemory(_memory!, option);
       } else {
         return null;
       }

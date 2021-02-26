@@ -4,10 +4,10 @@ import 'package:image_editor/image_editor.dart';
 
 class ClipWidget extends StatefulWidget {
   const ClipWidget({
-    Key key,
+    Key? key,
     this.onTap,
   }) : super(key: key);
-  final ValueChanged<ClipOption> onTap;
+  final ValueChanged<ClipOption>? onTap;
   @override
   _ClipWidgetState createState() => _ClipWidgetState();
 }
@@ -43,8 +43,8 @@ class _ClipWidgetState extends State<ClipWidget> {
     String title, {
     int min = 0,
     int max = 1920,
-    @required ValueChanged<int> onChanged,
-    @required int value,
+    required ValueChanged<int> onChanged,
+    required int value,
   }) {
     return Row(
       children: <Widget>[
@@ -52,7 +52,7 @@ class _ClipWidgetState extends State<ClipWidget> {
           child: Slider(
             onChanged: (double value) {
               setState(() {
-                onChanged?.call(value.toInt());
+                onChanged.call(value.toInt());
               });
             },
             value: value.toDouble(),
