@@ -19,5 +19,5 @@ class FlipOption implements Option {
       };
 
   @override
-  bool get canIgnore => horizontal == null || vertical == null;
+  bool get canIgnore => !horizontal && !vertical;
 }

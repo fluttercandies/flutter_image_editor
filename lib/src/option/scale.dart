@@ -5,8 +5,8 @@ class ScaleOption implements Option {
   final int height;
 
   ScaleOption(this.width, this.height)
-      : assert(width != null && width > 0),
-        assert(height != null && height > 0);
+      : assert(width > 0),
+        assert(height > 0);
 
   @override
   bool get canIgnore => false;

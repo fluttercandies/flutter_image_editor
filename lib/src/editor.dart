@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/widgets.dart';
 import 'package:image_editor/src/channel.dart';
 import 'image_handler.dart';
 import 'option/edit_options.dart';

@@ -27,9 +27,7 @@ class MemoryImageSource extends ImageSource {
   @override
   final Uint8List memory;
 
-  const MemoryImageSource(Uint8List uint8list)
-      : assert(uint8list != null),
-        memory = uint8list;
+  const MemoryImageSource(Uint8List uint8list) : memory = uint8list;
 }
 
 class FileImageSource extends ImageSource {
@@ -37,9 +35,7 @@ class FileImageSource extends ImageSource {
 
   const FileImageSource(this.file);
 
-  FileImageSource.path(String path)
-      : assert(path != null),
-        file = File(path);
+  FileImageSource.path(String path) : file = File(path);
 
   @override
   Uint8List get memory {

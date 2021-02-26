@@ -46,7 +46,7 @@ class ColorOption implements Option {
 
   /// see [matrix]
   const ColorOption({this.matrix = defaultColorMatrix})
-      : assert(matrix != null && matrix.length == 20);
+      : assert(matrix.length == 20);
 
   /// migrate from [android sdk saturation code](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html#setSaturation(float)) .
   factory ColorOption.saturation(double saturation) {

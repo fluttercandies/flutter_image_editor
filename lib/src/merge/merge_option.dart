@@ -15,8 +15,7 @@ class ImageMergeOption with JsonAble {
   ImageMergeOption({
     required this.canvasSize,
     this.format = const OutputFormat.jpeg(90),
-  })  : assert(canvasSize != null),
-        assert(canvasSize.width > 0 && canvasSize.height > 0);
+  }) : assert(canvasSize.width > 0 && canvasSize.height > 0);
 
   void addImage(MergeImageConfig config) {
     mergeImageConfig.add(config);
