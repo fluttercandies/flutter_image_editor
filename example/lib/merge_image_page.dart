@@ -25,7 +25,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
       ),
       body: Column(
         children: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: _merge,
             child: const Text('merge'),
           ),

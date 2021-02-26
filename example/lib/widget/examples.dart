@@ -32,9 +32,10 @@ class _ExamplesState extends State<Examples> {
   }
 
   Widget _buildButton(Widget widget) {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
+        Navigator.push(context,
+            MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
       },
       child: Text(widget.runtimeType.toString()),
     );

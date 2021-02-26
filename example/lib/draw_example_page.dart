@@ -61,12 +61,12 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
     return Color.fromARGB(a, r, g, b);
   }
 
-  PaintingStyle randomPaintStyle(){
-    return  PaintingStyle.values[Random().nextInt(10) % 2];
+  PaintingStyle randomPaintStyle() {
+    return PaintingStyle.values[Random().nextInt(10) % 2];
   }
 
   Widget addRect() {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () async {
         addDrawPart(
           RectDrawPart(
@@ -84,7 +84,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
   }
 
   Widget addLine() {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () async {
         List<DrawPart> parts = [];
         for (var i = 0; i < 5; i++) {
@@ -138,7 +138,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
   }
 
   Widget addOval() {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () {
         addDrawPart(
           OvalDrawPart(
@@ -159,7 +159,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
   }
 
   Widget addPoints() {
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: () {
         final dp = PointDrawPart(
           paint: DrawPaint(
@@ -182,7 +182,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
   }
 
   Widget buildDrawPath() {
-    return RaisedButton.icon(
+    return ElevatedButton.icon(
       onPressed: () async {
         final paint = DrawPaint(
           lineWeight: 10,

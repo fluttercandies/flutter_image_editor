@@ -148,7 +148,7 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
 }
 
 Widget buildButton(String text, VoidCallback onTap) {
-  return FlatButton(
+  return TextButton(
     child: Text(text),
     onPressed: onTap,
   );

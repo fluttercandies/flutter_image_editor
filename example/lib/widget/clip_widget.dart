@@ -30,7 +30,7 @@ class _ClipWidgetState extends State<ClipWidget> {
               onChanged: (int v) => width = v, value: width, min: 1),
           buildSlider('height',
               onChanged: (int v) => height = v, value: height, min: 1),
-          FlatButton(
+          TextButton(
             child: const Text('clip'),
             onPressed: clip,
           ),

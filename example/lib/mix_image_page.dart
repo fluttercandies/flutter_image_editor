@@ -48,11 +48,12 @@ class _MixImagePageState extends State<MixImagePage> {
                 : Container(),
           ),
           DropdownButton<BlendMode>(
-            items: supportBlendModes.map((BlendMode e) => _buildItem(e)).toList(),
+            items:
+                supportBlendModes.map((BlendMode e) => _buildItem(e)).toList(),
             onChanged: _onChange,
             value: blendMode,
           ),
-          RaisedButton(
+          ElevatedButton(
             child: const Text('mix'),
             onPressed: () {
               mix();

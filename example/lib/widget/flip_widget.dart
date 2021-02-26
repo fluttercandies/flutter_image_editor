@@ -25,7 +25,7 @@ class _FlipWidgetState extends State<FlipWidget> {
           buildCheck('vertical', vertical, (bool v) => vertical = v),
           SizedBox(
             width: double.infinity,
-            child: FlatButton(
+            child: TextButton(
               child: const Text('flip'),
               onPressed: () {
                 final FlipOption opt = FlipOption(

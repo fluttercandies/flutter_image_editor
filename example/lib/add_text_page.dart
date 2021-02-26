@@ -59,13 +59,13 @@ class _AddTextPageState extends State<AddTextPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     await addText(fontName);
                   },
                   child: const Text('add'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     await addText('');
                   },
@@ -73,7 +73,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 ),
               ],
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('download and register font'),
               onPressed: () async {
                 final aliFontUrl =

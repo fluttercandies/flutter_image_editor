@@ -37,7 +37,7 @@ class _ScaleWidgetState extends State<ScaleWidget> {
           ),
           SizedBox(
             width: double.infinity,
-            child: FlatButton(
+            child: TextButton(
               child: const Text('scale'),
               onPressed: _rotate,
             ),

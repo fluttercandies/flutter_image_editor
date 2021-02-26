@@ -14,7 +14,8 @@ class ExtendedImageExample extends StatefulWidget {
 }
 
 class _ExtendedImageExampleState extends State<ExtendedImageExample> {
-  final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey =
+      GlobalKey<ExtendedImageEditorState>();
 
   ImageProvider provider;
 
@@ -94,15 +95,15 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.flip),
-          title: const Text('Flip'),
+          label: 'Flip',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_left),
-          title: const Text('Rotate left'),
+          label: 'Rotate left',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_right),
-          title: const Text('Rotate right'),
+          label: 'Rotate right',
         ),
       ],
       onTap: (int index) {
@@ -198,7 +199,8 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> _pick() async {
-    final PickedFile result = await ImagePicker().getImage(source: ImageSource.camera);
+    final PickedFile result =
+        await ImagePicker().getImage(source: ImageSource.camera);
     if (result != null) {
       print(result.path);
       provider = ExtendedFileImageProvider(File(result.path));
