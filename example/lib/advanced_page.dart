@@ -72,8 +72,11 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Widget buildImage() {
+    if (provider == null) {
+      return Container();
+    }
     return ExtendedImage(
-      image: provider,
+      image: provider!,
       height: 400,
       width: 400,
       extendedImageEditorKey: editorKey,
@@ -130,14 +133,23 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     if (state == null) {
       return;
     }
-    final Rect rect = state.getCropRect();
+    final Rect? rect = state.getCropRect();
+    if (rect == null) {
+      showToast('The crop rect is null.');
+      return;
+    }
     final EditActionDetails action = state.editAction;
     final double radian = action.rotateAngle;
 
     final bool flipHorizontal = action.flipY;
     final bool flipVertical = action.flipX;
     // final img = await getImageFromEditorKey(editorKey);
-    final Uint8List img = state.rawImageData;
+    final Uint8List? img = state.rawImageData;
+
+    if (img == null) {
+      showToast('The img is null.');
+      return;
+    }
 
     final ImageEditorOption option = ImageEditorOption();
 
@@ -204,8 +216,13 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> _pick() async {
-    final PickedFile result =
+    final PickedFile? result =
         await ImagePicker().getImage(source: ImageSource.camera);
+
+    if (result == null) {
+      showToast('The pick file is null');
+      return;
+    }
     print(result.path);
     provider = ExtendedFileImageProvider(File(result.path));
     setState(() {});

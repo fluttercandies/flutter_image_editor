@@ -79,7 +79,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 final aliFontUrl =
                     'https://cdn.jsdelivr.net/gh/kikt-blog/ali_font@master/Alibaba-PuHuiTi-Medium.ttf';
 
-                final body = await http.get(aliFontUrl);
+                final body = await http.get(Uri.parse(aliFontUrl));
 
                 final tmpDir = await pp.getTemporaryDirectory();
                 final f = File(
