@@ -1,6 +1,7 @@
 # CHANGELOG
 
 - [CHANGELOG](#changelog)
+  - [1.0.0-nullsafety.0](#100-nullsafety0)
   - [0.7.3](#073)
   - [0.7.2](#072)
   - [0.7.1+1](#0711)
@@ -23,6 +24,10 @@
   - [0.1.2](#012)
   - [0.1.1](#011)
   - [0.1.0](#010)
+
+## 1.0.0-nullsafety.0
+
+First nullsafety version.
 
 ## 0.7.3
 

@@ -138,7 +138,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.7.3"
+    version: "1.0.0-nullsafety.0"
   image_picker:
     dependency: "direct main"
     description:
