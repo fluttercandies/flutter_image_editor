@@ -14,9 +14,10 @@ class ExtendedImageExample extends StatefulWidget {
 }
 
 class _ExtendedImageExampleState extends State<ExtendedImageExample> {
-  final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey =
+      GlobalKey<ExtendedImageEditorState>();
 
-  ImageProvider provider;
+  ImageProvider? provider;
 
   @override
   void initState() {
@@ -71,8 +72,11 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Widget buildImage() {
+    if (provider == null) {
+      return Container();
+    }
     return ExtendedImage(
-      image: provider,
+      image: provider!,
       height: 400,
       width: 400,
       extendedImageEditorKey: editorKey,
@@ -94,15 +98,15 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.flip),
-          title: const Text('Flip'),
+          label: 'Flip',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_left),
-          title: const Text('Rotate left'),
+          label: 'Rotate left',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.rotate_right),
-          title: const Text('Rotate right'),
+          label: 'Rotate right',
         ),
       ],
       onTap: (int index) {
@@ -125,15 +129,27 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> crop([bool test = false]) async {
-    final ExtendedImageEditorState state = editorKey.currentState;
-    final Rect rect = state.getCropRect();
+    final ExtendedImageEditorState? state = editorKey.currentState;
+    if (state == null) {
+      return;
+    }
+    final Rect? rect = state.getCropRect();
+    if (rect == null) {
+      showToast('The crop rect is null.');
+      return;
+    }
     final EditActionDetails action = state.editAction;
     final double radian = action.rotateAngle;
 
     final bool flipHorizontal = action.flipY;
     final bool flipVertical = action.flipX;
     // final img = await getImageFromEditorKey(editorKey);
-    final Uint8List img = state.rawImageData;
+    final Uint8List? img = state.rawImageData;
+
+    if (img == null) {
+      showToast('The img is null.');
+      return;
+    }
 
     final ImageEditorOption option = ImageEditorOption();
 
@@ -153,12 +169,12 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
 
     final DateTime start = DateTime.now();
-    final Uint8List result = await ImageEditor.editImage(
+    final Uint8List? result = await ImageEditor.editImage(
       image: img,
       imageEditorOption: option,
     );
 
-    print('result.length = ${result.length}');
+    print('result.length = ${result?.length}');
 
     final Duration diff = DateTime.now().difference(start);
 
@@ -166,15 +182,17 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     showToast('handle duration: $diff',
         duration: const Duration(seconds: 5), dismissOtherToast: true);
 
+    if (result == null) return;
+
     showPreviewDialog(result);
   }
 
   void flip() {
-    editorKey.currentState.flip();
+    editorKey.currentState?.flip();
   }
 
   void rotate(bool right) {
-    editorKey.currentState.rotate(right: right);
+    editorKey.currentState?.rotate(right: right);
   }
 
   void showPreviewDialog(Uint8List image) {
@@ -198,12 +216,16 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> _pick() async {
-    final PickedFile result = await ImagePicker().getImage(source: ImageSource.camera);
-    if (result != null) {
-      print(result.path);
-      provider = ExtendedFileImageProvider(File(result.path));
-      setState(() {});
+    final PickedFile? result =
+        await ImagePicker().getImage(source: ImageSource.camera);
+
+    if (result == null) {
+      showToast('The pick file is null');
+      return;
     }
+    print(result.path);
+    provider = ExtendedFileImageProvider(File(result.path));
+    setState(() {});
   }
 
   double sat = 1;

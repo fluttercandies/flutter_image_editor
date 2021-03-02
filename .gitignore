@@ -7,3 +7,5 @@
 build/
 .settings
 .idea/
+
+.env

@@ -1,12 +1,13 @@
 class TimeUtils {
-  DateTime _start;
+  DateTime? _start;
 
   void start() {
     _start = DateTime.now();
   }
 
   Duration current() {
-    return DateTime.now().difference(_start);
+    if (_start == null) throw 'not start';
+    return DateTime.now().difference(_start!);
   }
 
   String currentMs() {

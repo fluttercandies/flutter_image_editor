@@ -62,21 +62,6 @@ class DrawPaint extends DrawPart {
   @override
   bool get canIgnore => false;
 
-  // ignore: unused_element
-  void _p() {
-    var paint = Paint(); // ignore: unused_local_variable
-    var canvas = Canvas(PictureRecorder()); // ignore: unused_local_variable
-
-    PointMode pointMode;
-    List<Offset> points;
-    canvas.drawPoints(pointMode, points, paint);
-    Path path = Path();
-//    path.conicTo(x1, y1, x2, y2, w);
-//    path.cubicTo(x1, y1, x2, y2, x3, y3);
-//    path.quadraticBezierTo(x1, y1, x2, y2);
-    canvas.drawPath(path, paint);
-  }
-
   @override
   String get key => 'paint';
 
@@ -108,9 +93,9 @@ class LineDrawPart extends DrawPart with _HavePaint {
   final DrawPaint paint;
 
   LineDrawPart({
-    @required this.start,
-    @required this.end,
-    this.paint,
+    required this.start,
+    required this.end,
+    required this.paint,
   });
 
   @override
@@ -151,7 +136,7 @@ class RectDrawPart extends DrawPart with _HavePaint {
   final DrawPaint paint;
 
   RectDrawPart({
-    @required this.rect,
+    required this.rect,
     this.paint = const DrawPaint(),
   });
 
@@ -172,7 +157,7 @@ class OvalDrawPart extends DrawPart with _HavePaint {
   final Rect rect;
 
   OvalDrawPart({
-    @required this.rect,
+    required this.rect,
     this.paint = const DrawPaint(),
   });
 
@@ -216,9 +201,9 @@ class PathDrawPart extends DrawPart with _HavePaint {
     );
   }
 
-  /// The parameters of iOS and Android/flutter are inconsistent and need to be converted. 
+  /// The parameters of iOS and Android/flutter are inconsistent and need to be converted.
   /// For the time being, consistency cannot be guaranteed, delete it first.
-  /// 
+  ///
   /// Consider adding back in future versions (may not)
   // void arcTo(Rect rect, double startAngle, double sweepAngle, bool useCenter,
   //     DrawPaint paint) {
@@ -255,15 +240,11 @@ class PathDrawPart extends DrawPart with _HavePaint {
   }
 
   void bezierTo({
-    @required Offset target,
-    Offset control1,
-    Offset control2,
+    required Offset target,
+    Offset? control1,
+    Offset? control2,
     DrawPaint paint = const DrawPaint(),
   }) {
-    assert(target != null);
-    if (target == null) {
-      return;
-    }
     if (control1 == null) {
       lineTo(target, paint);
       return;
@@ -326,14 +307,14 @@ class _LineToPathPart extends _PathPart {
 class _BezierPathPart extends _PathPart {
   final Offset target;
   final Offset control1;
-  final Offset control2;
+  final Offset? control2;
   final int kind;
 
   _BezierPathPart({
-    @required this.target,
-    @required this.control1,
-    @required this.control2,
-    @required this.kind,
+    required this.target,
+    required this.control1,
+    this.control2,
+    required this.kind,
   }) : assert(kind == 2 || kind == 3);
 
   @override
@@ -348,7 +329,7 @@ class _BezierPathPart extends _PathPart {
     };
 
     if (control2 != null) {
-      value['c2'] = ConvertUtils.offset(control2);
+      value['c2'] = ConvertUtils.offset(control2!);
     }
 
     return value;
@@ -363,10 +344,10 @@ class _ArcToPathPart extends _PathPart {
   final bool useCenter;
 
   _ArcToPathPart({
-    @required this.rect,
-    @required this.startAngle,
-    @required this.sweepAngle,
-    @required this.useCenter,
+    required this.rect,
+    required this.startAngle,
+    required this.sweepAngle,
+    required this.useCenter,
   });
 
   @override

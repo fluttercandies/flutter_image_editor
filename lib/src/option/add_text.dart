@@ -27,8 +27,8 @@ class EditorText {
   final String fontName;
 
   EditorText({
-    @required this.text,
-    @required this.offset,
+    required this.text,
+    required this.offset,
     this.fontSizePx = 14,
     this.textColor = Colors.black,
     this.fontName = '',
@@ -44,7 +44,7 @@ class EditorText {
   Map<String, Object> toJson() {
     return {
       'text': text,
-      'fontName': fontName ?? '',
+      'fontName': fontName,
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
       'size': fontSizePx,

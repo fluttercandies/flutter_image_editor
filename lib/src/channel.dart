@@ -22,7 +22,7 @@ class NativeChannel {
       return (File(targetPath)..writeAsBytesSync(memory)).path;
     }
 
-    return _channel.invokeMethod("memoryToFile", {
+    return await _channel.invokeMethod("memoryToFile", {
       "image": memory,
       "target": targetPath,
       "options": option.toJson(),
@@ -36,11 +36,12 @@ class NativeChannel {
       return memory;
     }
 
-    return _channel.invokeMethod("memoryToMemory", {
+    final result = await _channel.invokeMethod("memoryToMemory", {
       "image": memory,
       "options": option.toJson(),
       "fmt": option.outputFormat.toJson(),
     });
+    return result;
   }
 
   static Future<Uint8List> fileToMemory(
@@ -49,7 +50,7 @@ class NativeChannel {
       return File(path).readAsBytesSync();
     }
 
-    return _channel.invokeMethod("fileToMemory", {
+    return await _channel.invokeMethod("fileToMemory", {
       "src": path,
       "options": option.toJson(),
       "fmt": option.outputFormat.toJson(),
@@ -62,7 +63,7 @@ class NativeChannel {
       return src;
     }
 
-    return _channel.invokeMethod("fileToFile", {
+    return await _channel.invokeMethod("fileToFile", {
       "src": src,
       "target": target,
       "options": option.toJson(),

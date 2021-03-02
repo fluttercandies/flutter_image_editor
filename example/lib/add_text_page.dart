@@ -16,7 +16,7 @@ class AddTextPage extends StatefulWidget {
 }
 
 class _AddTextPageState extends State<AddTextPage> {
-  ImageProvider target;
+  ImageProvider? target;
 
   String get asset => R.ASSETS_ICON_PNG;
 
@@ -48,7 +48,7 @@ class _AddTextPageState extends State<AddTextPage> {
                     aspectRatio: 1,
                     child: target != null
                         ? Image(
-                            image: target,
+                            image: target!,
                           )
                         : Container(),
                   ),
@@ -59,13 +59,13 @@ class _AddTextPageState extends State<AddTextPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     await addText(fontName);
                   },
                   child: const Text('add'),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () async {
                     await addText('');
                   },
@@ -73,13 +73,13 @@ class _AddTextPageState extends State<AddTextPage> {
                 ),
               ],
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('download and register font'),
               onPressed: () async {
                 final aliFontUrl =
                     'https://cdn.jsdelivr.net/gh/kikt-blog/ali_font@master/Alibaba-PuHuiTi-Medium.ttf';
 
-                final body = await http.get(aliFontUrl);
+                final body = await http.get(Uri.parse(aliFontUrl));
 
                 final tmpDir = await pp.getTemporaryDirectory();
                 final f = File(
@@ -119,11 +119,15 @@ class _AddTextPageState extends State<AddTextPage> {
     option.addOption(textOption);
 
     final Uint8List u = await getAssetImage();
-    final Uint8List result = await ImageEditor.editImage(
+    final Uint8List? result = await ImageEditor.editImage(
       image: u,
       imageEditorOption: option,
     );
     print(option.toString());
+
+    if (result == null) {
+      return;
+    }
     target = MemoryImage(result);
     setState(() {});
   }

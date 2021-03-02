@@ -1,7 +1,7 @@
 class HandleError implements Exception {
   String msg;
 
-  HandleError([this.msg]);
+  HandleError([this.msg = '']);
 
   @override
   String toString() {

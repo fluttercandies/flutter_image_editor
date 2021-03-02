@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ExpandContainer extends StatefulWidget {
   const ExpandContainer({
-    Key key,
-    this.child,
-    this.title,
+    Key? key,
+    required this.child,
+    required this.title,
   }) : super(key: key);
   final Widget child;
 

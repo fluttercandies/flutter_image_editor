@@ -45,7 +45,7 @@ class SimpleExamplePage extends StatefulWidget {
 }
 
 class _SimpleExamplePageState extends State<SimpleExamplePage> {
-  ImageProvider provider = AssetImage(R.ASSETS_ICON_PNG);
+  ImageProvider? provider = AssetImage(R.ASSETS_ICON_PNG);
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +62,13 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
       ),
       body: Column(
         children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1,
-            child: Image(
-              image: provider,
+          if (provider != null)
+            AspectRatio(
+              aspectRatio: 1,
+              child: Image(
+                image: provider!,
+              ),
             ),
-          ),
           Expanded(
             child: Scrollbar(
               child: SingleChildScrollView(
@@ -95,7 +96,7 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
     );
   }
 
-  void setProvider(ImageProvider provider) {
+  void setProvider(ImageProvider? provider) {
     this.provider = provider;
     setState(() {});
   }
@@ -137,10 +138,15 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
     final Uint8List assetImage = await getAssetImage();
 
     print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
-    final Uint8List result = await ImageEditor.editImage(
+    final Uint8List? result = await ImageEditor.editImage(
       image: assetImage,
       imageEditorOption: option,
     );
+
+    if (result == null) {
+      setProvider(null);
+      return;
+    }
 
     final MemoryImage img = MemoryImage(result);
     setProvider(img);
@@ -148,7 +154,7 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
 }
 
 Widget buildButton(String text, VoidCallback onTap) {
-  return FlatButton(
+  return TextButton(
     child: Text(text),
     onPressed: onTap,
   );
