@@ -9,6 +9,7 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
 - [image_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Platform of support](#platform-of-support)
+  - [Change Log](#change-log)
   - [Support](#support)
   - [ImageEditor Usage](#imageeditor-usage)
     - [ImageEditor method params](#imageeditor-method-params)
@@ -36,6 +37,15 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
 ## Platform of support
 
 Android, iOS.
+
+## Change Log
+
+This version is a null-safety version.
+
+Please read document for null-safety information in [dart][dart-safe] or [flutter][flutter-safe].
+
+[flutter-safe]: https://flutter.dev/docs/null-safety
+[dart-safe]: https://dart.dev/null-safety
 
 ## Support
 
