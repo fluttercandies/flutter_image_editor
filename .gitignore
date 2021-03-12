@@ -11,3 +11,5 @@ build/
 .env
 
 .vscode/settings.json
+
+pubspec.lock
