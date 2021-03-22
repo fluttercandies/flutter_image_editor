@@ -42,7 +42,7 @@
   if (!data) {
     return NO;
   }
-  NSURL *url = [NSURL URLWithString:targetPath];
+  NSURL *url = [NSURL fileURLWithPath:targetPath];
   [data writeToURL:url atomically:YES];
   return YES;
 }
