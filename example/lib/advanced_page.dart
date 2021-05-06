@@ -28,47 +28,48 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Use extended_image library'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.photo),
-              onPressed: _pick,
+      appBar: AppBar(
+        title: const Text('Use extended_image library'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.photo),
+            onPressed: _pick,
+          ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              await crop();
+            },
+          ),
+        ],
+      ),
+      body: Container(
+        height: double.infinity,
+        child: Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 1,
+              child: buildImage(),
             ),
-            IconButton(
-              icon: Icon(Icons.check),
-              onPressed: () async {
-                await crop();
-              },
+            Expanded(
+              child: SliderTheme(
+                data: const SliderThemeData(
+                  showValueIndicator: ShowValueIndicator.always,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    _buildSat(),
+                    _buildBrightness(),
+                    _buildCon(),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
-        body: Container(
-          height: double.infinity,
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 1,
-                child: buildImage(),
-              ),
-              Expanded(
-                child: SliderTheme(
-                  data: const SliderThemeData(
-                    showValueIndicator: ShowValueIndicator.always,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      _buildSat(),
-                      _buildBrightness(),
-                      _buildCon(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: _buildFunctions());
+      ),
+      bottomNavigationBar: _buildFunctions(),
+    );
   }
 
   Widget buildImage() {
@@ -82,14 +83,12 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       extendedImageEditorKey: editorKey,
       mode: ExtendedImageMode.editor,
       fit: BoxFit.contain,
-      initEditorConfigHandler: (ExtendedImageState state) {
-        return EditorConfig(
-          maxScale: 8.0,
-          cropRectPadding: const EdgeInsets.all(20.0),
-          hitTestSize: 20.0,
-          cropAspectRatio: 2 / 1,
-        );
-      },
+      initEditorConfigHandler: (_) => EditorConfig(
+        maxScale: 8.0,
+        cropRectPadding: const EdgeInsets.all(20.0),
+        hitTestSize: 20.0,
+        cropAspectRatio: 2 / 1,
+      ),
     );
   }
 
@@ -138,7 +137,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       showToast('The crop rect is null.');
       return;
     }
-    final EditActionDetails action = state.editAction;
+    final EditActionDetails action = state.editAction!;
     final double radian = action.rotateAngle;
 
     final bool flipHorizontal = action.flipY;
