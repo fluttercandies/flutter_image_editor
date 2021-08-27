@@ -154,10 +154,10 @@ p, q, r, s, t
 #### Scale
 
 ```dart
-ScaleOption(width,height);
+ScaleOption(width,height,keepRatio: keepRatio);
 ```
 
-After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does not maintain the aspect ratio of the image).
+After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does maintain the aspect ratio of the image if wanted).
 
 #### AddText
 

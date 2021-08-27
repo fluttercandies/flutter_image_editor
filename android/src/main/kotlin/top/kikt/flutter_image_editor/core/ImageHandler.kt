@@ -51,10 +51,20 @@ class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
   }
 
   private fun handleScale(option: ScaleOption): Bitmap {
-    val w = min(bitmap.width, option.width)
-    val h = min(bitmap.height, option.height)
+    val bitmapRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+    val optionRatio = option.width.toFloat() / option.height.toFloat()
+    var w = option.width
+    var h = option.height
 
-    val newBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+    if(option.keepRatio) {
+      if (bitmapRatio < optionRatio) {
+        w = (option.height * bitmapRatio).toInt()
+      } else if (bitmapRatio > optionRatio) {
+        h = (option.width / bitmapRatio).toInt()
+      }
+    }
+
+    val newBitmap = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
 
     val canvas = Canvas(newBitmap)
 

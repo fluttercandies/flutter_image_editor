@@ -3,8 +3,9 @@ part of 'edit_options.dart';
 class ScaleOption implements Option {
   final int width;
   final int height;
+  final bool keepRatio;
 
-  ScaleOption(this.width, this.height)
+  ScaleOption(this.width, this.height, {this.keepRatio: false})
       : assert(width > 0),
         assert(height > 0);
 
@@ -18,5 +19,6 @@ class ScaleOption implements Option {
   Map<String, Object> get transferValue => {
         'width': width,
         'height': height,
+        'keepRatio': keepRatio
       };
 }
