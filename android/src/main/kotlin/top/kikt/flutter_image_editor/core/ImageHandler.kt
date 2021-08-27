@@ -64,7 +64,7 @@ class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
       }
     }
 
-    val newBitmap = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
+    val newBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
 
     val canvas = Canvas(newBitmap)
 
