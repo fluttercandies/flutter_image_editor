@@ -1,8 +1,11 @@
 package top.kikt.flutter_image_editor
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.exifinterface.media.ExifInterface
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -22,12 +25,12 @@ import java.io.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHandler {
+class FlutterImageEditorPlugin(private var context: Context? = null, private var channel: MethodChannel? = null): MethodCallHandler, FlutterPlugin {
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "top.kikt/flutter_image_editor")
-      channel.setMethodCallHandler(FlutterImageEditorPlugin(registrar))
+      val plugin = FlutterImageEditorPlugin()
+      plugin.initInstance(registrar.messenger(), registrar.context())
     }
 
     val threadPool: ExecutorService = Executors.newCachedThreadPool()
@@ -37,6 +40,21 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
         block()
       }
     }
+  }
+
+  fun initInstance(messenger: BinaryMessenger, context: Context) {
+    this.context = context
+    channel = MethodChannel(messenger, "top.kikt/flutter_image_editor")
+    channel?.setMethodCallHandler(this)
+  }
+
+  override public fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    initInstance(binding.getBinaryMessenger(), binding.getApplicationContext())
+  }
+
+  override public fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    context = null
+    channel = null
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -57,7 +75,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
             handle(call, resultHandler, false)
           }
           "getCachePath" -> {
-            val cachePath = registrar.activeContext().cacheDir.absolutePath
+            val cachePath = context?.cacheDir?.absolutePath
             resultHandler.reply(cachePath)
           }
           "mergeToMemory" -> {
@@ -105,7 +123,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
       resultHandler.reply(byteArray)
     } else {
       val extName = if (mergeOption.formatOption.format == 1) "jpg" else "png"
-      val f = File(registrar.context().cacheDir, "${System.currentTimeMillis()}.$extName")
+      val f = File(context?.cacheDir, "${System.currentTimeMillis()}.$extName")
       f.writeBytes(byteArray)
       resultHandler.reply(byteArray)
     }
@@ -205,7 +223,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
 
   private fun handle(call: MethodCall, resultHandler: ResultHandler, outputMemory: Boolean) {
     val bitmapWrapper = call.getBitmap()
-    val imageHandler = ImageHandler(registrar.context(), bitmapWrapper.bitmap)
+    val imageHandler = ImageHandler(context, bitmapWrapper.bitmap)
     imageHandler.handle(call.getOptions(bitmapWrapper))
     handle(imageHandler, call.getFormatOption(), outputMemory, resultHandler, call.getTarget())
   }

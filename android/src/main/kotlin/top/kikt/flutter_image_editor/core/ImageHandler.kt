@@ -17,7 +17,7 @@ import kotlin.math.min
 
 /// create 2019-10-08 by cai
 
-class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
+class ImageHandler(private val context: Context?, private var bitmap: Bitmap) {
 
   fun handle(options: List<Option>) {
     for (option in options) {
