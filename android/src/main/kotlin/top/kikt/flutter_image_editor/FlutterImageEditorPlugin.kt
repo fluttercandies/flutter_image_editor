@@ -3,6 +3,8 @@ package top.kikt.flutter_image_editor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.exifinterface.media.ExifInterface
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -22,12 +24,12 @@ import java.io.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHandler {
+class FlutterImageEditorPlugin(private var context: Context? = null, private var channel: MethodChannel? = null): MethodCallHandler, FlutterPlugin {
   companion object {
     @JvmStatic
     fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "top.kikt/flutter_image_editor")
-      channel.setMethodCallHandler(FlutterImageEditorPlugin(registrar))
+      val plugin = FlutterImageEditorPlugin()
+      plugin.initInstance(registrar.messenger(), registrar.context())
     }
 
     val threadPool: ExecutorService = Executors.newCachedThreadPool()
@@ -37,6 +39,21 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
         block()
       }
     }
+  }
+
+  fun initInstance(messenger: BinaryMessenger, context: Context) {
+    this.context = context
+    channel = MethodChannel(messenger, "top.kikt/flutter_image_editor")
+    channel?.setMethodCallHandler(this)
+  }
+
+  override public fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    initInstance(binding.getBinaryMessenger(), binding.getApplicationContext())
+  }
+
+  override public fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    context = null
+    channel = null
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
