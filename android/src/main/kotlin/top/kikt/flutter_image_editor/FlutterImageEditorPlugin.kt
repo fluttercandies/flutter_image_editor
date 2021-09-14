@@ -1,14 +1,17 @@
 package top.kikt.flutter_image_editor
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.annotation.NonNull
 import androidx.exifinterface.media.ExifInterface
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import top.kikt.flutter_image_editor.common.font.FontUtils
+import top.kikt.flutter_image_editor.core.BitmapWrapper
 import top.kikt.flutter_image_editor.core.ImageHandler
 import top.kikt.flutter_image_editor.core.ImageMerger
 import top.kikt.flutter_image_editor.core.ResultHandler
@@ -22,13 +25,11 @@ import java.io.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHandler {
+class FlutterImageEditorPlugin : FlutterPlugin, MethodCallHandler {
+  private var applicationContext: Context? = null
+
   companion object {
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "top.kikt/flutter_image_editor")
-      channel.setMethodCallHandler(FlutterImageEditorPlugin(registrar))
-    }
+    private const val channelName = "top.kikt/flutter_image_editor"
 
     val threadPool: ExecutorService = Executors.newCachedThreadPool()
 
@@ -37,6 +38,16 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
         block()
       }
     }
+  }
+
+  override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    applicationContext = binding.applicationContext
+    val methodChannel = MethodChannel(binding.binaryMessenger, channelName)
+    methodChannel.setMethodCallHandler(this)
+  }
+
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+    applicationContext = null
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -57,8 +68,7 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
             handle(call, resultHandler, false)
           }
           "getCachePath" -> {
-            val cachePath = registrar.activeContext().cacheDir.absolutePath
-            resultHandler.reply(cachePath)
+            resultHandler.reply(applicationContext?.cacheDir?.absolutePath)
           }
           "mergeToMemory" -> {
             handleMerge(call, resultHandler, true)
@@ -76,19 +86,17 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
           }
         }
       } catch (e: BitmapDecodeException) {
-        resultHandler.replyError("decode bitmap error")
+        resultHandler.replyError("Decode bitmap error.")
       } catch (e: Exception) {
         val writer = StringWriter()
         val printWriter = PrintWriter(writer)
         printWriter.use {
           e.printStackTrace(printWriter)
           resultHandler.replyError(writer.buffer.toString(), "", null)
-
         }
       }
     }
   }
-
 
   private fun handleMerge(call: MethodCall, resultHandler: ResultHandler, memory: Boolean) {
     val mergeOptionMap = call.argument<Any>("option") as Map<*, *>
@@ -97,15 +105,15 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
     val byteArray = imageMerger.process()
 
     if (byteArray == null) {
-      resultHandler.replyError("cannot merge image")
-      return;
+      resultHandler.replyError("Cannot merge image.")
+      return
     }
 
     if (memory) {
       resultHandler.reply(byteArray)
     } else {
       val extName = if (mergeOption.formatOption.format == 1) "jpg" else "png"
-      val f = File(registrar.context().cacheDir, "${System.currentTimeMillis()}.$extName")
+      val f = File(applicationContext!!.cacheDir, "${System.currentTimeMillis()}.$extName")
       f.writeBytes(byteArray)
       resultHandler.reply(byteArray)
     }
@@ -205,10 +213,8 @@ class FlutterImageEditorPlugin(private val registrar: Registrar) : MethodCallHan
 
   private fun handle(call: MethodCall, resultHandler: ResultHandler, outputMemory: Boolean) {
     val bitmapWrapper = call.getBitmap()
-    val imageHandler = ImageHandler(registrar.context(), bitmapWrapper.bitmap)
+    val imageHandler = ImageHandler(bitmapWrapper.bitmap)
     imageHandler.handle(call.getOptions(bitmapWrapper))
     handle(imageHandler, call.getFormatOption(), outputMemory, resultHandler, call.getTarget())
   }
 }
-
-data class BitmapWrapper(val bitmap: Bitmap, val degree: Int, val flipOption: FlipOption)
