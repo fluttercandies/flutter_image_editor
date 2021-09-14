@@ -14,16 +14,12 @@ class ExtendedImageExample extends StatefulWidget {
 }
 
 class _ExtendedImageExampleState extends State<ExtendedImageExample> {
-  final GlobalKey<ExtendedImageEditorState> editorKey =
-      GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey();
 
-  ImageProvider? provider;
-
-  @override
-  void initState() {
-    super.initState();
-    provider = ExtendedExactAssetImageProvider(R.ASSETS_HAVE_EXIF_3_JPG);
-  }
+  ImageProvider provider = ExtendedExactAssetImageProvider(
+    R.ASSETS_HAVE_EXIF_3_JPG,
+    cacheRawData: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +69,8 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Widget buildImage() {
-    if (provider == null) {
-      return Container();
-    }
     return ExtendedImage(
-      image: provider!,
+      image: provider,
       height: 400,
       width: 400,
       extendedImageEditorKey: editorKey,
@@ -223,7 +216,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       return;
     }
     print(result.path);
-    provider = ExtendedFileImageProvider(File(result.path));
+    provider = ExtendedFileImageProvider(File(result.path), cacheRawData: true);
     setState(() {});
   }
 
