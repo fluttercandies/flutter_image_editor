@@ -1,6 +1,6 @@
 name: image_editor
-description: Edit your image data and output to file/memory, Use objc/kotlin to handle it.
-version: 1.0.0
+description: Edit your image data and output to file/memory on Android and iOS.
+version: 1.0.1
 homepage: https://github.com/fluttercandies/flutter_image_editor
 
 environment:
