@@ -76,3 +76,4 @@ build/
 .vscode/
 *.lock
 .env
+fvm

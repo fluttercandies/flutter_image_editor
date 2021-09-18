@@ -75,7 +75,7 @@ dependencies:
   image_editor: $latest
 ```
 
-About version, please find it from [pub](https://pub.dev/packages/image_edito).
+About version, please find it from [pub](https://pub.dev/packages/image_editor).
 
 Import
 

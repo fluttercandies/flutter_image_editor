@@ -2,7 +2,7 @@ package top.kikt.flutter_image_editor.util
 
 import android.graphics.PorterDuff
 import io.flutter.plugin.common.MethodCall
-import top.kikt.flutter_image_editor.BitmapWrapper
+import top.kikt.flutter_image_editor.core.BitmapWrapper
 import top.kikt.flutter_image_editor.option.*
 import top.kikt.flutter_image_editor.option.draw.DrawOption
 

@@ -1,6 +1,5 @@
 package top.kikt.flutter_image_editor.core
 
-import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.text.Layout
@@ -14,10 +13,9 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import kotlin.math.min
 
-
 /// create 2019-10-08 by cai
 
-class ImageHandler(private val context: Context, private var bitmap: Bitmap) {
+class ImageHandler(private var bitmap: Bitmap) {
 
   fun handle(options: List<Option>) {
     for (option in options) {
