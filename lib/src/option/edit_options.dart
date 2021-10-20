@@ -1,11 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_editor/src/image_source.dart';
 import 'package:image_editor/src/utils/convert_utils.dart';
 import 'dart:math' as math;
