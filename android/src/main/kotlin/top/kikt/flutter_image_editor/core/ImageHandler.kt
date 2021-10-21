@@ -20,11 +20,11 @@ class ImageHandler(private var bitmap: Bitmap) {
   fun handle(options: List<Option>) {
     for (option in options) {
       when (option) {
+        is ColorOption -> bitmap = handleColor(option)
+        is ScaleOption -> bitmap = handleScale(option)
         is FlipOption -> bitmap = handleFlip(option)
         is ClipOption -> bitmap = handleClip(option)
         is RotateOption -> bitmap = handleRotate(option)
-        is ColorOption -> bitmap = handleColor(option)
-        is ScaleOption -> bitmap = handleScale(option)
         is AddTextOpt -> bitmap = handleText(option)
         is MixImageOpt -> bitmap = handleMixImage(option)
         is DrawOption -> bitmap = bitmap.draw(option)
@@ -74,21 +74,18 @@ class ImageHandler(private var bitmap: Bitmap) {
   }
 
   private fun handleRotate(option: RotateOption): Bitmap {
-    val tmpBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(tmpBitmap)
     val matrix = Matrix().apply {
       //      val rotate = option.angle.toFloat() / 180 * Math.PI
       this.postRotate(option.angle.toFloat())
     }
 
     val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    val canvas = Canvas(out)
     canvas.drawBitmap(out, matrix, null)
     return out
   }
 
   private fun handleFlip(option: FlipOption): Bitmap {
-    val tmpBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(tmpBitmap)
     val matrix = Matrix().apply {
       val x = if (option.horizontal) -1F else 1F
       val y = if (option.vertical) -1F else 1F
@@ -96,6 +93,7 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    val canvas = Canvas(out)
     canvas.drawBitmap(out, matrix, null)
     return out
   }
