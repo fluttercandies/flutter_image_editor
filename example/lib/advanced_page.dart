@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -14,82 +13,74 @@ class ExtendedImageExample extends StatefulWidget {
 }
 
 class _ExtendedImageExampleState extends State<ExtendedImageExample> {
-  final GlobalKey<ExtendedImageEditorState> editorKey =
-      GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey();
 
-  ImageProvider? provider;
-
-  @override
-  void initState() {
-    super.initState();
-    provider = ExtendedExactAssetImageProvider(R.ASSETS_HAVE_EXIF_3_JPG);
-  }
+  ImageProvider provider = ExtendedExactAssetImageProvider(
+    R.ASSETS_HAVE_EXIF_3_JPG,
+    cacheRawData: true,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Use extended_image library'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.photo),
-              onPressed: _pick,
+      appBar: AppBar(
+        title: const Text('Use extended_image library'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.photo),
+            onPressed: _pick,
+          ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () async {
+              await crop();
+            },
+          ),
+        ],
+      ),
+      body: Container(
+        height: double.infinity,
+        child: Column(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 1,
+              child: buildImage(),
             ),
-            IconButton(
-              icon: Icon(Icons.check),
-              onPressed: () async {
-                await crop();
-              },
+            Expanded(
+              child: SliderTheme(
+                data: const SliderThemeData(
+                  showValueIndicator: ShowValueIndicator.always,
+                ),
+                child: Column(
+                  children: <Widget>[
+                    _buildSat(),
+                    _buildBrightness(),
+                    _buildCon(),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
-        body: Container(
-          height: double.infinity,
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 1,
-                child: buildImage(),
-              ),
-              Expanded(
-                child: SliderTheme(
-                  data: const SliderThemeData(
-                    showValueIndicator: ShowValueIndicator.always,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      _buildSat(),
-                      _buildBrightness(),
-                      _buildCon(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: _buildFunctions());
+      ),
+      bottomNavigationBar: _buildFunctions(),
+    );
   }
 
   Widget buildImage() {
-    if (provider == null) {
-      return Container();
-    }
     return ExtendedImage(
-      image: provider!,
+      image: provider,
       height: 400,
       width: 400,
       extendedImageEditorKey: editorKey,
       mode: ExtendedImageMode.editor,
       fit: BoxFit.contain,
-      initEditorConfigHandler: (ExtendedImageState state) {
-        return EditorConfig(
-          maxScale: 8.0,
-          cropRectPadding: const EdgeInsets.all(20.0),
-          hitTestSize: 20.0,
-          cropAspectRatio: 2 / 1,
-        );
-      },
+      initEditorConfigHandler: (_) => EditorConfig(
+        maxScale: 8.0,
+        cropRectPadding: const EdgeInsets.all(20.0),
+        hitTestSize: 20.0,
+        cropAspectRatio: 2 / 1,
+      ),
     );
   }
 
@@ -138,7 +129,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       showToast('The crop rect is null.');
       return;
     }
-    final EditActionDetails action = state.editAction;
+    final EditActionDetails action = state.editAction!;
     final double radian = action.rotateAngle;
 
     final bool flipHorizontal = action.flipY;
@@ -224,7 +215,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       return;
     }
     print(result.path);
-    provider = ExtendedFileImageProvider(File(result.path));
+    provider = ExtendedFileImageProvider(File(result.path), cacheRawData: true);
     setState(() {});
   }
 

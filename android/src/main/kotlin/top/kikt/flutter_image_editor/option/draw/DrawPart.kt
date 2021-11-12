@@ -4,9 +4,7 @@ import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.Rect
 
-abstract class DrawPart(map: Map<*, *>) : TransferValue(map) {
-
-}
+abstract class DrawPart(map: Map<*, *>) : TransferValue(map)
 
 class DrawPaint(map: Map<*, *>) : TransferValue(map) {
 

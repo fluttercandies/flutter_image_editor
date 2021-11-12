@@ -1,31 +1,16 @@
 # CHANGELOG
 
-- [CHANGELOG](#changelog)
-  - [1.0.0-nullsafety.0](#100-nullsafety0)
-  - [0.7.3](#073)
-  - [0.7.2](#072)
-  - [0.7.1+1](#0711)
-  - [0.7.1](#071)
-  - [0.7.0](#070)
-  - [0.6.1](#061)
-  - [0.6.0](#060)
-  - [0.5.1](#051)
-  - [0.5.0](#050)
-  - [0.4.1](#041)
-  - [0.4.0+2](#0402)
-  - [0.4.0+1](#0401)
-  - [0.4.0](#040)
-  - [0.3.0](#030)
-  - [0.2.0](#020)
-  - [0.1.6](#016)
-  - [0.1.5](#015)
-  - [0.1.4](#014)
-  - [0.1.3](#013)
-  - [0.1.2](#012)
-  - [0.1.1](#011)
-  - [0.1.0](#010)
+## 1.0.2
 
-## 1.0.0-nullsafety.0
+- Avoid unnecessary memory consuming by temp bitmaps on Android. (#81)
+
+## 1.0.1
+
+- Migrate to Android embedding v2.
+- Remove unnecessary files.
+- Fix `cacheRawData` issue in the example.
+
+## 1.0.0
 
 First nullsafety version.
 
