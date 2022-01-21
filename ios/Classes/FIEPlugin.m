@@ -66,7 +66,11 @@ typedef void (^VoidBlock)(void);
 }
 
 - (void)asyncExec:(VoidBlock)block {
-  dispatch_async(_queue, block);
+  dispatch_async(_queue, ^(){
+      @autoreleasepool {
+          block();
+      }
+  });
 }
 
 - (void)handleMerge:(id)args
