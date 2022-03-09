@@ -143,6 +143,7 @@
   CGRect rect = CGRectMake(option.x, option.y, option.width, option.height);
   CGImageRef resultCg = CGImageCreateWithImageInRect(cg, rect);
   outImage = [UIImage imageWithCGImage:resultCg];
+  CGImageRelease(resultCg);
 }
 
 #pragma mark rotate
