@@ -1,12 +1,12 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/src/image_source.dart';
 import 'package:image_editor/src/utils/convert_utils.dart';
-import 'dart:math' as math;
 
 import '../output_format.dart';
 
@@ -31,6 +31,8 @@ abstract class IgnoreAble {
 }
 
 abstract class TransferValue implements IgnoreAble {
+  const TransferValue();
+
   String get key;
 
   Map<String, Object> get transferValue;
@@ -43,7 +45,7 @@ abstract class Option implements IgnoreAble, TransferValue {
 class ImageEditorOption implements IgnoreAble {
   ImageEditorOption();
 
-  OutputFormat outputFormat = OutputFormat.jpeg(95);
+  OutputFormat outputFormat = const OutputFormat.jpeg(95);
 
   List<Option> get options {
     List<Option> result = [];
@@ -62,41 +64,33 @@ class ImageEditorOption implements IgnoreAble {
   }
 
   void addOption(Option option, {bool newGroup = false}) {
-    OptionGroup group;
+    final OptionGroup group;
     if (groupList.isEmpty || newGroup) {
       group = OptionGroup();
       groupList.add(group);
     } else {
       group = groupList.last;
     }
-
     group.addOption(option);
   }
 
   void addOptions(List<Option> options, {bool newGroup = true}) {
-    OptionGroup group;
+    final OptionGroup group;
     if (groupList.isEmpty || newGroup) {
       group = OptionGroup();
       groupList.add(group);
     } else {
       group = groupList.last;
     }
-
     group.addOptions(options);
   }
 
   List<Map<String, Object>> toJson() {
-    List<Map<String, Object>> result = [];
-    for (final option in options) {
-      if (option.canIgnore) {
-        continue;
-      }
-      result.add({
-        "type": option.key,
-        "value": option.transferValue,
-      });
-    }
-    return result;
+    return <Map<String, Object>>[
+      for (final option in options)
+        if (!option.canIgnore)
+          {'type': option.key, 'value': option.transferValue},
+    ];
   }
 
   @override
@@ -109,40 +103,36 @@ class ImageEditorOption implements IgnoreAble {
     return true;
   }
 
+  @override
   String toString() {
-    final m = <String, dynamic>{};
-    m['options'] = toJson();
-    m['fmt'] = outputFormat.toJson();
-    return JsonEncoder.withIndent('  ').convert(m);
+    return const JsonEncoder.withIndent('  ').convert(<String, dynamic>{
+      'options': toJson(),
+      'fmt': outputFormat.toJson(),
+    });
   }
 }
 
 class OptionGroup extends ListBase<Option> implements IgnoreAble {
   @override
   bool get canIgnore {
-    for (final option in options) {
-      if (!option.canIgnore) {
-        return false;
-      }
-    }
-    return true;
+    return !options.any((Option e) => !e.canIgnore);
   }
 
   final List<Option> options = [];
 
-  void addOptions(List<Option> optionList) {
-    this.options.addAll(optionList);
+  void addOption(Option option) {
+    options.add(option);
   }
 
-  void addOption(Option option) {
-    this.options.add(option);
+  void addOptions(List<Option> optionList) {
+    options.addAll(optionList);
   }
 
   @override
   int get length => options.length;
 
   @override
-  operator [](int index) {
+  Option operator [](int index) {
     return options[index];
   }
 

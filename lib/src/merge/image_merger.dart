@@ -6,7 +6,7 @@ import 'package:image_editor/src/channel.dart';
 import 'merge_option.dart';
 
 class ImageMerger {
-  ImageMerger._();
+  const ImageMerger._();
 
   static Future<Uint8List?> mergeToMemory({required ImageMergeOption option}) {
     return NativeChannel.channel.invokeMethod('mergeToMemory', {

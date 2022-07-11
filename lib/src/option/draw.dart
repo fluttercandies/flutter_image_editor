@@ -2,9 +2,9 @@ part of 'edit_options.dart';
 
 /// Not yet implemented, just reserved api
 class DrawOption extends Option {
-  final List<DrawPart> parts = [];
+  const DrawOption() : parts = const <DrawPart>[];
 
-  DrawOption();
+  final List<DrawPart> parts;
 
   @override
   bool get canIgnore => parts.isEmpty;
@@ -13,14 +13,14 @@ class DrawOption extends Option {
   String get key => 'draw';
 
   @override
-  Map<String, Object> get transferValue => {
-        "parts": parts
-            .map((e) => {
-                  'key': e.key,
-                  'value': e.transferValue,
-                })
-            .toList(),
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'parts': <Map<String, Object>>[
+        for (final DrawPart e in parts)
+          <String, Object>{'key': e.key, 'value': e.transferValue},
+      ],
+    };
+  }
 
   void addDrawPart(DrawPart part) {
     parts.add(part);
@@ -36,15 +36,11 @@ abstract class DrawPart implements TransferValue {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent('  ').convert(transferValue);
+    return const JsonEncoder.withIndent('  ').convert(transferValue);
   }
 }
 
 class DrawPaint extends DrawPart {
-  final Color color;
-  final double lineWeight;
-  final PaintingStyle paintingStyle;
-
   const DrawPaint({
     this.color = Colors.black,
     this.lineWeight = 2,
@@ -59,6 +55,10 @@ class DrawPaint extends DrawPart {
     );
   }
 
+  final Color color;
+  final double lineWeight;
+  final PaintingStyle paintingStyle;
+
   @override
   bool get canIgnore => false;
 
@@ -66,37 +66,42 @@ class DrawPaint extends DrawPart {
   String get key => 'paint';
 
   @override
-  Map<String, Object> get transferValue => {
-        'color': ConvertUtils.color(color),
-        'lineWeight': lineWeight,
-        'paintStyleFill': paintingStyle == PaintingStyle.fill,
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'color': ConvertUtils.color(color),
+      'lineWeight': lineWeight,
+      'paintStyleFill': paintingStyle == PaintingStyle.fill,
+    };
+  }
 
-  Map<String, Object> get values => {
-        key: transferValue,
-      };
+  Map<String, Object> get values {
+    return <String, Object>{key: transferValue};
+  }
 }
 
 mixin _HavePaint on TransferValue {
-  DrawPaint get paint;
+  abstract final DrawPaint paint;
 
   Map<String, Object> get values;
 
   @override
-  Map<String, Object> get transferValue =>
-      <String, Object>{}..addAll(values)..addAll(paint.values);
+  Map<String, Object> get transferValue => <String, Object>{}
+    ..addAll(values)
+    ..addAll(paint.values);
 }
 
 class LineDrawPart extends DrawPart with _HavePaint {
-  final Offset start;
-  final Offset end;
-  final DrawPaint paint;
-
-  LineDrawPart({
+  const LineDrawPart({
     required this.start,
     required this.end,
     required this.paint,
   });
+
+  final Offset start;
+  final Offset end;
+
+  @override
+  final DrawPaint paint;
 
   @override
   bool get canIgnore => false;
@@ -105,19 +110,24 @@ class LineDrawPart extends DrawPart with _HavePaint {
   String get key => 'line';
 
   @override
-  Map<String, Object> get values => {
-        'start': offsetValue(start),
-        'end': offsetValue(end),
-      };
+  Map<String, Object> get values {
+    return <String, Object>{
+      'start': offsetValue(start),
+      'end': offsetValue(end),
+      'paint': paint.transferValue,
+    };
+  }
 }
 
 class PointDrawPart extends DrawPart with _HavePaint {
-  final List<Offset> points = [];
-  final DrawPaint paint;
-
-  PointDrawPart({
+  const PointDrawPart({
     this.paint = const DrawPaint(),
-  });
+  }) : points = const <Offset>[];
+
+  final List<Offset> points;
+
+  @override
+  final DrawPaint paint;
 
   @override
   bool get canIgnore => false;
@@ -126,19 +136,23 @@ class PointDrawPart extends DrawPart with _HavePaint {
   String get key => 'point';
 
   @override
-  Map<String, Object> get values => {
-        'offset': points.map((e) => ConvertUtils.offset(e)).toList(),
-      };
+  Map<String, Object> get values {
+    return <String, Object>{
+      'offset': points.map((e) => ConvertUtils.offset(e)).toList(),
+    };
+  }
 }
 
 class RectDrawPart extends DrawPart with _HavePaint {
-  final Rect rect;
-  final DrawPaint paint;
-
-  RectDrawPart({
+  const RectDrawPart({
     required this.rect,
     this.paint = const DrawPaint(),
   });
+
+  final Rect rect;
+
+  @override
+  final DrawPaint paint;
 
   @override
   bool get canIgnore => false;
@@ -147,19 +161,21 @@ class RectDrawPart extends DrawPart with _HavePaint {
   String get key => 'rect';
 
   @override
-  Map<String, Object> get values => {
-        'rect': ConvertUtils.rect(rect),
-      };
+  Map<String, Object> get values {
+    return <String, Object>{'rect': ConvertUtils.rect(rect)};
+  }
 }
 
 class OvalDrawPart extends DrawPart with _HavePaint {
-  final DrawPaint paint;
-  final Rect rect;
-
-  OvalDrawPart({
+  const OvalDrawPart({
     required this.rect,
     this.paint = const DrawPaint(),
   });
+
+  final Rect rect;
+
+  @override
+  final DrawPaint paint;
 
   @override
   bool get canIgnore => false;
@@ -174,31 +190,28 @@ class OvalDrawPart extends DrawPart with _HavePaint {
 }
 
 class PathDrawPart extends DrawPart with _HavePaint {
-  final List<_PathPart> parts = [];
-
-  @override
-  final DrawPaint paint;
+  const PathDrawPart({
+    this.autoClose = false,
+    this.paint = const DrawPaint(),
+  }) : parts = const <_PathPart>[];
 
   final bool autoClose;
 
-  PathDrawPart({
-    this.autoClose = false,
-    this.paint = const DrawPaint(),
-  });
+  // ignore: library_private_types_in_public_api
+  final List<_PathPart> parts;
+
+  @override
+  final DrawPaint paint;
 
   @override
   bool get canIgnore => parts.isEmpty;
 
   void move(Offset point) {
-    parts.add(
-      _MovePathPart(point),
-    );
+    parts.add(_MovePathPart(point));
   }
 
   void lineTo(Offset point, DrawPaint paint) {
-    parts.add(
-      _LineToPathPart(point),
-    );
+    parts.add(_LineToPathPart(point));
   }
 
   /// The parameters of iOS and Android/flutter are inconsistent and need to be converted.
@@ -260,104 +273,103 @@ class PathDrawPart extends DrawPart with _HavePaint {
   String get key => 'path';
 
   @override
-  Map<String, Object> get values => {
-        'autoClose': autoClose,
-        'parts': parts
-            .map((e) => {
-                  'key': e.key,
-                  'value': e.transferValue,
-                })
-            .toList(),
-      };
+  Map<String, Object> get values {
+    return <String, Object>{
+      'autoClose': autoClose,
+      'parts': <Map<String, Object>>[
+        for (final _PathPart e in parts)
+          <String, Object>{'key': e.key, 'value': e.transferValue},
+      ],
+    };
+  }
 }
 
 abstract class _PathPart extends TransferValue {
+  const _PathPart();
+
   @override
   bool get canIgnore => false;
 }
 
 class _MovePathPart extends _PathPart {
-  final Offset offset;
+  const _MovePathPart(this.offset);
 
-  _MovePathPart(this.offset);
+  final Offset offset;
 
   @override
   String get key => 'move';
 
   @override
-  Map<String, Object> get transferValue => {
-        'offset': ConvertUtils.offset(offset),
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{'offset': ConvertUtils.offset(offset)};
+  }
 }
 
 class _LineToPathPart extends _PathPart {
-  final Offset offset;
+  const _LineToPathPart(this.offset);
 
-  _LineToPathPart(this.offset);
+  final Offset offset;
 
   @override
   String get key => 'lineTo';
 
   @override
-  Map<String, Object> get transferValue => {
-        'offset': ConvertUtils.offset(offset),
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{'offset': ConvertUtils.offset(offset)};
+  }
 }
 
 class _BezierPathPart extends _PathPart {
-  final Offset target;
-  final Offset control1;
-  final Offset? control2;
-  final int kind;
-
-  _BezierPathPart({
+  const _BezierPathPart({
     required this.target,
+    required this.kind,
     required this.control1,
     this.control2,
-    required this.kind,
   }) : assert(kind == 2 || kind == 3);
+
+  final Offset target;
+  final int kind;
+  final Offset control1;
+  final Offset? control2;
 
   @override
   String get key => 'bezier';
 
   @override
   Map<String, Object> get transferValue {
-    final value = <String, Object>{
+    return <String, Object>{
       'target': ConvertUtils.offset(target),
       'c1': ConvertUtils.offset(control1),
       'kind': kind,
+      if (control2 != null) 'c2': ConvertUtils.offset(control2!),
     };
-
-    if (control2 != null) {
-      value['c2'] = ConvertUtils.offset(control2!);
-    }
-
-    return value;
   }
 }
 
 /// ignore: unused_element
 class _ArcToPathPart extends _PathPart {
-  final Rect rect;
-  final double startAngle;
-  final double sweepAngle;
-  final bool useCenter;
-
-  _ArcToPathPart({
+  const _ArcToPathPart({
     required this.rect,
     required this.startAngle,
     required this.sweepAngle,
     required this.useCenter,
   });
 
+  final Rect rect;
+  final double startAngle;
+  final double sweepAngle;
+  final bool useCenter;
+
   @override
   String get key => 'arcTo';
 
   @override
-  Map<String, Object> get transferValue => {
-        'rect': ConvertUtils.rect(rect),
-        'start': startAngle,
-        'sweep': sweepAngle,
-        'useCenter': useCenter,
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'rect': ConvertUtils.rect(rect),
+      'start': startAngle,
+      'sweep': sweepAngle,
+      'useCenter': useCenter,
+    };
+  }
 }

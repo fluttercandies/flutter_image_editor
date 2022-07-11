@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
@@ -207,9 +209,9 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Future<void> _pick() async {
-    final PickedFile? result =
-        await ImagePicker().getImage(source: ImageSource.camera);
-
+    final XFile? result = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+    );
     if (result == null) {
       showToast('The pick file is null');
       return;

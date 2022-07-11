@@ -1,13 +1,12 @@
 part of 'edit_options.dart';
 
 /// ```
-/// 1,0,0,0,0,
-/// 0,1,0,0,0,
-/// 0,0,1,0,0,
-/// 0,0,0,1,0
+/// [1, 0, 0, 0, 0,
+///  0, 1, 0, 0, 0,
+///  0, 0, 1, 0, 0,
+///  0, 0, 0, 1, 0]
 /// ```
-///
-const defaultColorMatrix = const <double>[
+const List<double> defaultColorMatrix = <double>[
   1,
   0,
   0,
@@ -31,32 +30,17 @@ const defaultColorMatrix = const <double>[
 ];
 
 class ColorOption implements Option {
-  /// 5x4 matrix. See [Document of android](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html)
-  ///
-  /// Although it is an Android document, the color matrix is also applicable to iOS.
-  ///
-  /// ```
-  /// [ a, b, c, d, e,
-  ///   f, g, h, i, j,
-  ///   k, l, m, n, o,
-  ///   p, q, r, s, t ]
-  /// ```
-  ///
-  final List<double> matrix;
+  const ColorOption({
+    this.matrix = defaultColorMatrix,
+  }) : assert(matrix.length == 20);
 
-  /// see [matrix]
-  const ColorOption({this.matrix = defaultColorMatrix})
-      : assert(matrix.length == 20);
-
-  /// migrate from [android sdk saturation code](https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html#setSaturation(float)) .
+  /// Migrate from [Android SDK saturation code](https://developer.android.com/reference/android/graphics/ColorMatrix.html#setSaturation(float)) .
   factory ColorOption.saturation(double saturation) {
     final m = List<double>.from(defaultColorMatrix);
-
     final invSat = 1 - saturation;
     final R = 0.213 * invSat;
     final G = 0.715 * invSat;
     final B = 0.072 * invSat;
-
     m[0] = R + saturation;
     m[1] = G;
     m[2] = B;
@@ -66,7 +50,6 @@ class ColorOption implements Option {
     m[10] = R;
     m[11] = G;
     m[12] = B + saturation;
-
     return ColorOption(matrix: m);
   }
 
@@ -96,14 +79,17 @@ class ColorOption implements Option {
         mArray[5] = -sine;
         break;
       default:
-        throw ArgumentError("cannot create");
+        throw ArgumentError('Failed to create');
     }
-
     return ColorOption(matrix: mArray);
   }
 
   factory ColorOption.scale(
-      double rScale, double gScale, double bScale, double aScale) {
+    double rScale,
+    double gScale,
+    double bScale,
+    double aScale,
+  ) {
     final a = List<double>.filled(20, 0);
     a[0] = rScale;
     a[6] = gScale;
@@ -112,10 +98,35 @@ class ColorOption implements Option {
     return ColorOption(matrix: a);
   }
 
+  factory ColorOption.brightness(double brightness) {
+    return ColorOption.scale(brightness, brightness, brightness, 1);
+  }
+
+  factory ColorOption.contrast(double contrast) {
+    final m = List<double>.from(defaultColorMatrix);
+    m[0] = contrast;
+    m[6] = contrast;
+    m[12] = contrast;
+    return ColorOption(matrix: m);
+  }
+
+  /// 5x4 color matrix. This matrix is capable on both Android and iOS.
+  ///
+  /// ```
+  /// [ a, b, c, d, e,
+  ///   f, g, h, i, j,
+  ///   k, l, m, n, o,
+  ///   p, q, r, s, t ]
+  /// ```
+  ///
+  /// See also:
+  ///  * [Document of `ColorMatrix`](https://developer.android.com/reference/android/graphics/ColorMatrix).
+  ///
+  final List<double> matrix;
+
   ColorOption concat(ColorOption other) {
     List<double> tmp = List.filled(20, 0);
-
-    final a = this.matrix.toList();
+    final a = matrix.toList();
     final b = other.matrix.toList();
     int index = 0;
     for (int j = 0; j < 20; j += 5) {
@@ -131,20 +142,7 @@ class ColorOption implements Option {
           a[j + 3] * b[19] +
           a[j + 4];
     }
-
     return ColorOption(matrix: tmp);
-  }
-
-  factory ColorOption.brightness(double brightness) {
-    return ColorOption.scale(brightness, brightness, brightness, 1);
-  }
-
-  factory ColorOption.contrast(double contrast) {
-    final m = List<double>.from(defaultColorMatrix);
-    m[0] = contrast;
-    m[6] = contrast;
-    m[12] = contrast;
-    return ColorOption(matrix: m);
   }
 
   @override
