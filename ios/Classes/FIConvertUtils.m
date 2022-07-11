@@ -106,6 +106,7 @@
   FIScaleOption *option = [FIScaleOption new];
   option.width = [dict[@"width"] intValue];
   option.height = [dict[@"height"] intValue];
+  option.keepRatio = [dict[@"keepRatio"] boolValue];
   return option;
 }
 

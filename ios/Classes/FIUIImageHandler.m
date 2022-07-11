@@ -249,14 +249,27 @@
     return;
   }
 
-  UIGraphicsBeginImageContext(CGSizeMake(option.width, option.height));
+  float imageRatio = outImage.size.width / outImage.size.height;
+  float optionRatio = option.width / option.height;
+  int w = option.width;
+  int h = option.height;
+
+  if (option.keepRatio) {
+    if (imageRatio < optionRatio) {
+      w = option.height * imageRatio;
+    } else if (imageRatio > optionRatio) {
+      h = option.width / imageRatio;
+    }
+  }
+
+  UIGraphicsBeginImageContext(CGSizeMake(w, h));
 
   CGContextRef ctx = UIGraphicsGetCurrentContext();
   if (!ctx) {
     return;
   }
 
-  [outImage drawInRect:CGRectMake(0, 0, option.width, option.height)];
+  [outImage drawInRect:CGRectMake(0, 0, w, h)];
 
   UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
