@@ -19,3 +19,6 @@ flutter:
         pluginClass: FlutterImageEditorPlugin
       ios:
         pluginClass: FlutterImageEditorPlugin
+      macos:
+        pluginClass: FlutterImageEditorPlugin
+      
