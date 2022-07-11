@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FIUIImageHandler : NSObject
+@interface EditorUIImageHandler : NSObject
 
 @property(strong, nonatomic) UIImage *image;
 @property(strong, nonatomic) FIEditorOptionGroup *optionGroup;

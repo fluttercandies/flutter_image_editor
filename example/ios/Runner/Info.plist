@@ -45,5 +45,7 @@
 	<string>App want to pick your image from Photos.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>App want to use your camera to capture photo.</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>

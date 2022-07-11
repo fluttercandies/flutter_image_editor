@@ -13,7 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class FIEditorOptionGroup;
 
 @interface FIConvertUtils : NSObject
+
 + (FIEditorOptionGroup *)getOptions:(NSArray<NSDictionary *> *)dict;
+
 @end
 
 @protocol FIOption
@@ -30,34 +32,45 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface FIClipOption : NSObject <FIOption>
+
 @property(assign, nonatomic) int x;
 @property(assign, nonatomic) int y;
 @property(assign, nonatomic) int width;
 @property(assign, nonatomic) int height;
+
 @end
 
 @interface FIRotateOption : NSObject <FIOption>
+
 @property(assign, nonatomic) int degree;
+
 @end
 
 @interface FIFormatOption : NSObject <FIOption>
+
 @property(assign, nonatomic) int format;
 @property(assign, nonatomic) int quality;
+
 @end
 
 @interface FIColorOption : NSObject <FIOption>
+
 @property(strong, nonatomic) NSArray *matrix;
 
 - (CGFloat)getValue:(int)index;
+
 @end
 
 @interface FIScaleOption : NSObject <FIOption>
+
 @property(assign, nonatomic) int width;
 @property(assign, nonatomic) int height;
 @property(assign, nonatomic) BOOL keepRatio;
+
 @end
 
 @interface FIAddText : NSObject <FIOption>
+
 @property(nonatomic, copy) NSString *text;
 @property(nonatomic, assign) int x;
 @property(nonatomic, assign) int y;
@@ -67,24 +80,31 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int b;
 @property(nonatomic, assign) int a;
 @property(nonatomic, assign) NSString *fontName;
+
 @end
 
 @interface FIAddTextOption : NSObject <FIOption>
+
 @property(nonatomic, strong) NSArray<FIAddText *> *texts;
+
 @end
 
 @interface FIMixImageOption : NSObject <FIOption>
+
 @property(nonatomic, assign) int x;
 @property(nonatomic, assign) int y;
 @property(nonatomic, assign) int width;
 @property(nonatomic, assign) int height;
 @property(nonatomic, strong) NSData *src;
 @property(nonatomic, strong) NSNumber *blendMode;
+
 @end
 
 @interface FIEditorOptionGroup : NSObject
+
 @property(nonatomic, strong) FIFormatOption *fmt;
 @property(nonatomic, strong) NSArray *options;
+
 @end
 
 @interface FIMergeImage : NSObject <FIOption>
@@ -94,6 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int y;
 @property(nonatomic, assign) int width;
 @property(nonatomic, assign) int height;
+
 @end
 
 @interface FIMergeOption : NSObject <FIOption>
@@ -105,7 +126,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface FIValueOption : NSObject
+
 @property(nonatomic, strong) NSDictionary *map;
+
 @end
 
 @interface FIPaint : FIValueOption <FIOption>
@@ -145,21 +168,25 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGPoint)start;
 
 - (CGPoint)end;
+
 @end
 
 @interface FIPointsDrawPart : FIDrawPart
 
 - (NSArray *)points;
+
 @end
 
 @interface FIRectDrawPart : FIDrawPart
 
 - (CGRect)rect;
+
 @end
 
 @interface FIOvalDrawPart : FIDrawPart
 
 - (CGRect)rect;
+
 @end
 
 @interface FIPathDrawPart : FIDrawPart
@@ -179,6 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FIPathLine : FIDrawPart
 
 - (CGPoint)offset;
+
 @end
 
 @interface FIPathArc : FIDrawPart
@@ -190,6 +218,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)useCenter;
 
 - (CGRect)rect;
+
 @end
 
 @interface FIPathBezier : FIDrawPart
@@ -201,7 +230,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGPoint)control1;
 
 - (CGPoint)control2;
-@end
 
+@end
 
 NS_ASSUME_NONNULL_END
