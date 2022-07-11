@@ -253,10 +253,10 @@
   int w = option.width;
   int h = option.height;
 
-  if(option.keepRatio){
-    if(imageRatio < optionRatio){
+  if (option.keepRatio) {
+    if (imageRatio < optionRatio) {
       w = option.height * imageRatio;
-    }else if(imageRatio > optionRatio){
+    } else if (imageRatio > optionRatio) {
       h = option.width / imageRatio;
     }
   }

@@ -5,9 +5,11 @@ class ScaleOption implements Option {
   final int height;
   final bool keepRatio;
 
-  ScaleOption(this.width, this.height, {this.keepRatio: false})
-      : assert(width > 0),
-        assert(height > 0);
+  ScaleOption(
+    this.width,
+    this.height, {
+    this.keepRatio: false,
+  }) : assert(width > 0 && height > 0);
 
   @override
   bool get canIgnore => false;
@@ -16,9 +18,11 @@ class ScaleOption implements Option {
   String get key => 'scale';
 
   @override
-  Map<String, Object> get transferValue => {
-        'width': width,
-        'height': height,
-        'keepRatio': keepRatio
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'width': width,
+      'height': height,
+      'keepRatio': keepRatio,
+    };
+  }
 }
