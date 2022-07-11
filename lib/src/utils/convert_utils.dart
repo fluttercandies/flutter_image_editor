@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ConvertUtils {
-  ConvertUtils._();
+  const ConvertUtils._();
 
   static Map<String, Object> offset(Offset offset) {
     return {

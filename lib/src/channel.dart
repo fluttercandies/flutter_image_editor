@@ -9,7 +9,7 @@ class NativeChannel {
   const NativeChannel._();
 
   static const MethodChannel channel = MethodChannel(
-    'top.kikt/flutter_image_editor',
+    'com.fluttercandies/image_editor',
   );
 
   static Future<Directory> getCachePath() async {

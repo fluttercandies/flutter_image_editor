@@ -45,6 +45,7 @@ abstract class Option implements IgnoreAble, TransferValue {
 class ImageEditorOption implements IgnoreAble {
   ImageEditorOption();
 
+  final List<OptionGroup> groupList = [];
   OutputFormat outputFormat = const OutputFormat.jpeg(95);
 
   List<Option> get options {
@@ -56,8 +57,6 @@ class ImageEditorOption implements IgnoreAble {
     }
     return result;
   }
-
-  List<OptionGroup> groupList = [];
 
   void reset() {
     groupList.clear();

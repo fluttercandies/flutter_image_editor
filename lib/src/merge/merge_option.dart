@@ -6,15 +6,15 @@ import '../output_format.dart';
 import '../position.dart';
 
 class ImageMergeOption with JsonAble {
-  const ImageMergeOption({
+  ImageMergeOption({
     required this.canvasSize,
     this.format = const OutputFormat.jpeg(90),
-  })  : _mergeImageConfig = const <MergeImageConfig>[],
-        assert(canvasSize > Size.zero);
+  }) : assert(canvasSize > Size.zero);
 
   final Size canvasSize;
   final OutputFormat format;
-  final List<MergeImageConfig> _mergeImageConfig;
+
+  final List<MergeImageConfig> _mergeImageConfig = <MergeImageConfig>[];
 
   void addImage(MergeImageConfig config) {
     _mergeImageConfig.add(config);

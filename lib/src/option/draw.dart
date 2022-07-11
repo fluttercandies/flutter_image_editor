@@ -2,9 +2,13 @@ part of 'edit_options.dart';
 
 /// Not yet implemented, just reserved api
 class DrawOption extends Option {
-  const DrawOption() : parts = const <DrawPart>[];
+  DrawOption();
 
-  final List<DrawPart> parts;
+  final List<DrawPart> parts = <DrawPart>[];
+
+  void addDrawPart(DrawPart part) {
+    parts.add(part);
+  }
 
   @override
   bool get canIgnore => parts.isEmpty;
@@ -20,10 +24,6 @@ class DrawOption extends Option {
           <String, Object>{'key': e.key, 'value': e.transferValue},
       ],
     };
-  }
-
-  void addDrawPart(DrawPart part) {
-    parts.add(part);
   }
 }
 
@@ -120,11 +120,17 @@ class LineDrawPart extends DrawPart with _HavePaint {
 }
 
 class PointDrawPart extends DrawPart with _HavePaint {
-  const PointDrawPart({
-    this.paint = const DrawPaint(),
-  }) : points = const <Offset>[];
+  PointDrawPart({this.paint = const DrawPaint()});
 
-  final List<Offset> points;
+  final List<Offset> points = <Offset>[];
+
+  void addPoint(Offset point) {
+    points.add(point);
+  }
+
+  void addAllPoints(List<Offset> pointList) {
+    points.addAll(pointList);
+  }
 
   @override
   final DrawPaint paint;
@@ -184,34 +190,33 @@ class OvalDrawPart extends DrawPart with _HavePaint {
   String get key => 'oval';
 
   @override
-  Map<String, Object> get values => {
-        'rect': ConvertUtils.rect(rect),
-      };
+  Map<String, Object> get values {
+    return <String, Object>{'rect': ConvertUtils.rect(rect)};
+  }
 }
 
 class PathDrawPart extends DrawPart with _HavePaint {
-  const PathDrawPart({
+  PathDrawPart({
     this.autoClose = false,
     this.paint = const DrawPaint(),
-  }) : parts = const <_PathPart>[];
+  });
 
   final bool autoClose;
 
-  // ignore: library_private_types_in_public_api
-  final List<_PathPart> parts;
+  final List<_PathPart> _parts = <_PathPart>[];
 
   @override
   final DrawPaint paint;
 
   @override
-  bool get canIgnore => parts.isEmpty;
+  bool get canIgnore => _parts.isEmpty;
 
   void move(Offset point) {
-    parts.add(_MovePathPart(point));
+    _parts.add(_MovePathPart(point));
   }
 
   void lineTo(Offset point, DrawPaint paint) {
-    parts.add(_LineToPathPart(point));
+    _parts.add(_LineToPathPart(point));
   }
 
   /// The parameters of iOS and Android/flutter are inconsistent and need to be converted.
@@ -231,7 +236,7 @@ class PathDrawPart extends DrawPart with _HavePaint {
   // }
 
   void bezier2To(Offset target, Offset control) {
-    parts.add(
+    _parts.add(
       _BezierPathPart(
         target: target,
         control1: control,
@@ -242,7 +247,7 @@ class PathDrawPart extends DrawPart with _HavePaint {
   }
 
   void bezier3To(Offset target, Offset control1, Offset control2) {
-    parts.add(
+    _parts.add(
       _BezierPathPart(
         target: target,
         control1: control1,
@@ -277,7 +282,7 @@ class PathDrawPart extends DrawPart with _HavePaint {
     return <String, Object>{
       'autoClose': autoClose,
       'parts': <Map<String, Object>>[
-        for (final _PathPart e in parts)
+        for (final _PathPart e in _parts)
           <String, Object>{'key': e.key, 'value': e.transferValue},
       ],
     };

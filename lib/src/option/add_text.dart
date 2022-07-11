@@ -1,16 +1,16 @@
 part of 'edit_options.dart';
 
 class AddTextOption implements Option {
-  const AddTextOption() : _texts = const <EditorText>[];
+  AddTextOption();
 
-  final List<EditorText> _texts;
+  final List<EditorText> texts = <EditorText>[];
 
   void addText(EditorText text) {
-    _texts.add(text);
+    texts.add(text);
   }
 
   @override
-  bool get canIgnore => _texts.isEmpty;
+  bool get canIgnore => texts.isEmpty;
 
   @override
   String get key => 'add_text';
@@ -18,7 +18,7 @@ class AddTextOption implements Option {
   @override
   Map<String, Object> get transferValue {
     return <String, Object>{
-      'texts': _texts.map((e) => e.toJson()).toList(),
+      'texts': texts.map((e) => e.toJson()).toList(),
     };
   }
 }

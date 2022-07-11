@@ -26,10 +26,8 @@ class ImageEditor {
         editOption.addOption(option);
       }
       editOption.outputFormat = imageEditorOption.outputFormat;
-
       tmp = await handler.handleAndGetUint8List(editOption);
     }
-
     return tmp;
   }
 
@@ -39,7 +37,6 @@ class ImageEditor {
   }) async {
     Uint8List? tmp;
     bool isHandle = false;
-
     for (final group in imageEditorOption.groupList) {
       if (group.canIgnore) {
         continue;
@@ -49,14 +46,10 @@ class ImageEditor {
       for (final option in group) {
         editOption.addOption(option);
       }
-
       editOption.outputFormat = imageEditorOption.outputFormat;
-
       tmp = await handler.handleAndGetUint8List(editOption);
-
       isHandle = true;
     }
-
     if (isHandle) {
       return tmp;
     } else {
@@ -78,11 +71,8 @@ class ImageEditor {
       for (final option in group) {
         editOption.addOption(option);
       }
-
       editOption.outputFormat = imageEditorOption.outputFormat;
-
       final target = await _createTmpFilePath();
-
       tmp = await handler.handleAndGetFile(editOption, target);
     }
     return tmp;
