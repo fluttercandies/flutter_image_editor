@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-abstract class ImageSource {
-  Uint8List get memory;
+import 'convert_value.dart';
 
+abstract class ImageSource with JsonAble {
   const ImageSource();
 
   factory ImageSource.memory(Uint8List uint8list) {
@@ -18,28 +18,29 @@ abstract class ImageSource {
     return FileImageSource.path(path);
   }
 
-  Map<String, Object> toJson() => {
-        "memory": memory,
-      };
+  Uint8List get memory;
+
+  @override
+  Map<String, Object?> toJson() => <String, Object?>{'memory': memory};
 }
 
 class MemoryImageSource extends ImageSource {
+  const MemoryImageSource(Uint8List uint8list) : memory = uint8list;
+
   @override
   final Uint8List memory;
-
-  const MemoryImageSource(Uint8List uint8list) : memory = uint8list;
 }
 
 class FileImageSource extends ImageSource {
-  final File file;
-
   const FileImageSource(this.file);
 
   FileImageSource.path(String path) : file = File(path);
 
+  final File file;
+
   @override
   Uint8List get memory {
-    assert(file.existsSync(), 'The file must exists');
+    assert(file.existsSync(), 'The file must exists.');
     return file.readAsBytesSync();
   }
 }

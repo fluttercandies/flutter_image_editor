@@ -1,13 +1,6 @@
 part of 'edit_options.dart';
 
 class MixImageOption implements Option {
-  final ImageSource target;
-  final int x;
-  final int y;
-  final int width;
-  final int height;
-  final BlendMode blendMode;
-
   MixImageOption({
     required this.target,
     required this.x,
@@ -17,6 +10,13 @@ class MixImageOption implements Option {
     this.blendMode = BlendMode.srcOver,
   }) : assert(supportBlendModes.contains(blendMode));
 
+  final ImageSource target;
+  final int x;
+  final int y;
+  final int width;
+  final int height;
+  final BlendMode blendMode;
+
   @override
   bool get canIgnore => false;
 
@@ -24,17 +24,19 @@ class MixImageOption implements Option {
   String get key => 'mix_image';
 
   @override
-  Map<String, Object> get transferValue => {
-        'target': target.toJson(),
-        'x': x,
-        'y': y,
-        'w': width,
-        'h': height,
-        'mixMode': blendMode.toString().replaceAll('BlendMode.', ''),
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'target': target.toJson(),
+      'x': x,
+      'y': y,
+      'w': width,
+      'h': height,
+      'mixMode': blendMode.toString().replaceAll('BlendMode.', ''),
+    };
+  }
 }
 
-const supportBlendModes = [
+const supportBlendModes = <BlendMode>[
   BlendMode.clear,
   BlendMode.src,
   BlendMode.dst,

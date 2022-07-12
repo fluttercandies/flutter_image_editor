@@ -1,10 +1,8 @@
 class HandleError implements Exception {
-  String msg;
-
   HandleError([this.msg = '']);
 
+  final String msg;
+
   @override
-  String toString() {
-    return "handle image error: $msg";
-  }
+  String toString() => 'handle image error: $msg';
 }

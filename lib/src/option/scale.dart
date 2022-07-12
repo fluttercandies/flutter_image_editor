@@ -1,15 +1,15 @@
 part of 'edit_options.dart';
 
 class ScaleOption implements Option {
+  const ScaleOption(
+    this.width,
+    this.height, {
+    this.keepRatio = false,
+  }) : assert(width > 0 && height > 0);
+
   final int width;
   final int height;
   final bool keepRatio;
-
-  ScaleOption(
-    this.width,
-    this.height, {
-    this.keepRatio: false,
-  }) : assert(width > 0 && height > 0);
 
   @override
   bool get canIgnore => false;

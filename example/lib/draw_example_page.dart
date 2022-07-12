@@ -112,27 +112,20 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
 
   Future<void> addDrawParts(List<DrawPart> parts) async {
     print(parts.map((e) => e.toString()).join('\n'));
-
     final tu = TimeUtils();
-
     if (bytes == null) {
       bytes = await loadFromAsset(R.ASSETS_ICON_PNG);
     }
     final opt = ImageEditorOption();
     opt.outputFormat = OutputFormat.png(100);
-
     for (var item in parts) {
       opt.addOption(
         DrawOption()..addDrawPart(item),
       );
     }
-
     tu.start();
-
     bytes = await ImageEditor.editImage(image: bytes!, imageEditorOption: opt);
-
     print(tu.currentMs());
-
     setState(() {});
   }
 
@@ -167,7 +160,7 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
             lineWeight: 150,
           ),
         );
-        dp.points.addAll(
+        dp.addAllPoints(
           <Offset>[
             randomOffset(),
             randomOffset(),
