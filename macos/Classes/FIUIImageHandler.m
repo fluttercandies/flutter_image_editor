@@ -55,12 +55,51 @@
 
 #if TARGET_OS_OSX
 
+CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
+    CGContextRef context = NULL;
+    CGColorSpaceRef colorSpace;
+    void *bitmapData;
+    size_t bitmapByteCount;
+    size_t bitmapBytesPerRow;
+
+    bitmapBytesPerRow = (pixelsWide * 4);// 1
+    bitmapByteCount = (bitmapBytesPerRow * pixelsHigh);
+
+    colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);// 2
+    bitmapData = calloc(bitmapByteCount, sizeof(uint8_t));// 3
+    if (bitmapData == NULL) {
+        fprintf(stderr, "Memory not allocated!");
+        return NULL;
+    }
+    context = CGBitmapContextCreate(bitmapData,// 4
+        pixelsWide,
+        pixelsHigh,
+        8,      // bits per component
+        bitmapBytesPerRow,
+        colorSpace,
+        kCGImageAlphaPremultipliedLast);
+    if (context == NULL) {
+        free(bitmapData);// 5
+        fprintf(stderr, "Context not created!");
+        return NULL;
+    }
+    CGColorSpaceRelease(colorSpace);// 6
+
+    return context;// 7
+}
+
 - (NSData *)outputMemory {
     FIFormatOption *fmt = self.optionGroup.fmt;
 
-    NSBitmapImageRep *bitmap = [NSBitmapImageRep imageRepWithData:outImage];
+    NSRect rect = NSMakeRect(0, 0, outImage.size.width, outImage.size.height);
+    CGImageRef ref = [outImage CGImageForProposedRect:&rect context:[NSGraphicsContext currentContext] hints:@{}];
+
+    NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:ref];
+
+    CGImageRelease(ref);
+
     if (fmt.format == 0) {
-        return [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:nil];
+        return [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
     } else {
         NSDictionary *props = @{NSImageCompressionFactor: @((fmt.quality / 100))};
         return [bitmap representationUsingType:NSBitmapImageFileTypeJPEG properties:props];
@@ -68,28 +107,43 @@
 }
 
 + (FIImage *)fixImageOrientation:(FIImage *)image {
-    return  image;
-//    UIImageOrientation or = image.imageOrientation;
-//    if (or == UIImageOrientationUp) {
-//        return image;
-//    }
-//
-//    UIGraphicsBeginImageContext(image.size);
-//
-//    [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
-//
-//    FIImage *result = UIGraphicsGetImageFromCurrentImageContext();
-//
-//    UIGraphicsEndImageContext();
-//
-//    if (!result) {
-//        return image;
-//    } else {
-//        return result;
-//    }
+    NSGraphicsContext *context = [NSGraphicsContext currentContext];
+    NSSize size = image.size;
+    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
+    CGImageRef cg = [image CGImageForProposedRect:&rect context:context hints:NULL];
+
+    CGContextRef ctx = MyCreateBitmapContext((size_t) size.width, (size_t) size.height);
+
+    CGContextClipToRect(ctx, rect);
+    CGContextDrawImage(ctx, rect, cg);
+
+    CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
+    CGImageRelease(cg);
+
+    NSImage *result = [[NSImage alloc] initWithCGImage:pCgImage size:size];
+    CGImageRelease(pCgImage);
+    return result;
 }
 
 #pragma mark flip
+
+- (CGImageRef)getCGImageRef {
+    NSGraphicsContext *context = [NSGraphicsContext currentContext];
+    CGSize size = outImage.size;
+    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
+
+    CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
+    return cg;
+}
+
+- (FIImage *)toFIImage:(CGImageRef)cg width:(CGFloat)width height:(CGFloat)height {
+    CGSize size = CGSizeMake(width, height);
+    NSImage *image = [[FIImage alloc] initWithCGImage:cg size:size];
+
+    CGImageRelease(cg);
+
+    return image;
+}
 
 - (void)flip:(FIFlipOption *)option {
     BOOL h = option.horizontal;
@@ -98,60 +152,43 @@
         return;
     }
 
-    CGSize size = outImage.size;
-
-//    UIGraphicsBeginImageContext(outImage.size);
     NSGraphicsContext *context = [NSGraphicsContext currentContext];
-    CGContextRef ctx = context.CGContext;
-    if (!ctx) {
-        return;
-    }
 
+    NSSize size = outImage.size;
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 
-    CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
+    CGContextRef ctx = MyCreateBitmapContext(size.width, size.height);
 
-    if (cg == nil) {
-        return;
-    }
+    CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
 
     CGContextClipToRect(ctx, rect);
 
     if (!v && h) {
-        CGContextRotateCTM(ctx, M_PI);
-        CGContextTranslateCTM(ctx, -size.width, -size.height);
-    } else if (v && !h) {
-    } else if (v && h) {
         CGContextTranslateCTM(ctx, size.width, 0);
         CGContextScaleCTM(ctx, -1, 1);
-    } else {
+    } else if (v && !h) {
         CGContextTranslateCTM(ctx, 0, size.height);
         CGContextScaleCTM(ctx, 1, -1);
+    } else if (v && h) {
+        CGContextRotateCTM(ctx, M_PI);
+        CGContextTranslateCTM(ctx, -size.width, -size.height);
     }
 
     CGContextDrawImage(ctx, rect, cg);
 
-    FIImage *result =
+    CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
 
-    UIGraphicsEndImageContext();
-
-    if (!result.CGImage) {
-        return;
-    }
-
-    outImage = [UIImage imageWithCGImage:result.CGImage
-                                   scale:1
-                             orientation:[outImage imageOrientation]];
+    outImage = [self toFIImage:pCgImage width:size.width height:size.height];
 }
 
 #pragma mark clip
 
 - (void)clip:(FIClipOption *)option {
-    CGImageRef cg = outImage.CGImage;
+    CGImageRef cg = [self getCGImageRef];
     CGRect rect = CGRectMake(option.x, option.y, option.width, option.height);
     CGImageRef resultCg = CGImageCreateWithImageInRect(cg, rect);
-    outImage = [UIImage imageWithCGImage:resultCg];
-    CGImageRelease(resultCg);
+    outImage = [self toFIImage:resultCg width:rect.size.width height:rect.size.height];
+//    CGImageRelease(resultCg);
 }
 
 #pragma mark rotate
