@@ -503,8 +503,7 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    UIGraphicsBeginImageContext(outImage.size);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextRef ctx = createCGContext(outImage.size.width, outImage.size.height);
     if (!ctx) {
         return;
     }
@@ -526,9 +525,9 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     }
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    FIImage *newImage = [self getImageWith:ctx];
+    releaseCGContext(ctx);
 
-    UIGraphicsEndImageContext();
     if (!newImage) {
         return;
     }
