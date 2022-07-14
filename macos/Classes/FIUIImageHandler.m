@@ -9,6 +9,35 @@
 #import "FICommonUtils.h"
 #import <CoreImage/CIFilterBuiltins.h>
 
+#if TARGET_OS_OSX
+
+@interface NSImage (ext)
+- (CGSize)pixelSize;
+
+- (CGFloat)retinaScale;
+@end
+
+@implementation NSImage (ext)
+- (CGSize)pixelSize {
+    if (self.representations.count == 0) {
+        return self.size;
+    }
+    NSInteger width = self.representations[0].pixelsWide;
+    NSInteger height = self.representations[0].pixelsHigh;
+    return CGSizeMake(width, height);
+}
+
+- (CGFloat)retinaScale {
+    if (self.pixelSize.width == 0) {
+        return 1;
+    }
+    return self.pixelSize.width / self.size.width;
+}
+
+@end
+
+#endif
+
 @implementation FIUIImageHandler {
     FIImage *outImage;
 }
@@ -55,7 +84,29 @@
 
 #if TARGET_OS_OSX
 
-CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
+- (CGImageRef)getCGImageRefWithRect:(NSRect)rect {
+    NSGraphicsContext *context = [NSGraphicsContext currentContext];
+    return [outImage CGImageForProposedRect:&rect context:context hints:@{}];
+}
+
+- (FIImage *)getImageWith:(CGContextRef)context {
+    size_t h = CGBitmapContextGetHeight(context);
+    size_t w = CGBitmapContextGetWidth(context);
+
+    CGImageRef pImage = CGBitmapContextCreateImage(context);
+
+    NSImage *image = [[FIImage alloc] initWithCGImage:pImage size:CGSizeMake(w, h)];
+    CGImageRelease(pImage);
+    return image;
+}
+
+void releaseCGContext(CGContextRef ref) {
+    char *bitmapData = CGBitmapContextGetData(ref);
+    if (bitmapData) free(bitmapData);
+    CGContextRelease(ref);
+}
+
+CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
     CGContextRef context = NULL;
     CGColorSpaceRef colorSpace;
     void *bitmapData;
@@ -112,7 +163,7 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
     CGImageRef cg = [image CGImageForProposedRect:&rect context:context hints:NULL];
 
-    CGContextRef ctx = MyCreateBitmapContext((size_t) size.width, (size_t) size.height);
+    CGContextRef ctx = createCGContext((size_t) size.width, (size_t) size.height);
 
     CGContextClipToRect(ctx, rect);
     CGContextDrawImage(ctx, rect, cg);
@@ -122,6 +173,7 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
 
     NSImage *result = [[NSImage alloc] initWithCGImage:pCgImage size:size];
     CGImageRelease(pCgImage);
+    releaseCGContext(ctx);
     return result;
 }
 
@@ -157,7 +209,7 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
     NSSize size = outImage.size;
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 
-    CGContextRef ctx = MyCreateBitmapContext(size.width, size.height);
+    CGContextRef ctx = createCGContext(size.width, size.height);
 
     CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
 
@@ -179,46 +231,54 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
     CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
 
     outImage = [self toFIImage:pCgImage width:size.width height:size.height];
+
+    releaseCGContext(ctx);
 }
 
 #pragma mark clip
 
 - (void)clip:(FIClipOption *)option {
-    CGImageRef cg = [self getCGImageRef];
-    CGRect rect = CGRectMake(option.x, option.y, option.width, option.height);
-    CGImageRef resultCg = CGImageCreateWithImageInRect(cg, rect);
-    outImage = [self toFIImage:resultCg width:rect.size.width height:rect.size.height];
-//    CGImageRelease(resultCg);
+    CGFloat w = option.width;
+    CGFloat h = option.height;
+    CGFloat x = option.x;
+    CGFloat y = option.y;
+
+    CGRect originRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
+    CGRect targetRect = CGRectMake(x, y, w, h);
+
+    CGImageRef srcImage = [self getCGImageRefWithRect:originRect];
+
+    CGImageRef resultCg = CGImageCreateWithImageInRect(srcImage, targetRect);
+    outImage = [self toFIImage:resultCg width:w height:h];
 }
 
 #pragma mark rotate
 
 - (void)rotate:(FIRotateOption *)option {
-    CGFloat redians = [self convertDegreeToRadians:option.degree];
+    double degree = 360 - option.degree;
+    CGFloat angle = [self convertDegreeToRadians:degree];
     CGSize oldSize = outImage.size;
     CGRect oldRect = CGRectMake(0, 0, oldSize.width, oldSize.height);
-    CGAffineTransform aff = CGAffineTransformMakeRotation(redians);
+    CGAffineTransform aff = CGAffineTransformMakeRotation(angle);
     CGRect newRect = CGRectApplyAffineTransform(oldRect, aff);
     CGSize newSize = newRect.size;
 
-    UIGraphicsBeginImageContext(newSize);
+    CGContextRef ctx = createCGContext((size_t) newSize.width, (size_t) newSize.height);
 
-    //  UIGraphicsBeginImageContextWithOptions(newSize, YES, outImage.scale);
-
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
     if (!ctx) {
         return;
     }
 
     CGContextTranslateCTM(ctx, newSize.width / 2, newSize.height / 2);
-    CGContextRotateCTM(ctx, redians);
+    CGContextRotateCTM(ctx, angle);
 
-    [outImage drawInRect:CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width,
-        oldSize.height)];
+    CGImageRef cg = [self getCGImageRef];
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    CGRect rect = CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width, oldSize.height);
+    CGContextDrawImage(ctx, rect, cg);
+    FIImage *newImage = [self getImageWith:ctx];
+    releaseCGContext(ctx);
 
-    UIGraphicsEndImageContext();
     if (!newImage) {
         return;
     }
@@ -294,23 +354,25 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    UIGraphicsBeginImageContext(CGSizeMake(option.width, option.height));
+    double width = option.width;
+    double height = option.height;
 
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (!ctx) {
-        return;
-    }
+    double retinaScale = [outImage retinaScale];
 
-    [outImage drawInRect:CGRectMake(0, 0, option.width, option.height)];
+    CGRect targetRect = CGRectMake(0, 0, width / retinaScale , height / retinaScale);
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    CGContextRef ctx = createCGContext((size_t) (width / retinaScale), (size_t) (height / retinaScale));
 
-    UIGraphicsEndImageContext();
-    if (!newImage) {
-        return;
-    }
+    CGRect rect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
+    CGImageRef src = [outImage CGImageForProposedRect:&rect context:NULL hints: NULL];
 
-    outImage = newImage;
+    CGContextDrawImage(ctx, targetRect, src);
+    outImage = [self getImageWith:ctx];
+
+    NSImage *image = [self getImageWith:ctx];
+    outImage = image;
+
+    releaseCGContext(ctx);
 }
 
 #pragma mark add text
@@ -383,6 +445,7 @@ CGContextRef MyCreateBitmapContext(size_t pixelsWide, size_t pixelsHigh) {
     if (!ctx) {
         return;
     }
+
 
     CGRect srcRect = CGRectMake(option.x, option.y, option.width, option.height);
     CGRect dstRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
