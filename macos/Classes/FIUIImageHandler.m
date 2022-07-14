@@ -8,6 +8,7 @@
 #import "FIUIImageHandler.h"
 #import "FICommonUtils.h"
 #import <CoreImage/CIFilterBuiltins.h>
+#import <CoreImage/CoreImage.h>
 
 #if TARGET_OS_OSX
 
@@ -15,6 +16,8 @@
 - (CGSize)pixelSize;
 
 - (CGFloat)retinaScale;
+
+- (CGImageRef)CGImage;
 @end
 
 @implementation NSImage (ext)
@@ -32,6 +35,11 @@
         return 1;
     }
     return self.pixelSize.width / self.size.width;
+}
+
+- (CGImageRef)CGImage {
+    CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
+    return [self CGImageForProposedRect:&rect context:nil hints:nil];
 }
 
 @end
@@ -303,8 +311,10 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     [filter setDefaults];
 
-    CIImage *inputCIImage = [[CIImage alloc] initWithImage:outImage options:nil];
-    NSLog(@"input size = %@", NSStringFromCGRect([inputCIImage extent]));
+//    CIImage *inputCIImage = [[CIImage alloc] initWithImage:outImage options:nil];
+    CGImageRef srcImage = [self getCGImageRef];
+    CIImage *inputCIImage = [[CIImage alloc] initWithCGImage:srcImage];
+    NSLog(@"input size = %@", NSStringFromRect([inputCIImage extent]));
     [matrix setValue:inputCIImage forKey:kCIInputImageKey];
 //    [matrix setRVector:[self getCIVector:option start:0]];
     [matrix setValue:[self getCIVector:option start:0] forKey:@"inputRVector"];
@@ -319,10 +329,10 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    CIContext *ctx = [CIContext contextWithOptions:nil];
+    CIContext *ctx = [[CIContext alloc] initWithOptions:@{}];
     CGImageRef cgImage = [ctx createCGImage:outputCIImage fromRect:[outputCIImage extent]];
 
-    FIImage *newImage = [UIImage imageWithCGImage:cgImage];
+    FIImage *newImage = [self toFIImage:cgImage width:outImage.size.width height:outImage.size.height];
 
     if (!newImage) {
         return;
@@ -439,35 +449,27 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    //  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
-    UIGraphicsBeginImageContext(outImage.size);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (!ctx) {
-        return;
-    }
-
-
-    CGRect srcRect = CGRectMake(option.x, option.y, option.width, option.height);
+    CGRect srcRect = CGRectMake(option.x, outImage.size.height - option.y - option.height, option.width, option.height);
     CGRect dstRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
+
+    CGContextRef ctx = createCGContext((size_t) option.width, (size_t) option.height);
+
     if ([option.blendMode isEqualToNumber:@(kCGBlendModeDst)]) {
-        [outImage drawInRect:dstRect blendMode:[option.blendMode intValue] alpha:YES];
+
+        CGContextDrawImage(ctx, dstRect, [outImage CGImage]);
     } else if ([option.blendMode isEqualToNumber:@(kCGBlendModeSrc)]) {
-        UIImage *src = [UIImage imageWithData:option.src];
-        [src drawInRect:srcRect blendMode:[option.blendMode intValue] alpha:YES];
+        NSImage *src = [[FIImage alloc] initWithData:option.src];
+        CGContextDrawImage(ctx, srcRect, [src CGImage]);
     } else {
-        [outImage drawInRect:dstRect];
-        UIImage *src = [UIImage imageWithData:option.src];
-        [src drawInRect:srcRect blendMode:[option.blendMode intValue] alpha:YES];
+        CGContextDrawImage(ctx, dstRect, [outImage CGImage]);
+        CGContextSetBlendMode(ctx, (CGBlendMode) [option.blendMode intValue]);
+        NSImage *src = [[FIImage alloc] initWithData:option.src];
+        CGContextDrawImage(ctx, srcRect, [src CGImage]);
     }
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-
-    UIGraphicsEndImageContext();
-    if (!newImage) {
-        return;
-    }
-
-    outImage = newImage;
+    FIImage *image = [self getImageWith:ctx];
+    outImage = image;
+    releaseCGContext(ctx);
 }
 
 #pragma mark "draw some thing"
