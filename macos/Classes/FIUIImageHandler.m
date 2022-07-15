@@ -396,10 +396,8 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    //  UIGraphicsBeginImageContextWithOptions(outImage.size, YES, outImage.scale);
-    UIGraphicsBeginImageContext(outImage.size);
+    CGContextRef ctx = createCGContext(outImage.size.width, outImage.size.height);
 
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
     if (!ctx) {
         return;
     }
@@ -407,6 +405,7 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
     [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
 
     for (FIAddText *text in option.texts) {
+        NSMutableParagraphStyle
         UIColor *color = [UIColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
 
         UIFont *font;
@@ -434,7 +433,8 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 
-    UIGraphicsEndImageContext();
+    releaseCGContext(ctx);
+
     if (!newImage) {
         return;
     }
@@ -474,29 +474,29 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
 #pragma mark "draw some thing"
 
-- (void)draw:(CGContextRef)ctx bezier:(FIBezierPath *)bezier paint:(FIPaint *)paint {
-    CGMutablePathRef path = CGPathCreateMutable();
-//  UIColor *color = paint.color;
-    if (paint.fill) {
-//    [bezier fill];
-//    CGContextSetFillColorWithColor(ctx, color.CGColor);
-        CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
-        CGContextSetLineWidth(ctx, paint.paintWeight);
-        CGPathAddPath(path, nil, [bezier CGPath]);
-        CGContextDrawPath(ctx, kCGPathFill);
-        CGContextFillPath(ctx);
-    } else {
-//    [bezier stroke];
-//    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
-        CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
-        CGContextSetLineWidth(ctx, paint.paintWeight);
-        CGPathAddPath(path, nil, [bezier CGPath]);
-        CGContextDrawPath(ctx, kCGPathStroke);
-        CGContextStrokePath(ctx);
-    }
-
-    CGPathRelease(path);
-}
+//- (void)draw:(CGContextRef)ctx bezier:(FIBezierPath *)bezier paint:(FIPaint *)paint {
+//    CGMutablePathRef path = CGPathCreateMutable();
+////  UIColor *color = paint.color;
+//    if (paint.fill) {
+////    [bezier fill];
+////    CGContextSetFillColorWithColor(ctx, color.CGColor);
+//        CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+//        CGContextSetLineWidth(ctx, paint.paintWeight);
+//        CGPathAddPath(path, nil, [bezier CGPath]);
+//        CGContextDrawPath(ctx, kCGPathFill);
+//        CGContextFillPath(ctx);
+//    } else {
+////    [bezier stroke];
+////    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
+//        CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
+//        CGContextSetLineWidth(ctx, paint.paintWeight);
+//        CGPathAddPath(path, nil, [bezier CGPath]);
+//        CGContextDrawPath(ctx, kCGPathStroke);
+//        CGContextStrokePath(ctx);
+//    }
+//
+//    CGPathRelease(path);
+//}
 
 - (void)drawImage:(FIDrawOption *)option {
     if (!outImage) {
@@ -538,15 +538,18 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 - (void)draw:(CGContextRef)pContext path:(FIPathDrawPart *)path {
     NSArray<FIDrawPart *> *parts = [path parts];
 
-    FIBezierPath *bezierPath = [FIBezierPath bezierPath];
+    CGContextRef context = createCGContext((size_t) outImage.size.width, (size_t) outImage.size.height);
 
     for (FIDrawPart *part in parts) {
         if ([part isMemberOfClass:[FIPathMove class]]) {
             FIPathMove *move = (FIPathMove *) part;
-            [bezierPath moveToPoint:[move offset]];
+            CGPoint point = move.offset;
+            CGContextMoveToPoint(context, point.x, point.y);
+
         } else if ([part isMemberOfClass:[FIPathLine class]]) {
             FIPathLine *line = (FIPathLine *) part;
-            [bezierPath addLineToPoint:[line offset]];
+            CGPoint point = line.offset;
+            CGContextAddLineToPoint(context, point.x, point.y);
         } else if ([part isMemberOfClass:[FIPathArc class]]) {
             FIPathArc *arc = (FIPathArc *) part;
             CGRect rect = [arc rect];
@@ -557,8 +560,8 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
             BOOL closeWise = [arc useCenter];
 
             CGPoint center = CGPointMake(point.x + rect.size.width / 2, point.y + rect.size.height / 2);
-            // TODO: fix: calc radius
-            [bezierPath addArcWithCenter:center radius:1 startAngle:start endAngle:end clockwise:closeWise];
+//            // TODO: fix: calc radius
+            CGContextAddArc(context, center.x, center.y, 1, start, end, closeWise);
         } else if ([part isMemberOfClass:[FIPathBezier class]]) {
             FIPathBezier *bezier = (FIPathBezier *) part;
 
@@ -566,23 +569,21 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
             CGPoint point = [bezier target];
             CGPoint c1 = [bezier control1];
             if (kind == 2) {
-                [bezierPath addQuadCurveToPoint:point controlPoint:c1];
+                CGContextAddQuadCurveToPoint(context, c1.x, c1.y, point.x, point.y);
             } else if (kind == 3) {
                 CGPoint c2 = [bezier control2];
-                [bezierPath addCurveToPoint:point controlPoint1:c1 controlPoint2:c2];
+                CGContextAddCurveToPoint(context, c1.x, c1.y, c2.x, c2.y, point.x, point.y);
             }
         }
 
     }
 
     if ([path autoClose]) {
-        [bezierPath closePath];
+        CGContextClosePath(context);
     }
 
     [self drawWithPaint:pContext paint:[path paint]];
 
-    CGPathRef pPath = [bezierPath CGPath];
-    CGContextAddPath(pContext, pPath);
     CGPathDrawingMode mode;
     if ([path paint].fill) {
         mode = kCGPathFill;
@@ -590,6 +591,9 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         mode = kCGPathStroke;
     }
     CGContextDrawPath(pContext, mode);
+
+    outImage = [self getImageWith:context];
+    releaseCGContext(context);
 }
 
 #endif
