@@ -13,22 +13,21 @@
 
 - (NSData *)process {
   FIMergeOption *opt = self.option;
-  UIGraphicsBeginImageContext(opt.size);
 
-  CGContextRef ctx = UIGraphicsGetCurrentContext();
+  CGContextRef ctx = createCGContext(opt.size.width, opt.size.height);
   if (!ctx) {
     return nil;
   }
 
   for (FIMergeImage *mergeImage in opt.images) {
-    UIImage *image = [UIImage imageWithData:mergeImage.data];
-    image = [FIUIImageHandler fixImageOrientation:image];
-    [image drawInRect:CGRectMake(mergeImage.x, mergeImage.y, mergeImage.width, mergeImage.height)];
+    CGRect rect = CGRectMake(mergeImage.x, mergeImage.y, mergeImage.width, mergeImage.height);
+    CGImageRef ref = [[[NSImage alloc] initWithData:mergeImage.data] CGImage];
+    CGContextDrawImage(ctx, rect, ref);
   }
 
-  UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+  FIImage *newImage = getImageFromCGContext(ctx);
 
-  UIGraphicsEndImageContext();
+  releaseCGContext(ctx);
   if (!newImage) {
     return nil;
   }
@@ -38,10 +37,16 @@
 
 - (NSData *)outputMemory:(FIImage *)image {
   FIFormatOption *fmt = self.option.format;
+
+  CGImageRef ref = [image CGImage];
+
+  NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:ref];
+
   if (fmt.format == 0) {
-    return UIImagePNGRepresentation(image);
+    return [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
   } else {
-    return UIImageJPEGRepresentation(image, ((CGFloat)fmt.quality) / 100);
+    NSDictionary *props = @{NSImageCompressionFactor: @((fmt.quality / 100))};
+    return [bitmap representationUsingType:NSBitmapImageFileTypeJPEG properties:props];
   }
 }
 

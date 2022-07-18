@@ -11,6 +11,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifdef TARGET_OS_OSX
+
+@interface NSImage (ext)
+- (CGSize)pixelSize;
+
+- (CGFloat)retinaScale;
+
+- (CGImageRef)CGImage;
+@end
+
+#endif
+
+void releaseCGContext(CGContextRef ref);
+
+CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh);
+
+FIImage *getImageFromCGContext(CGContextRef context);
+
 @interface FIUIImageHandler : NSObject
 
 @property(strong, nonatomic) FIImage *image;
@@ -23,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSData *)outputMemory;
 
 + (FIImage *)fixImageOrientation:(FIImage *)image;
+
 
 @end
 

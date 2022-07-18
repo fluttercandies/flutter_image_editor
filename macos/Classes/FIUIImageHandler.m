@@ -12,13 +12,56 @@
 
 #if TARGET_OS_OSX
 
-@interface NSImage (ext)
-- (CGSize)pixelSize;
+void releaseCGContext(CGContextRef ref) {
+    char *bitmapData = CGBitmapContextGetData(ref);
+    if (bitmapData) free(bitmapData);
+    CGContextRelease(ref);
+}
 
-- (CGFloat)retinaScale;
+CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
+    CGContextRef context = NULL;
+    CGColorSpaceRef colorSpace;
+    void *bitmapData;
+    size_t bitmapByteCount;
+    size_t bitmapBytesPerRow;
 
-- (CGImageRef)CGImage;
-@end
+    bitmapBytesPerRow = (pixelsWide * 4);// 1
+    bitmapByteCount = (bitmapBytesPerRow * pixelsHigh);
+
+    colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);// 2
+    bitmapData = calloc(bitmapByteCount, sizeof(uint8_t));// 3
+    if (bitmapData == NULL) {
+        fprintf(stderr, "Memory not allocated!");
+        return NULL;
+    }
+    context = CGBitmapContextCreate(bitmapData,// 4
+        pixelsWide,
+        pixelsHigh,
+        8,      // bits per component
+        bitmapBytesPerRow,
+        colorSpace,
+        kCGImageAlphaPremultipliedLast);
+    if (context == NULL) {
+        free(bitmapData);// 5
+        fprintf(stderr, "Context not created!");
+        return NULL;
+    }
+    CGColorSpaceRelease(colorSpace);// 6
+
+    return context;// 7
+}
+
+FIImage *getImageFromCGContext(CGContextRef context) {
+    size_t h = CGBitmapContextGetHeight(context);
+    size_t w = CGBitmapContextGetWidth(context);
+
+    CGImageRef pImage = CGBitmapContextCreateImage(context);
+
+    NSImage *image = [[FIImage alloc] initWithCGImage:pImage size:CGSizeMake(w, h)];
+    CGImageRelease(pImage);
+    return image;
+}
+
 
 @implementation NSImage (ext)
 - (CGSize)pixelSize {
@@ -98,64 +141,15 @@
 }
 
 - (FIImage *)getImageWith:(CGContextRef)context {
-    size_t h = CGBitmapContextGetHeight(context);
-    size_t w = CGBitmapContextGetWidth(context);
-
-    CGImageRef pImage = CGBitmapContextCreateImage(context);
-
-    NSImage *image = [[FIImage alloc] initWithCGImage:pImage size:CGSizeMake(w, h)];
-    CGImageRelease(pImage);
-    return image;
-}
-
-void releaseCGContext(CGContextRef ref) {
-    char *bitmapData = CGBitmapContextGetData(ref);
-    if (bitmapData) free(bitmapData);
-    CGContextRelease(ref);
-}
-
-CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
-    CGContextRef context = NULL;
-    CGColorSpaceRef colorSpace;
-    void *bitmapData;
-    size_t bitmapByteCount;
-    size_t bitmapBytesPerRow;
-
-    bitmapBytesPerRow = (pixelsWide * 4);// 1
-    bitmapByteCount = (bitmapBytesPerRow * pixelsHigh);
-
-    colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);// 2
-    bitmapData = calloc(bitmapByteCount, sizeof(uint8_t));// 3
-    if (bitmapData == NULL) {
-        fprintf(stderr, "Memory not allocated!");
-        return NULL;
-    }
-    context = CGBitmapContextCreate(bitmapData,// 4
-        pixelsWide,
-        pixelsHigh,
-        8,      // bits per component
-        bitmapBytesPerRow,
-        colorSpace,
-        kCGImageAlphaPremultipliedLast);
-    if (context == NULL) {
-        free(bitmapData);// 5
-        fprintf(stderr, "Context not created!");
-        return NULL;
-    }
-    CGColorSpaceRelease(colorSpace);// 6
-
-    return context;// 7
+    return getImageFromCGContext(context);
 }
 
 - (NSData *)outputMemory {
     FIFormatOption *fmt = self.optionGroup.fmt;
 
-    NSRect rect = NSMakeRect(0, 0, outImage.size.width, outImage.size.height);
-    CGImageRef ref = [outImage CGImageForProposedRect:&rect context:[NSGraphicsContext currentContext] hints:@{}];
+    CGImageRef ref = [outImage CGImage];
 
     NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:ref];
-
-    CGImageRelease(ref);
 
     if (fmt.format == 0) {
         return [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
@@ -177,7 +171,6 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
     CGContextDrawImage(ctx, rect, cg);
 
     CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
-    CGImageRelease(cg);
 
     NSImage *result = [[NSImage alloc] initWithCGImage:pCgImage size:size];
     CGImageRelease(pCgImage);
@@ -212,14 +205,12 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
-
     NSSize size = outImage.size;
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 
     CGContextRef ctx = createCGContext(size.width, size.height);
 
-    CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
+    CGImageRef cg = [outImage CGImage];
 
     CGContextClipToRect(ctx, rect);
 
@@ -236,10 +227,7 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     CGContextDrawImage(ctx, rect, cg);
 
-    CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
-
-    outImage = [self toFIImage:pCgImage width:size.width height:size.height];
-
+    outImage = [self getImageWith:ctx];
     releaseCGContext(ctx);
 }
 
