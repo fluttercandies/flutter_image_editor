@@ -345,22 +345,13 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     double width = option.width;
     double height = option.height;
 
-    double retinaScale = [outImage retinaScale];
+    CGContextRef context = createCGContext((size_t) width, (size_t) height);
 
-    CGRect targetRect = CGRectMake(0, 0, width / retinaScale , height / retinaScale);
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), [outImage CGImage]);
 
-    CGContextRef ctx = createCGContext((size_t) (width / retinaScale), (size_t) (height / retinaScale));
+    outImage = [self getImageWith:context];
 
-    CGRect rect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
-    CGImageRef src = [outImage CGImageForProposedRect:&rect context:NULL hints: NULL];
-
-    CGContextDrawImage(ctx, targetRect, src);
-    outImage = [self getImageWith:ctx];
-
-    NSImage *image = [self getImageWith:ctx];
-    outImage = image;
-
-    releaseCGContext(ctx);
+    releaseCGContext(context);
 }
 
 #pragma mark add text
@@ -374,14 +365,13 @@ FIImage *getImageFromCGContext(CGContextRef context) {
         return;
     }
 
-    CGContextRef ctx = createCGContext(outImage.size.width, outImage.size.height);
+    CGContextRef ctx = createCGContext((size_t) outImage.size.width, (size_t) outImage.size.height);
 
     if (!ctx) {
         return;
     }
 
     CGContextDrawImage(ctx, CGRectMake(0, 0, outImage.size.width, outImage.size.height), [outImage CGImage]);
-
 
     for (FIAddText *text in option.texts) {
         NSColor *color = [NSColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
@@ -399,7 +389,7 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
         CGRect rect = CGRectMake(text.x, text.y, w, h);
 
-        [self addTextWithContext:ctx text:text.text color:color rect:rect fontName:text.fontName textSize:text.fontSizePx];
+        [self addTextWithContext:ctx text:text.text color:color rect:rect fontName:font.fontName textSize:text.fontSizePx];
     }
 
     NSImage *newImage = [self getImageWith:ctx];
@@ -414,11 +404,6 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 }
 
 - (void)addTextWithContext:(CGContextRef)context text:(NSString *)text color:(NSColor *)color rect:(CGRect)range fontName:(NSString *)fontName textSize:(CGFloat)textSize {
-    // Initializing a graphic context in OS X is different:
-
-
-
-//    CGContextScaleCTM(context, 1.0, -1.0);
 
     // Set the text matrix.
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
@@ -447,7 +432,6 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     // Create a color that will be added as an attribute to the attrString.
     CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
-//    CGFloat components[] = { 1.0, 0.0, 0.0, 0.8 };
     CGFloat components[] = {color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent};
 
     CGColorRef red = CGColorCreate(rgbColorSpace, components);
@@ -460,8 +444,6 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     // Set the color of the first 12 chars to red.
     CFAttributedStringSetAttribute(attrString, CFRangeMake(0, text.length), kCTForegroundColorAttributeName, red);
-
-//    CFAttributedStringSetAttribute(attrString, textSize, )
 
     // Create the framesetter with the attributed string.
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(attrString);
@@ -478,6 +460,9 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     CFRelease(path);
     CFRelease(framesetter);
     CFRelease(font);
+
+//    CFRelease(textString);
+//    CFRelease(cfFontName);
 }
 
 #pragma mark mix image
@@ -512,36 +497,14 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
 #pragma mark "draw some thing"
 
-//- (void)draw:(CGContextRef)ctx bezier:(FIBezierPath *)bezier paint:(FIPaint *)paint {
-//    CGMutablePathRef path = CGPathCreateMutable();
-////  UIColor *color = paint.color;
-//    if (paint.fill) {
-////    [bezier fill];
-////    CGContextSetFillColorWithColor(ctx, color.CGColor);
-//        CGContextSetRGBFillColor(ctx, [paint r], [paint g], [paint b], [paint a]);
-//        CGContextSetLineWidth(ctx, paint.paintWeight);
-//        CGPathAddPath(path, nil, [bezier CGPath]);
-//        CGContextDrawPath(ctx, kCGPathFill);
-//        CGContextFillPath(ctx);
-//    } else {
-////    [bezier stroke];
-////    CGContextSetStrokeColorWithColor(ctx, color.CGColor);
-//        CGContextSetRGBStrokeColor(ctx, [paint r], [paint g], [paint b], [paint a]);
-//        CGContextSetLineWidth(ctx, paint.paintWeight);
-//        CGPathAddPath(path, nil, [bezier CGPath]);
-//        CGContextDrawPath(ctx, kCGPathStroke);
-//        CGContextStrokePath(ctx);
-//    }
-//
-//    CGPathRelease(path);
-//}
-
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
 - (void)drawImage:(FIDrawOption *)option {
     if (!outImage) {
         return;
     }
 
-    CGContextRef ctx = createCGContext(outImage.size.width, outImage.size.height);
+    CGContextRef ctx = createCGContext((size_t) outImage.size.width, (size_t) outImage.size.height);
     if (!ctx) {
         return;
     }
@@ -572,7 +535,10 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     outImage = newImage;
 }
+#pragma clang diagnostic pop
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCDFAInspection"
 - (void)draw:(CGContextRef)pContext path:(FIPathDrawPart *)path {
     NSArray<FIDrawPart *> *parts = [path parts];
 
@@ -633,6 +599,7 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     outImage = [self getImageWith:context];
     releaseCGContext(context);
 }
+#pragma clang diagnostic pop
 
 #endif
 
