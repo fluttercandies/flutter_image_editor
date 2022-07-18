@@ -22,7 +22,7 @@ typedef void (^VoidBlock)(void);
   FIEPlugin *plugin = [FIEPlugin new];
   [plugin initQueue];
   FlutterMethodChannel *channel = [FlutterMethodChannel
-      methodChannelWithName:@"top.kikt/flutter_image_editor"
+      methodChannelWithName:@"com.fluttercandies/image_editor"
             binaryMessenger:registrar.messenger];
 
   [registrar addMethodCallDelegate:plugin channel:channel];
@@ -185,7 +185,7 @@ typedef void (^VoidBlock)(void);
 - (void)registerFontWithData:(NSData *)data block:(FontBlock)block {
 
   CFErrorRef error;
-  CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)data);
+  CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
   CGFontRef font = CGFontCreateWithDataProvider(provider);
   NSString *name =
       (NSString *)CFBridgingRelease(CGFontCopyPostScriptName(font));

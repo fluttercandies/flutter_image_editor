@@ -18,6 +18,8 @@ void releaseCGContext(CGContextRef ref) {
     CGContextRelease(ref);
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
 CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
     CGContextRef context = NULL;
     CGColorSpaceRef colorSpace;
@@ -50,6 +52,7 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     return context;// 7
 }
+#pragma clang diagnostic pop
 
 FIImage *getImageFromCGContext(CGContextRef context) {
     size_t h = CGBitmapContextGetHeight(context);
