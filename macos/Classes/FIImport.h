@@ -12,6 +12,7 @@ typedef UIImage FIImage;
 typedef UIFont FIFont;
 typedef UIColor FIColor;
 typedef UIBezierPath FIBezierPath;
+typedef UIFont FIFont;
 #endif
 
 #if TARGET_OS_OSX
@@ -20,6 +21,7 @@ typedef NSImage FIImage;
 typedef NSFont FIFont;
 typedef NSColor FIColor;
 typedef NSBezierPath FIBezierPath;
+typedef NSFont FIFont;
 #endif
 
 #if TARGET_OS_OSX

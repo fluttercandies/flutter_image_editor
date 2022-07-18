@@ -402,36 +402,29 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
         return;
     }
 
-    [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+    CGContextDrawImage(ctx, CGRectMake(0, 0, outImage.size.width, outImage.size.height), [outImage CGImage]);
+
 
     for (FIAddText *text in option.texts) {
-        NSMutableParagraphStyle
-        UIColor *color = [UIColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
+        NSColor *color = [NSColor colorWithRed:(text.r / 255.0) green:(text.g / 255.0) blue:(text.b / 255.0) alpha:(text.a / 255.0)];
 
-        UIFont *font;
+        FIFont *font;
 
         if ([@"" isEqualToString:text.fontName]) {
-            font = [UIFont systemFontOfSize:text.fontSizePx];
+            font = [FIFont systemFontOfSize:text.fontSizePx];
         } else {
-            font = [UIFont fontWithName:text.fontName size:text.fontSizePx];
+            font = [FIFont fontWithName:text.fontName size:text.fontSizePx];
         }
-
-
-        NSDictionary *attr = @{
-            NSFontAttributeName: font,
-            NSForegroundColorAttributeName: color,
-            NSBackgroundColorAttributeName: UIColor.clearColor,
-        };
 
         CGFloat w = outImage.size.width - text.x;
         CGFloat h = outImage.size.height - text.y;
 
         CGRect rect = CGRectMake(text.x, text.y, w, h);
 
-        [text.text drawInRect:rect withAttributes:attr];
+        [self addTextWithContext:ctx text:text.text color:color rect:rect fontName:text.fontName textSize:text.fontSizePx];
     }
 
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    NSImage *newImage = [self getImageWith:ctx];
 
     releaseCGContext(ctx);
 
@@ -440,6 +433,73 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
     }
 
     outImage = newImage;
+}
+
+- (void)addTextWithContext:(CGContextRef)context text:(NSString *)text color:(NSColor *)color rect:(CGRect)range fontName:(NSString *)fontName textSize:(CGFloat)textSize {
+    // Initializing a graphic context in OS X is different:
+
+
+
+//    CGContextScaleCTM(context, 1.0, -1.0);
+
+    // Set the text matrix.
+    CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+
+    // Create a path which bounds the area where you will be drawing text.
+    // The path need not be rectangular.
+    CGMutablePathRef path = CGPathCreateMutable();
+
+    // In this simple example, initialize a rectangular path.
+//    CGRect bounds = CGRectMake(10.0, 10.0, 200.0, 200.0);
+    CGRect bounds = range;
+    CGPathAddRect(path, NULL, bounds);
+
+    // Initialize a string.
+//    CFStringRef textString = CFSTR("Hello, World! I know nothing in the world that has as much power as a word. Sometimes I write one, and I look at it, until it begins to shine.");
+    CFStringRef textString = (__bridge CFStringRef) text;
+
+    // Create a mutable attributed string with a max length of 0.
+    // The max length is a hint as to how much internal storage to reserve.
+    // 0 means no hint.
+    CFMutableAttributedStringRef attrString = CFAttributedStringCreateMutable(kCFAllocatorDefault, 0);
+
+    // Copy the textString into the newly created attrString
+    CFAttributedStringReplaceString(attrString, CFRangeMake(0, 0),
+        textString);
+
+    // Create a color that will be added as an attribute to the attrString.
+    CGColorSpaceRef rgbColorSpace = CGColorSpaceCreateDeviceRGB();
+//    CGFloat components[] = { 1.0, 0.0, 0.0, 0.8 };
+    CGFloat components[] = {color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent};
+
+    CGColorRef red = CGColorCreate(rgbColorSpace, components);
+    CGColorSpaceRelease(rgbColorSpace);
+
+    // Set font
+    CFStringRef cfFontName = (__bridge CFStringRef) fontName;
+    CTFontRef font = CTFontCreateWithName(cfFontName, textSize, nil);
+    CFAttributedStringSetAttribute(attrString, CFRangeMake(0, text.length), kCTFontAttributeName, font);
+
+    // Set the color of the first 12 chars to red.
+    CFAttributedStringSetAttribute(attrString, CFRangeMake(0, text.length), kCTForegroundColorAttributeName, red);
+
+//    CFAttributedStringSetAttribute(attrString, textSize, )
+
+    // Create the framesetter with the attributed string.
+    CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(attrString);
+    CFRelease(attrString);
+
+    // Create a frame.
+    CTFrameRef frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, 0), path, NULL);
+
+    // Draw the specified frame in the given context.
+    CTFrameDraw(frame, context);
+
+    // Release the objects we used.
+    CFRelease(frame);
+    CFRelease(path);
+    CFRelease(framesetter);
+    CFRelease(font);
 }
 
 #pragma mark mix image
