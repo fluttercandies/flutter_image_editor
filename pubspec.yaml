@@ -21,6 +21,6 @@ flutter:
         package: com.fluttercandies.image_editor
         pluginClass: ImageEditorPlugin
       ios:
-        pluginClass: FlutterImageEditorPlugin
+        pluginClass: ImageEditorPlugin
       macos:
-        pluginClass: FlutterImageEditorPlugin
+        pluginClass: ImageEditorPlugin
