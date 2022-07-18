@@ -35,11 +35,15 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
               ],
             ),
           ),
-          addLine(),
-          addRect(),
-          addOval(),
-          addPoints(),
-          buildDrawPath(),
+          ...[addLine(), addRect(), addOval(), addPoints(), buildDrawPath()]
+              .map(
+            (e) => Container(
+              width: 200,
+              height: 48,
+              margin: const EdgeInsets.all(8),
+              child: e,
+            ),
+          ),
         ],
       ),
     );

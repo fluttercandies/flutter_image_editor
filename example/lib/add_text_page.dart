@@ -55,44 +55,50 @@ class _AddTextPageState extends State<AddTextPage> {
                 ],
               ),
             ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () async {
-                    await addText(fontName);
-                  },
-                  child: const Text('add'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await addText('');
-                  },
-                  child: const Text('add use defaultFont'),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await addText(fontName);
+                },
+                child: const Text('add text'),
+              ),
             ),
-            ElevatedButton(
-              child: Text('download and register font'),
-              onPressed: () async {
-                final aliFontUrl =
-                    'https://cdn.jsdelivr.net/gh/kikt-blog/ali_font@master/Alibaba-PuHuiTi-Medium.ttf';
-
-                final body = await http.get(Uri.parse(aliFontUrl));
-
-                final tmpDir = await pp.getTemporaryDirectory();
-                final f = File(
-                    '${tmpDir.absolute.path}/${DateTime.now().millisecondsSinceEpoch}.ttf');
-                f.writeAsBytesSync(body.bodyBytes);
-
-                fontName = await FontManager.registerFont(f);
-
-                showToast('register $fontName success');
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await addText('');
+                },
+                child: const Text('add use defaultFont'),
+              ),
             ),
-            TextField(
-              controller: _controller,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                child: Text('download and register font'),
+                onPressed: () async {
+                  final aliFontUrl =
+                      'https://cdn.jsdelivr.net/gh/kikt-blog/ali_font@master/Alibaba-PuHuiTi-Medium.ttf';
+
+                  final body = await http.get(Uri.parse(aliFontUrl));
+
+                  final tmpDir = await pp.getTemporaryDirectory();
+                  final f = File(
+                      '${tmpDir.absolute.path}/${DateTime.now().millisecondsSinceEpoch}.ttf');
+                  f.writeAsBytesSync(body.bodyBytes);
+
+                  fontName = await FontManager.registerFont(f);
+
+                  showToast('register $fontName success');
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                controller: _controller,
+              ),
             ),
             // Slider(value: null, onChanged: null),
           ],

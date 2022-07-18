@@ -32,12 +32,18 @@ class _ExamplesState extends State<Examples> {
   }
 
   Widget _buildButton(Widget widget) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
-      },
-      child: Text(widget.runtimeType.toString()),
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: 48,
+        vertical: 8,
+      ),
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
+        },
+        child: Text(widget.runtimeType.toString()),
+      ),
     );
   }
 }

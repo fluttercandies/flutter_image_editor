@@ -152,10 +152,3 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
     setProvider(img);
   }
 }
-
-Widget buildButton(String text, VoidCallback onTap) {
-  return TextButton(
-    child: Text(text),
-    onPressed: onTap,
-  );
-}
