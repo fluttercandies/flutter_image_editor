@@ -22,3 +22,5 @@ flutter:
         pluginClass: ImageEditorPlugin
       ios:
         pluginClass: ImageEditorPlugin
+      macos:
+        pluginClass: ImageEditorPlugin
