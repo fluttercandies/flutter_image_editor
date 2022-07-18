@@ -97,4 +97,4 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: flutter pub get
-      - run: cd example; flutter build macOS --debug
+      - run: cd example; flutter build macos --debug
