@@ -23,27 +23,32 @@ class _ExamplesState extends State<Examples> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widgets.length,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildButton(widgets[index]);
-      },
+    return Column(
+      children: widgets.map((e) => _buildButton(e)).toList(),
     );
   }
 
   Widget _buildButton(Widget widget) {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 48,
-        vertical: 8,
-      ),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
-        },
-        child: Text(widget.runtimeType.toString()),
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        margin: const EdgeInsets.only(top: 16),
+        width: 300,
+        height: 48,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute<void>(builder: (BuildContext ctx) => widget));
+          },
+          child: Text(toTitle(widget)),
+        ),
       ),
     );
+  }
+
+  String toTitle(Widget widget) {
+    final src = widget.runtimeType.toString();
+    final regex = RegExp('([A-Z]){1}[a-z]+');
+    return regex.allMatches(src).map((e) => e.group(0)).join(' ');
   }
 }
