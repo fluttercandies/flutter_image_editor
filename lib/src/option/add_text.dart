@@ -1,38 +1,42 @@
 part of 'edit_options.dart';
 
 class AddTextOption implements Option {
-  final _text = <EditorText>[];
+  AddTextOption();
+
+  final List<EditorText> texts = <EditorText>[];
 
   void addText(EditorText text) {
-    _text.add(text);
+    texts.add(text);
   }
 
   @override
-  bool get canIgnore => _text.isEmpty;
+  bool get canIgnore => texts.isEmpty;
 
   @override
   String get key => 'add_text';
 
   @override
-  Map<String, Object> get transferValue => {
-        'texts': _text.map((e) => e.toJson()).toList(),
-      };
+  Map<String, Object> get transferValue {
+    return <String, Object>{
+      'texts': texts.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class EditorText {
-  final String text;
-  final Offset offset;
-  final int fontSizePx;
-  final Color textColor;
-  final String fontName;
-
-  EditorText({
+  const EditorText({
     required this.text,
     required this.offset,
     this.fontSizePx = 14,
     this.textColor = Colors.black,
     this.fontName = '',
   });
+
+  final String text;
+  final Offset offset;
+  final int fontSizePx;
+  final Color textColor;
+  final String fontName;
 
   int get y {
     if (Platform.isAndroid) {
@@ -42,7 +46,7 @@ class EditorText {
   }
 
   Map<String, Object> toJson() {
-    return {
+    return <String, Object>{
       'text': text,
       'fontName': fontName,
       'x': offset.dx.toInt(),

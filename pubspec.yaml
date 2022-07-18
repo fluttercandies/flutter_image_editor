@@ -11,14 +11,16 @@ dependencies:
   flutter:
     sdk: flutter
 
+dev_dependencies:
+  flutter_lints: any
+
 flutter:
   plugin:
     platforms:
       android:
-        package: top.kikt.flutter_image_editor
-        pluginClass: FlutterImageEditorPlugin
+        package: com.fluttercandies.image_editor
+        pluginClass: ImageEditorPlugin
       ios:
         pluginClass: FlutterImageEditorPlugin
       macos:
         pluginClass: FlutterImageEditorPlugin
-      

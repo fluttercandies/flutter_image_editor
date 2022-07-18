@@ -1,4 +1,3 @@
-enum SrcType {
-  file,
-  memory,
-}
+enum ImageFormat { png, jpeg }
+
+enum SrcType { file, memory }

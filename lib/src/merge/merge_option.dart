@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:image_editor/src/output_format.dart';
 
 import '../convert_value.dart';
 import '../image_source.dart';
+import '../output_format.dart';
 import '../position.dart';
 
 class ImageMergeOption with JsonAble {
-  final Size canvasSize;
-
-  final List<MergeImageConfig> mergeImageConfig = [];
-
-  final OutputFormat format;
-
   ImageMergeOption({
     required this.canvasSize,
     this.format = const OutputFormat.jpeg(90),
-  }) : assert(canvasSize.width > 0 && canvasSize.height > 0);
+  }) : assert(canvasSize > Size.zero);
+
+  final Size canvasSize;
+  final OutputFormat format;
+
+  final List<MergeImageConfig> _mergeImageConfig = <MergeImageConfig>[];
 
   void addImage(MergeImageConfig config) {
-    mergeImageConfig.add(config);
+    _mergeImageConfig.add(config);
   }
 
   @override
-  Map<String, Object> toJson() {
-    return {
-      'images': mergeImageConfig.map((e) => e.toJson()).toList(),
+  Map<String, Object?> toJson() {
+    return <String, Object?>{
+      'images': _mergeImageConfig.map((e) => e.toJson()).toList(),
       'fmt': format.toJson(),
       'w': canvasSize.width.toInt(),
       'h': canvasSize.height.toInt(),
@@ -33,16 +32,17 @@ class ImageMergeOption with JsonAble {
 }
 
 class MergeImageConfig with JsonAble {
-  final ImageSource image;
-  final ImagePosition position;
-
-  MergeImageConfig({
+  const MergeImageConfig({
     required this.image,
     required this.position,
   });
 
-  Map<String, Object> toJson() {
-    return {
+  final ImageSource image;
+  final ImagePosition position;
+
+  @override
+  Map<String, Object?> toJson() {
+    return <String, Object?>{
       'src': image.toJson(),
       'position': position.toJson(),
     };

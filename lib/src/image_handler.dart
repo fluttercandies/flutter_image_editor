@@ -7,56 +7,60 @@ import 'option/edit_options.dart';
 import 'type.dart';
 
 class ImageHandler {
+  ImageHandler.memory(this._memory)
+      : _type = SrcType.memory,
+        _file = null;
+
+  ImageHandler.file(this._file)
+      : _type = SrcType.file,
+        _memory = null;
+
   final SrcType _type;
-
-  File? _file;
-
-  Uint8List? _memory;
-
-  ImageHandler.memory(this._memory) : _type = SrcType.memory;
-
-  ImageHandler.file(this._file) : _type = SrcType.file;
+  final File? _file;
+  final Uint8List? _memory;
 
   Future<File?> handleAndGetFile(
-      ImageEditorOption option, String targetPath) async {
-    try {
-      if (_type == SrcType.file) {
-        return File(
-            await NativeChannel.fileToFile(_file!.path, option, targetPath));
-      } else if (_type == SrcType.memory) {
-        return File(
-            await NativeChannel.memoryToFile(_memory!, option, targetPath));
-      } else {
-        return null;
+    ImageEditorOption option,
+    String targetPath,
+  ) async {
+    return _handle(() async {
+      final String path;
+      switch (_type) {
+        case SrcType.file:
+          path = await NativeChannel.fileToFile(
+            _file!.path,
+            option,
+            targetPath,
+          );
+          break;
+        case SrcType.memory:
+          path = await NativeChannel.memoryToFile(_memory!, option, targetPath);
+          break;
       }
-    } on PlatformException catch (e) {
-      throw HandleError(e.code);
-    } on Exception catch (e) {
-      print(e.toString());
-      throw HandleError("Unhandled exception : $e");
-    } on Error catch (e) {
-      print(e.stackTrace.toString());
-      throw HandleError("Unhandled error : $e");
-    }
+      return File(path);
+    });
   }
 
   Future<Uint8List?> handleAndGetUint8List(ImageEditorOption option) async {
-    try {
-      if (_type == SrcType.file) {
-        return NativeChannel.fileToMemory(_file!.path, option);
-      } else if (_type == SrcType.memory) {
-        return NativeChannel.memoryToMemory(_memory!, option);
-      } else {
-        return null;
+    return _handle(() async {
+      switch (_type) {
+        case SrcType.file:
+          return NativeChannel.fileToMemory(_file!.path, option);
+        case SrcType.memory:
+          return NativeChannel.memoryToMemory(_memory!, option);
       }
+    });
+  }
+
+  Future<T> _handle<T>(Future<T> Function() fn) {
+    try {
+      return fn();
     } on PlatformException catch (e) {
       throw HandleError(e.code);
     } on Exception catch (e) {
-      print(e.toString());
-      throw HandleError("Unhandled exception : $e");
+      throw HandleError('Unhandled exception: $e');
     } on Error catch (e) {
-      print(e.stackTrace.toString());
-      throw HandleError("Unhandled error : $e");
+      throw HandleError('Unhandled error: $e');
     }
   }
 }
