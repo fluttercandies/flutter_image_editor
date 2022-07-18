@@ -81,8 +81,14 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 }
 
 - (CGImageRef)CGImage {
-    CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);
+    CGRect rect = CGRectMake(0, 0, self.pixelSize.width, self.pixelSize.height);
     return [self CGImageForProposedRect:&rect context:nil hints:nil];
+}
+
+
+- (CIImage *)CIImage {
+    CGImageRef srcImage = [self CGImage];
+    return [[CIImage alloc] initWithCGImage:srcImage];
 }
 
 @end
@@ -135,11 +141,6 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
 #if TARGET_OS_OSX
 
-- (CGImageRef)getCGImageRefWithRect:(NSRect)rect {
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
-    return [outImage CGImageForProposedRect:&rect context:context hints:@{}];
-}
-
 - (FIImage *)getImageWith:(CGContextRef)context {
     return getImageFromCGContext(context);
 }
@@ -160,34 +161,19 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 }
 
 + (FIImage *)fixImageOrientation:(FIImage *)image {
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
-    NSSize size = image.size;
-    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
-    CGImageRef cg = [image CGImageForProposedRect:&rect context:context hints:NULL];
+    CGSize size = image.pixelSize;
+    CGContextRef context = createCGContext(size.width, size.height);
 
-    CGContextRef ctx = createCGContext((size_t) size.width, (size_t) size.height);
+    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), image.CGImage);
 
-    CGContextClipToRect(ctx, rect);
-    CGContextDrawImage(ctx, rect, cg);
+    FIImage *result = getImageFromCGContext(context);
 
-    CGImageRef pCgImage = CGBitmapContextCreateImage(ctx);
+    releaseCGContext(context);
 
-    NSImage *result = [[NSImage alloc] initWithCGImage:pCgImage size:size];
-    CGImageRelease(pCgImage);
-    releaseCGContext(ctx);
     return result;
 }
 
 #pragma mark flip
-
-- (CGImageRef)getCGImageRef {
-    NSGraphicsContext *context = [NSGraphicsContext currentContext];
-    CGSize size = outImage.size;
-    NSRect rect = NSMakeRect(0, 0, size.width, size.height);
-
-    CGImageRef cg = [outImage CGImageForProposedRect:&rect context:context hints:NULL];
-    return cg;
-}
 
 - (FIImage *)toFIImage:(CGImageRef)cg width:(CGFloat)width height:(CGFloat)height {
     CGSize size = CGSizeMake(width, height);
@@ -239,13 +225,16 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     CGFloat x = option.x;
     CGFloat y = option.y;
 
-    CGRect originRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
     CGRect targetRect = CGRectMake(x, y, w, h);
 
-    CGImageRef srcImage = [self getCGImageRefWithRect:originRect];
+    CGImageRef srcImage = [outImage CGImage];
 
     CGImageRef resultCg = CGImageCreateWithImageInRect(srcImage, targetRect);
-    outImage = [self toFIImage:resultCg width:w height:h];
+
+    NSImage *image = [[NSImage alloc] initWithCGImage:resultCg size:NSMakeSize(w, h)];
+    outImage = image;
+
+    CGImageRelease(resultCg);
 }
 
 #pragma mark rotate
@@ -268,7 +257,7 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     CGContextTranslateCTM(ctx, newSize.width / 2, newSize.height / 2);
     CGContextRotateCTM(ctx, angle);
 
-    CGImageRef cg = [self getCGImageRef];
+    CGImageRef cg = [outImage CGImage];
 
     CGRect rect = CGRectMake(-oldSize.width / 2, -oldSize.height / 2, oldSize.width, oldSize.height);
     CGContextDrawImage(ctx, rect, cg);
@@ -289,6 +278,8 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 #pragma mark color matrix
 
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "KeyValueCodingInspection"
 - (void)colorMatrix:(FIColorOption *)option {
     if (!outImage) {
         return;
@@ -299,9 +290,7 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     [filter setDefaults];
 
-//    CIImage *inputCIImage = [[CIImage alloc] initWithImage:outImage options:nil];
-    CGImageRef srcImage = [self getCGImageRef];
-    CIImage *inputCIImage = [[CIImage alloc] initWithCGImage:srcImage];
+    CIImage *inputCIImage = [outImage CIImage];
     NSLog(@"input size = %@", NSStringFromRect([inputCIImage extent]));
     [matrix setValue:inputCIImage forKey:kCIInputImageKey];
 //    [matrix setRVector:[self getCIVector:option start:0]];
@@ -328,8 +317,9 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     outImage = newImage;
 }
+#pragma clang diagnostic pop
 
-- (CIVector *)getCIVector:(FIColorOption *)option start:(int)start {
+- (CIVector *)getCIVector:(FIColorOption *)option start:(NSUInteger)start {
     CGFloat v1 = [option getValue:start];
     CGFloat v2 = [option getValue:start + 1];
     CGFloat v3 = [option getValue:start + 2];

@@ -19,6 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (CGFloat)retinaScale;
 
 - (CGImageRef)CGImage;
+
+- (CIImage *)CIImage;
+
 @end
 
 #endif
