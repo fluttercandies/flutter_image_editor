@@ -14,10 +14,10 @@ dependencies:
   image_editor:
     path: ../
 
-  extended_image: ^6.2.1
+  extended_image: ^6.1.0
   image_picker: ^0.8.5+3
-  oktoast: ^3.2.0
-  path_provider: ^2.0.11
+  oktoast: ^3.1.5
+  path_provider: ^2.0.0
 
 flutter:
   uses-material-design: true
