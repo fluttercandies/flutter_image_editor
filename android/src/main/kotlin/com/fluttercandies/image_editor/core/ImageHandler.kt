@@ -41,15 +41,14 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     private fun handleScale(option: ScaleOption): Bitmap {
-        val bitmapRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
-        val optionRatio = option.width.toFloat() / option.height.toFloat()
         var w = option.width
         var h = option.height
         if (option.keepRatio) {
-            if (bitmapRatio < optionRatio) {
-                w = (option.height * bitmapRatio).toInt()
-            } else if (bitmapRatio > optionRatio) {
-                h = (option.width / bitmapRatio).toInt()
+            val srcRatio = bitmap.width.toFloat() / bitmap.height.toFloat()
+            if (option.keepWidthFirst) {
+                h = (w / srcRatio).toInt()
+            } else {
+                w = (srcRatio * h).toInt()
             }
         }
         val newBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)

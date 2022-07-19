@@ -154,10 +154,20 @@ p, q, r, s, t
 #### Scale
 
 ```dart
-ScaleOption(width, height, keepRatio: keepRatio);
+ScaleOption(width, height, keepRatio: keepRatio, keepWidthFirst: keepWidthFirst);
 ```
 
-After specifying the width and height, it is not clipped, but stretched to the specified width and height (Does maintain the aspect ratio of the image if wanted).
+`keepRatio` and `keepWidthFirst` are optional parameters used to maintain the aspect ratio of the original image to prevent image deformation.
+
+`keepWidthFirst` takes effect only when `keepRatio` is true.
+
+The following is a brief description:
+
+| width | height | keepRatio | keepWidthFirst | src size  | dest size |
+| ----- | ------ | --------- | -------------- | --------- | --------- |
+| 500   | 300    | false     | true/false     | 1920x1920 | 500x300   |
+| 500   | 300    | true      | true           | 1920x1920 | 500x500   |
+| 500   | 300    | true      | false          | 1920x1920 | 300x300   |
 
 #### AddText
 
@@ -230,8 +240,8 @@ Support next `BlendMode`, other will be ignored. You can also see [the document 
 | iOS/macOS                   | android(PorterDuff.Mode) | flutter(BlendMode) |
 | --------------------------- | ------------------------ | ------------------ |
 | kCGBlendModeClear           | CLEAR                    | clear              |
-|                             | SRC                      | src                |
-|                             | DST                      | dst                |
+|                             | SRC                      | src                |
+|                             | DST                      | dst                |
 | kCGBlendModeNormal          | SRC_OVER                 | srcOver            |
 | kCGBlendModeDestinationOver | DST_OVER                 | dstOver            |
 | kCGBlendModeSourceIn        | SRC_IN                   | srcIn              |

@@ -104,7 +104,8 @@ object ConvertUtils {
         val w = optionMap["width"] as Int
         val h = optionMap["height"] as Int
         val keepRatio = optionMap["keepRatio"] as Boolean
-        return ScaleOption(w, h, keepRatio)
+        val keepWidthFirst = optionMap["keepWidthFirst"] as Boolean
+        return ScaleOption(w, h, keepRatio, keepWidthFirst)
     }
 
     private fun getColorOption(optionMap: Any?): ColorOption {

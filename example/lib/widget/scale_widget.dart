@@ -17,10 +17,13 @@ class _ScaleWidgetState extends State<ScaleWidget> {
   int width = 1920;
   int height = 1920;
 
+  bool keepRatio = false;
+  bool keepWidthFirst = true;
+
   @override
   Widget build(BuildContext context) {
     return ExpandContainer(
-      title: 'width: $width, height: $height',
+      title: 'scale',
       child: Column(
         children: <Widget>[
           Slider(
@@ -28,6 +31,7 @@ class _ScaleWidgetState extends State<ScaleWidget> {
             value: width.toDouble(),
             min: 1,
             max: 1920,
+            label: 'width',
           ),
           Slider(
             onChanged: (double v) => setState(() => height = v.toInt()),
@@ -35,11 +39,23 @@ class _ScaleWidgetState extends State<ScaleWidget> {
             min: 1,
             max: 1920,
           ),
+          CheckboxListTile(
+            title: Text('keep ratio'),
+            value: keepRatio,
+            onChanged: (bool? v) => setState(() => keepRatio = v == true),
+          ),
+          CheckboxListTile(
+            title: Text(
+              keepWidthFirst ? 'keep width first' : 'keep height first',
+            ),
+            value: keepWidthFirst,
+            onChanged: (bool? v) => setState(() => keepWidthFirst = v == true),
+          ),
           SizedBox(
             width: double.infinity,
             child: TextButton(
               child: const Text('scale'),
-              onPressed: _rotate,
+              onPressed: _scale,
             ),
           ),
         ],
@@ -47,8 +63,13 @@ class _ScaleWidgetState extends State<ScaleWidget> {
     );
   }
 
-  void _rotate() {
-    final ScaleOption opt = ScaleOption(width, height);
+  void _scale() {
+    final ScaleOption opt = ScaleOption(
+      width,
+      height,
+      keepRatio: keepRatio,
+      keepWidthFirst: keepWidthFirst,
+    );
     widget.onTap?.call(opt);
   }
 }

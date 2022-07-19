@@ -52,7 +52,14 @@ CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
 
     return context;// 7
 }
+
 #pragma clang diagnostic pop
+
+CGSize CGImageGetSize(CGImageRef ref) {
+    size_t w = CGImageGetWidth(ref);
+    size_t h = CGImageGetHeight(ref);
+    return CGSizeMake(w, h);
+}
 
 FIImage *getImageFromCGContext(CGContextRef context) {
     size_t h = CGBitmapContextGetHeight(context);
@@ -345,12 +352,26 @@ FIImage *getImageFromCGContext(CGContextRef context) {
         return;
     }
 
+    CGImageRef srcImage = outImage.CGImage;
+
     double width = option.width;
     double height = option.height;
 
+    if (option.keepRatio) {
+        CGSize srcSize = CGImageGetSize(srcImage);
+
+        double srcRatio = srcSize.width / srcSize.height;
+
+        if (option.keepWidthFirst) {
+            height = width / srcRatio;
+        } else {
+            width = srcRatio * height;
+        }
+    }
+
     CGContextRef context = createCGContext((size_t) width, (size_t) height);
 
-    CGContextDrawImage(context, CGRectMake(0, 0, width, height), [outImage CGImage]);
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), srcImage);
 
     outImage = [self getImageWith:context];
 

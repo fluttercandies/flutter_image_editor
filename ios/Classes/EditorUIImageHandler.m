@@ -8,6 +8,68 @@
 #import "EditorUIImageHandler.h"
 #import <CoreImage/CIFilterBuiltins.h>
 
+
+void releaseCGContext(CGContextRef ref) {
+    char *bitmapData = CGBitmapContextGetData(ref);
+    if (bitmapData) free(bitmapData);
+    CGContextRelease(ref);
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+CGContextRef createCGContext(size_t pixelsWide, size_t pixelsHigh) {
+    CGContextRef context = NULL;
+    CGColorSpaceRef colorSpace;
+    void *bitmapData;
+    size_t bitmapByteCount;
+    size_t bitmapBytesPerRow;
+
+    bitmapBytesPerRow = (pixelsWide * 4);// 1
+    bitmapByteCount = (bitmapBytesPerRow * pixelsHigh);
+
+    colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);// 2
+    bitmapData = calloc(bitmapByteCount, sizeof(uint8_t));// 3
+    if (bitmapData == NULL) {
+        fprintf(stderr, "Memory not allocated!");
+        return NULL;
+    }
+    context = CGBitmapContextCreate(bitmapData,// 4
+        pixelsWide,
+        pixelsHigh,
+        8,      // bits per component
+        bitmapBytesPerRow,
+        colorSpace,
+        kCGImageAlphaPremultipliedLast);
+    if (context == NULL) {
+        free(bitmapData);// 5
+        fprintf(stderr, "Context not created!");
+        return NULL;
+    }
+    CGColorSpaceRelease(colorSpace);// 6
+
+    return context;// 7
+}
+
+#pragma clang diagnostic pop
+
+CGSize CGImageGetSize(CGImageRef ref) {
+    size_t w = CGImageGetWidth(ref);
+    size_t h = CGImageGetHeight(ref);
+    return CGSizeMake(w, h);
+}
+
+UIImage *getImageFromCGContext(CGContextRef context) {
+    size_t h = CGBitmapContextGetHeight(context);
+    size_t w = CGBitmapContextGetWidth(context);
+
+    CGImageRef pImage = CGBitmapContextCreateImage(context);
+
+    UIImage *image = [[UIImage alloc] initWithCGImage:pImage];
+    CGImageRelease(pImage);
+    return image;
+}
+
+
 @implementation EditorUIImageHandler {
     UIImage *outImage;
 }
@@ -211,29 +273,31 @@
     if (!outImage) {
         return;
     }
-    float imageRatio = outImage.size.width / outImage.size.height;
-    float optionRatio = option.width / option.height;
-    int w = option.width;
-    int h = option.height;
+
+    CGImageRef srcImage = outImage.CGImage;
+
+    double width = option.width;
+    double height = option.height;
+
     if (option.keepRatio) {
-        if (imageRatio < optionRatio) {
-            w = option.height * imageRatio;
-        } else if (imageRatio > optionRatio) {
-            h = option.width / imageRatio;
+        CGSize srcSize = CGImageGetSize(srcImage);
+
+        double srcRatio = srcSize.width / srcSize.height;
+
+        if (option.keepWidthFirst) {
+            height = width / srcRatio;
+        } else {
+            width = srcRatio * height;
         }
     }
-    UIGraphicsBeginImageContext(CGSizeMake(w, h));
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (!ctx) {
-        return;
-    }
-    [outImage drawInRect:CGRectMake(0, 0, w, h)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    if (!newImage) {
-        return;
-    }
-    outImage = newImage;
+
+    CGContextRef context = createCGContext((size_t) width, (size_t) height);
+
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), srcImage);
+
+    outImage = getImageFromCGContext(context);
+
+    releaseCGContext(context);
 }
 
 #pragma mark add text
