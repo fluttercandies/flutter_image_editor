@@ -190,8 +190,8 @@ class _DrawExamplePageState extends State<DrawExamplePage> {
           paint: paint,
         );
         path.move(Offset.zero);
-        path.lineTo(randomOffset(), paint);
-        path.lineTo(randomOffset(), paint);
+        path.lineTo(randomOffset());
+        path.lineTo(randomOffset());
         path.bezier2To(randomOffset(), randomOffset());
         path.bezier3To(randomOffset(), randomOffset(), randomOffset());
         await addDrawPart(path);

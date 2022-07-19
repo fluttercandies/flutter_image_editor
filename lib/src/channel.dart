@@ -5,18 +5,22 @@ import 'package:flutter/services.dart';
 
 import 'option/edit_options.dart';
 
+/// Wrapper for [MethodChannel].
 class NativeChannel {
   const NativeChannel._();
 
+  /// The channel for use native method.
   static const MethodChannel channel = MethodChannel(
     'com.fluttercandies/image_editor',
   );
 
+  /// Get the cache directory path.
   static Future<Directory> getCachePath() async {
     final path = await channel.invokeMethod('getCachePath');
     return Directory(path);
   }
 
+  /// Handle memory source and get file result.
   static Future<String> memoryToFile(
     Uint8List memory,
     ImageEditorOption option,
@@ -33,6 +37,7 @@ class NativeChannel {
     });
   }
 
+  /// Handle memory source and get momory result.
   static Future<Uint8List> memoryToMemory(
     Uint8List memory,
     ImageEditorOption option,
@@ -49,6 +54,7 @@ class NativeChannel {
     return result;
   }
 
+  /// Handle file source and get momory result.
   static Future<Uint8List> fileToMemory(
     String path,
     ImageEditorOption option,
@@ -64,6 +70,7 @@ class NativeChannel {
     });
   }
 
+  /// Handle file source and get file result.
   static Future<String> fileToFile(
     String src,
     ImageEditorOption option,

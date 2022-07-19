@@ -26,28 +26,40 @@ part 'mix_image.dart';
 
 part 'draw.dart';
 
+/// Used to describe whether it can be ignored.
 abstract class IgnoreAble {
+  /// Whether it is ture, it can be ignored.
   bool get canIgnore;
 }
 
+/// Used to describe whether transmission is possible.
 abstract class TransferValue implements IgnoreAble {
+  /// Used to describe whether transmission is possible.
   const TransferValue();
 
+  /// The key of transfer value.
   String get key;
 
+  /// The value of transfer value.
   Map<String, Object> get transferValue;
 }
 
+/// All options are subclasses of it.
 abstract class Option implements IgnoreAble, TransferValue {
   const Option();
 }
 
+/// Used to describe editing options.
 class ImageEditorOption implements IgnoreAble {
   ImageEditorOption();
 
+  /// All option groups
   final List<OptionGroup> groupList = [];
+
+  /// Output format for result image.
   OutputFormat outputFormat = const OutputFormat.jpeg(95);
 
+  /// Expand [groupList] to [List]
   List<Option> get options {
     List<Option> result = [];
     for (final group in groupList) {
@@ -58,10 +70,14 @@ class ImageEditorOption implements IgnoreAble {
     return result;
   }
 
+  /// Clear all options.
   void reset() {
     groupList.clear();
   }
 
+  /// Add a [option] to [groupList].
+  ///
+  /// If [newGroup] is true, it will create a new group.
   void addOption(Option option, {bool newGroup = false}) {
     final OptionGroup group;
     if (groupList.isEmpty || newGroup) {
@@ -73,6 +89,9 @@ class ImageEditorOption implements IgnoreAble {
     group.addOption(option);
   }
 
+  /// Add all of [options] to [groupList].
+  ///
+  /// If [newGroup] is true, it will create a new group.
   void addOptions(List<Option> options, {bool newGroup = true}) {
     final OptionGroup group;
     if (groupList.isEmpty || newGroup) {
@@ -84,6 +103,7 @@ class ImageEditorOption implements IgnoreAble {
     group.addOptions(options);
   }
 
+  /// Convert current to [Map]
   List<Map<String, Object>> toJson() {
     return <Map<String, Object>>[
       for (final option in options)

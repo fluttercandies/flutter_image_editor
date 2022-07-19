@@ -1,6 +1,8 @@
 part of 'edit_options.dart';
 
+/// Mix image
 class MixImageOption implements Option {
+  /// Mix image
   MixImageOption({
     required this.target,
     required this.x,
@@ -10,11 +12,22 @@ class MixImageOption implements Option {
     this.blendMode = BlendMode.srcOver,
   }) : assert(supportBlendModes.contains(blendMode));
 
+  /// The target image to mix.
   final ImageSource target;
+
+  /// The x coordinate of mix image.
   final int x;
+
+  /// The y coordinate of mix image.
   final int y;
+
+  /// The width of mix image.
   final int width;
+
+  /// The height of mix image.
   final int height;
+
+  /// The blend mode of mix image, default is [BlendMode.srcOver].
   final BlendMode blendMode;
 
   @override
@@ -36,6 +49,8 @@ class MixImageOption implements Option {
   }
 }
 
+/// Because native support is required,
+/// only the modes supported by `iOS/macOS` and `Android` are included here.
 const supportBlendModes = <BlendMode>[
   BlendMode.clear,
   BlendMode.src,

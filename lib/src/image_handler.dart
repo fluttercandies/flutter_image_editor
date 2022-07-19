@@ -6,6 +6,7 @@ import 'error.dart';
 import 'option/edit_options.dart';
 import 'type.dart';
 
+/// Wrapper for use channel to handle image.
 class ImageHandler {
   ImageHandler.memory(this._memory)
       : _type = SrcType.memory,

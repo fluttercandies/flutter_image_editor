@@ -1,7 +1,14 @@
 part of 'edit_options.dart';
 
+///
+/// {@template image_editor.option.clip}
+///
+/// The clip option is used to clip image.
+///
+/// {@endtemplate}
 class ClipOption implements Option {
-  ClipOption({
+  /// {@macro image_editor.option.clip}
+  const ClipOption({
     this.x = 0,
     this.y = 0,
     required this.width,
@@ -9,6 +16,7 @@ class ClipOption implements Option {
   })  : assert(width > 0 && height > 0),
         assert(x >= 0, y >= 0);
 
+  /// {@macro image_editor.option.clip}
   factory ClipOption.fromRect(Rect rect) {
     return ClipOption(
       x: rect.left.round(),
@@ -18,6 +26,7 @@ class ClipOption implements Option {
     );
   }
 
+  /// {@macro image_editor.option.clip}
   factory ClipOption.fromOffset(Offset start, Offset end) {
     return ClipOption(
       x: start.dx.round(),
@@ -27,9 +36,20 @@ class ClipOption implements Option {
     );
   }
 
+  /// The x coordinate of clip.
   final num x;
+
+  /// The y coordinate of clip.
   final num y;
+
+  /// The width of clip.
+  ///
+  /// The width must be greater than 0.
   final num width;
+
+  /// The height of clip.
+  ///
+  /// The height must be greater than 0.
   final num height;
 
   @override

@@ -1,11 +1,17 @@
 part of 'edit_options.dart';
 
+/// {@template image_editor.option.default_matrix}
+///
+/// The default color matrix.
+///
 /// ```
 /// [1, 0, 0, 0, 0,
 ///  0, 1, 0, 0, 0,
 ///  0, 0, 1, 0, 0,
 ///  0, 0, 0, 1, 0]
 /// ```
+///
+/// {@endtemplate}
 const List<double> defaultColorMatrix = <double>[
   1,
   0,
@@ -30,11 +36,17 @@ const List<double> defaultColorMatrix = <double>[
 ];
 
 class ColorOption implements Option {
+  /// If the color matrix is null, it will use the default color matrix.
+  ///
+  /// default color matrix:
+  /// {@macro image_editor.option.default_matrix}
   const ColorOption({
     this.matrix = defaultColorMatrix,
   }) : assert(matrix.length == 20);
 
   /// Migrate from [Android SDK saturation code](https://developer.android.com/reference/android/graphics/ColorMatrix.html#setSaturation(float)) .
+  ///
+  /// Represents the saturation of the color.
   factory ColorOption.saturation(double saturation) {
     final m = List<double>.from(defaultColorMatrix);
     final invSat = 1 - saturation;
@@ -53,7 +65,7 @@ class ColorOption implements Option {
     return ColorOption(matrix: m);
   }
 
-  /// Copy from android sdk.
+  /// Copy from android sdk. See [Android SDK color matrix](https://developer.android.google.cn/reference/android/graphics/ColorMatrix#setRotate(int,%20float)) .
   factory ColorOption.rotate(int axis, double degrees) {
     final mArray = List<double>.from(defaultColorMatrix);
     double radians = degrees * math.pi / 180;
@@ -84,6 +96,7 @@ class ColorOption implements Option {
     return ColorOption(matrix: mArray);
   }
 
+  /// https://developer.android.google.cn/reference/android/graphics/ColorMatrix#setScale(float,%20float,%20float,%20float)
   factory ColorOption.scale(
     double rScale,
     double gScale,
@@ -124,6 +137,7 @@ class ColorOption implements Option {
   ///
   final List<double> matrix;
 
+  /// Merge [other] into this color matrix.
   ColorOption concat(ColorOption other) {
     List<double> tmp = List.filled(20, 0);
     final a = matrix.toList();

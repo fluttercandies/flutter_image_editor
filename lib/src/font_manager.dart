@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'channel.dart';
 
+/// Wrapper for use channel to register font for add text.
 class FontManager {
   const FontManager._();
 

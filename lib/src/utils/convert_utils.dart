@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Convert option to json for transfer.
 class ConvertUtils {
   const ConvertUtils._();
 
+  /// Convert [Offset] to map
   static Map<String, Object> offset(Offset offset) {
     return {
       'x': offset.dx.toInt(),
@@ -10,6 +12,7 @@ class ConvertUtils {
     };
   }
 
+  /// Convert [Color] to map
   static Map<String, Object> color(Color c) {
     return {
       'r': c.red,
@@ -19,6 +22,7 @@ class ConvertUtils {
     };
   }
 
+  /// Convert [Rect] to map
   static Map<String, Object> rect(Rect rect) {
     return {
       'left': rect.left.toInt(),
