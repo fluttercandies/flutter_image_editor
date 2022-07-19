@@ -1,11 +1,14 @@
 import 'convert_value.dart';
 import 'type.dart';
 
+/// Used to describe the output format of a method.
 class OutputFormat with JsonAble {
+  /// jpeg format.
   const OutputFormat.jpeg(this.quality)
       : format = ImageFormat.jpeg,
         assert(quality > 0 && quality <= 100);
 
+  /// png format.
   const OutputFormat.png([this.quality = 100])
       : format = ImageFormat.png,
         assert(quality > 0 && quality <= 100);

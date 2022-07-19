@@ -1,10 +1,13 @@
 part of 'edit_options.dart';
 
+/// Add text to image.
 class AddTextOption implements Option {
   AddTextOption();
 
+  /// The items of added texts.
   final List<EditorText> texts = <EditorText>[];
 
+  /// Add [text] to [texts].
   void addText(EditorText text) {
     texts.add(text);
   }
@@ -23,6 +26,7 @@ class AddTextOption implements Option {
   }
 }
 
+/// Descript of a text.
 class EditorText {
   const EditorText({
     required this.text,
@@ -32,10 +36,19 @@ class EditorText {
     this.fontName = '',
   });
 
+  /// The text.
   final String text;
+
+  /// The offset of text.
   final Offset offset;
+
+  /// The font size of text.
   final int fontSizePx;
+
+  /// The color of text.
   final Color textColor;
+
+  /// The font name of text, if fontName is empty string, the text will use system font.
   final String fontName;
 
   int get y {

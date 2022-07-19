@@ -6,11 +6,17 @@ import 'channel.dart';
 import 'image_handler.dart';
 import 'option/edit_options.dart';
 
+/// The main class of ImageEditor plugin.
 class ImageEditor {
   const ImageEditor._();
 
-  /// [image] Uint8List
-  /// [imageEditorOption] option of
+  /// The [image] is a source of image.
+  ///
+  /// The [imageEditorOption] option for edit image.
+  ///
+  /// The method will return a [Uint8List] as image result.
+  ///
+  /// If result is null, it means handle image error.
   static Future<Uint8List?> editImage({
     required Uint8List image,
     required ImageEditorOption imageEditorOption,
@@ -31,6 +37,13 @@ class ImageEditor {
     return tmp;
   }
 
+  /// The [file] is the source of image.
+  ///
+  /// The [imageEditorOption] is the option for edit image.
+  ///
+  /// The method will return a [Uint8List] as image result.
+  ///
+  /// If result is null, it means handle image error.
   static Future<Uint8List?> editFileImage({
     required File file,
     required ImageEditorOption imageEditorOption,
@@ -57,6 +70,13 @@ class ImageEditor {
     }
   }
 
+  /// The [file] is the source of image.
+  ///
+  /// The [imageEditorOption] is the option for edit image.
+  ///
+  /// The method will return a [File] as image result.
+  ///
+  /// If result is null, it means handle image error.
   static Future<File?> editFileImageAndGetFile({
     required File file,
     required ImageEditorOption imageEditorOption,
@@ -78,6 +98,13 @@ class ImageEditor {
     return tmp;
   }
 
+  /// The [image] is the source of image.
+  ///
+  /// The [imageEditorOption] is the option for edit image.
+  ///
+  /// The method will return a [File] as image result.
+  ///
+  /// If result is null, it means handle image error.
   static Future<File> editImageAndGetFile({
     required Uint8List image,
     required ImageEditorOption imageEditorOption,
@@ -102,6 +129,7 @@ class ImageEditor {
     return file;
   }
 
+  /// The method will create a temp file path.
   static Future<String> _createTmpFilePath() async {
     final cacheDir = await NativeChannel.getCachePath();
     final name = DateTime.now().millisecondsSinceEpoch;

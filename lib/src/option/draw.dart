@@ -1,11 +1,13 @@
 part of 'edit_options.dart';
 
-/// Not yet implemented, just reserved api
+/// Add some shape to image.
 class DrawOption extends Option {
   DrawOption();
 
+  /// The items of added shapes.
   final List<DrawPart> parts = <DrawPart>[];
 
+  /// Add [part] to [parts].
   void addDrawPart(DrawPart part) {
     parts.add(part);
   }
@@ -27,6 +29,7 @@ class DrawOption extends Option {
   }
 }
 
+/// The part of added shape.
 abstract class DrawPart implements TransferValue {
   const DrawPart();
 
@@ -40,6 +43,7 @@ abstract class DrawPart implements TransferValue {
   }
 }
 
+/// The paint of shape.
 class DrawPaint extends DrawPart {
   const DrawPaint({
     this.color = Colors.black,
@@ -55,8 +59,13 @@ class DrawPaint extends DrawPart {
     );
   }
 
+  /// The color of shape.
   final Color color;
+
+  /// The line weight of shape.
   final double lineWeight;
+
+  /// The painting style of shape.
   final PaintingStyle paintingStyle;
 
   @override
@@ -80,6 +89,7 @@ class DrawPaint extends DrawPart {
 }
 
 mixin _HavePaint on TransferValue {
+  /// The paint of shape.
   abstract final DrawPaint paint;
 
   Map<String, Object> get values;
@@ -90,6 +100,7 @@ mixin _HavePaint on TransferValue {
     ..addAll(paint.values);
 }
 
+/// The line of shape.
 class LineDrawPart extends DrawPart with _HavePaint {
   const LineDrawPart({
     required this.start,
@@ -97,7 +108,10 @@ class LineDrawPart extends DrawPart with _HavePaint {
     required this.paint,
   });
 
+  /// The start point of line.
   final Offset start;
+
+  /// The end point of line.
   final Offset end;
 
   @override
@@ -119,11 +133,14 @@ class LineDrawPart extends DrawPart with _HavePaint {
   }
 }
 
+/// The rectangle of shape.
 class PointDrawPart extends DrawPart with _HavePaint {
   PointDrawPart({this.paint = const DrawPaint()});
 
+  /// The point of shape.
   final List<Offset> points = <Offset>[];
 
+  /// Add [point] to [points].
   void addPoint(Offset point) {
     points.add(point);
   }
@@ -149,12 +166,14 @@ class PointDrawPart extends DrawPart with _HavePaint {
   }
 }
 
+/// Draw a rectangle.
 class RectDrawPart extends DrawPart with _HavePaint {
   const RectDrawPart({
     required this.rect,
     this.paint = const DrawPaint(),
   });
 
+  /// The rectangle of shape.
   final Rect rect;
 
   @override
@@ -172,12 +191,14 @@ class RectDrawPart extends DrawPart with _HavePaint {
   }
 }
 
+/// Draw a oval.
 class OvalDrawPart extends DrawPart with _HavePaint {
   const OvalDrawPart({
     required this.rect,
     this.paint = const DrawPaint(),
   });
 
+  /// The oval of shape.
   final Rect rect;
 
   @override
@@ -195,14 +216,17 @@ class OvalDrawPart extends DrawPart with _HavePaint {
   }
 }
 
+/// Draw a path.
 class PathDrawPart extends DrawPart with _HavePaint {
   PathDrawPart({
     this.autoClose = false,
     this.paint = const DrawPaint(),
   });
 
+  /// auto close the path.
   final bool autoClose;
 
+  /// The path of shape.
   final List<_PathPart> _parts = <_PathPart>[];
 
   @override
@@ -211,11 +235,15 @@ class PathDrawPart extends DrawPart with _HavePaint {
   @override
   bool get canIgnore => _parts.isEmpty;
 
+  /// move to [point].
   void move(Offset point) {
     _parts.add(_MovePathPart(point));
   }
 
-  void lineTo(Offset point, DrawPaint paint) {
+  /// draw line to [point].
+  ///
+  /// The [paint] is not used, it will be ignored and it will be delete.
+  void lineTo(Offset point, [DrawPaint? paint]) {
     _parts.add(_LineToPathPart(point));
   }
 
@@ -235,6 +263,9 @@ class PathDrawPart extends DrawPart with _HavePaint {
   //   );
   // }
 
+  /// Add bezier curve.
+  ///
+  /// The [target] is the end point of the curve, and the [control]
   void bezier2To(Offset target, Offset control) {
     _parts.add(
       _BezierPathPart(
@@ -246,6 +277,11 @@ class PathDrawPart extends DrawPart with _HavePaint {
     );
   }
 
+  /// Add bezier curve.
+  ///
+  /// The method have 2 control points.
+  ///
+  /// The [target] is the end point of the curve, and the [control1] and [control2] are the control points.
   void bezier3To(Offset target, Offset control1, Offset control2) {
     _parts.add(
       _BezierPathPart(
@@ -257,6 +293,13 @@ class PathDrawPart extends DrawPart with _HavePaint {
     );
   }
 
+  /// Add bezier curve.
+  ///
+  /// If the [control1] and [control2] are null, the mothod will use [lineTo].
+  ///
+  /// If [control2] is null, will use [bezier2To].
+  ///
+  /// If [control1] and [control2] are not null, will use [bezier3To].
   void bezierTo({
     required Offset target,
     Offset? control1,
@@ -264,7 +307,7 @@ class PathDrawPart extends DrawPart with _HavePaint {
     DrawPaint paint = const DrawPaint(),
   }) {
     if (control1 == null) {
-      lineTo(target, paint);
+      lineTo(target);
       return;
     }
     if (control2 == null) {
