@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_editor_example/const/resource.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 
 class MixImagePage extends StatefulWidget {
   @override
@@ -83,14 +84,18 @@ class _MixImagePageState extends State<MixImagePage> {
   Future<void> mix() async {
     final Uint8List src = await loadFromAsset(R.ASSETS_SRC_PNG);
     final Uint8List dst = await loadFromAsset(R.ASSETS_DST_PNG);
+
+    final srcSize = ImageSizeGetter.getSize(MemoryInput(src));
+    final dstSize = ImageSizeGetter.getSize(MemoryInput(dst));
+
     final ImageEditorOption optionGroup = ImageEditorOption();
     optionGroup.outputFormat = const OutputFormat.png();
     optionGroup.addOption(
       MixImageOption(
-        x: 300,
-        y: 300,
-        width: 150,
-        height: 150,
+        x: 0,
+        y: 0,
+        width: 600,
+        height: 600,
         target: MemoryImageSource(src),
         blendMode: blendMode,
       ),
@@ -101,7 +106,11 @@ class _MixImagePageState extends State<MixImagePage> {
       image = null;
     } else {
       image = MemoryImage(result);
+
+      final resultSize = ImageSizeGetter.getSize(MemoryInput(result));
+      print('srcSize: $srcSize, dstSize: $dstSize, resultSize: $resultSize');
     }
+
     setState(() {});
   }
 

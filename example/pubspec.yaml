@@ -18,6 +18,7 @@ dependencies:
   image_picker: ^0.8.5+3
   oktoast: ^3.1.5
   path_provider: ^2.0.0
+  image_size_getter: ^2.1.2
 
 flutter:
   uses-material-design: true
