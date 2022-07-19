@@ -142,7 +142,7 @@ RotateOption(degree: 180);
 ColorOption();
 ```
 
-it's use 5x4 matrix : https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html Although it is an Android document, the color matrix is also applicable to iOS.
+it's use 5x4 matrix : <https://developer.android.google.cn/reference/android/graphics/ColorMatrix.html> Although it is an Android document, the color matrix is also applicable to iOS.
 
 a, b, c, d, e,  
 f, g, h, i, j,  
@@ -184,7 +184,8 @@ Here we can use `FontManager` to register font.
 File fontFile = File(path)//;
 final String fontName = await FontManager.registerFont(fontFile);
 
-// the fontName can be use int EditorText.
+// The fontName can be use in EditorText.
+// If you want to use system font, you can use empty string.
 final textOption = AddTextOption();
 textOption.addText(
   EditorText(
@@ -226,7 +227,7 @@ void mix(BlendMode blendMode) async {
 
 Support next `BlendMode`, other will be ignored. You can also see [the document of flutter](https://api.flutter.dev/flutter/dart-ui/BlendMode-class.html).
 
-| iOS                         | android(PorterDuff.Mode) | flutter(BlendMode) |
+| iOS/macOS                   | android(PorterDuff.Mode) | flutter(BlendMode) |
 | --------------------------- | ------------------------ | ------------------ |
 | kCGBlendModeClear           | CLEAR                    | clear              |
 |                             | SRC                      | src                |
@@ -270,7 +271,7 @@ Style of paint: `DrawPaint`, user can set lineWeight,color,style(stroke,fill).
 
 ```dart
 var outputFormat = OutputFormat.png();
-var outputFormat = OutputFormat.jpeg(95);
+var outputFormat = OutputFormat.jpeg(95); // The 95 is quality of jpeg.
 
 ```
 
@@ -315,7 +316,7 @@ var outputFormat = OutputFormat.jpeg(95);
 
 ## LICENSE
 
-MIT Style.
+Apache License 2.0
 
 ### Third party
 
