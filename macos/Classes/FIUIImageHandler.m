@@ -475,10 +475,12 @@ FIImage *getImageFromCGContext(CGContextRef context) {
         return;
     }
 
-    CGRect srcRect = CGRectMake(option.x, outImage.size.height - option.y - option.height, option.width, option.height);
-    CGRect dstRect = CGRectMake(0, 0, outImage.size.width, outImage.size.height);
+    NSSize srcSize = outImage.size;
 
-    CGContextRef ctx = createCGContext((size_t) option.width, (size_t) option.height);
+    CGRect srcRect = CGRectMake(0, 0, srcSize.width, srcSize.height);
+    CGRect dstRect = CGRectMake(option.x, option.y, option.width, option.height);
+
+    CGContextRef ctx = createCGContext((size_t) srcSize.width, (size_t) srcSize.height);
 
     if ([option.blendMode isEqualToNumber:@(kCGBlendModeDst)]) {
 
