@@ -108,6 +108,7 @@
     option.width = [dict[@"width"] intValue];
     option.height = [dict[@"height"] intValue];
     option.keepRatio = [dict[@"keepRatio"] boolValue];
+    option.keepWidthFirst = [dict[@"keepWidthFirst"] boolValue];
     return option;
 }
 

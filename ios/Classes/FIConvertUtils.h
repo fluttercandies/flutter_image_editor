@@ -66,6 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(assign, nonatomic) int width;
 @property(assign, nonatomic) int height;
 @property(assign, nonatomic) BOOL keepRatio;
+@property(assign, nonatomic) BOOL keepWidthFirst;
 
 @end
 

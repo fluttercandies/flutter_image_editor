@@ -16,6 +16,7 @@ import 'package:image_editor/image_editor.dart'
         Option,
         OutputFormat,
         RotateOption;
+import 'package:image_size_getter/image_size_getter.dart';
 
 import 'const/resource.dart';
 import 'widget/clip_widget.dart';
@@ -137,6 +138,8 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
 
     final Uint8List assetImage = await getAssetImage();
 
+    final srcSize = ImageSizeGetter.getSize(MemoryInput(assetImage));
+
     print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
     final Uint8List? result = await ImageEditor.editImage(
       image: assetImage,
@@ -147,6 +150,10 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
       setProvider(null);
       return;
     }
+
+    final resultSize = ImageSizeGetter.getSize(MemoryInput(result));
+
+    print('srcSize: $srcSize, resultSize: $resultSize');
 
     final MemoryImage img = MemoryImage(result);
     setProvider(img);
