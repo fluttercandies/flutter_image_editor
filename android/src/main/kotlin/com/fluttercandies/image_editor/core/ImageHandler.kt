@@ -72,7 +72,7 @@ class ImageHandler(private var bitmap: Bitmap) {
             this.postRotate(option.angle.toFloat())
         }
         val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        val canvas = Canvas(out)
+        val canvas = Canvas()
         canvas.drawBitmap(out, matrix, null)
         return out
     }
@@ -84,7 +84,7 @@ class ImageHandler(private var bitmap: Bitmap) {
             postScale(x, y)
         }
         val out = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        val canvas = Canvas(out)
+        val canvas = Canvas()
         canvas.drawBitmap(out, matrix, null)
         return out
     }
