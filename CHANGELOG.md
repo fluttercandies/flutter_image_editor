@@ -6,6 +6,7 @@ Fix:
 
 - Android:
   - Rotate error
+- Clean up code for flutter sdk 3.x
 
 ## 1.1.0
 
