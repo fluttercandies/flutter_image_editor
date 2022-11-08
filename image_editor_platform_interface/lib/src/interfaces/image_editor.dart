@@ -2,10 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:image_editor_platform_interface/image_editor_platform_interface.dart';
-import 'package:image_editor_platform_interface/src/channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import '../image_handler.dart';
 
 abstract class ImageEditorPlatform extends PlatformInterface {
   static const _token = Object();
