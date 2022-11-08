@@ -10,4 +10,4 @@ To implement the interface, extend `ImageEditorPlatform` with an implementation 
 
 To see an example of how the interface is implemented, see the [image_editor_common][]
 
-[image_editor_common]: ../image_editor_common/lib/image_editor_common.dart
+[image_editor_common]: https://pub.flutter-io.cn/packages/image_editor_common
