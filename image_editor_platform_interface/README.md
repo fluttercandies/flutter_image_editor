@@ -2,7 +2,18 @@
 
 The Flutter Image Editor Platform Interface is a platform interface for the Flutter Image Editor plugin.
 
+To use the plugin, add `image_editor` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+
 This interface allows platform-specific implementations of the `image_editor` plugin, as well as the plugin itself, to ensure they are supporting the same interface.
+
+## Support platforms
+
+Now, the plugin supports the following platforms:
+    - Android
+    - iOS
+    - macOS
+
+Welcome to contribute other platforms.
 
 ## Implementing the interface
 
