@@ -14,29 +14,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: "11.x"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - name: Log Dart/Flutter versions
         run: |
           dart --version
           flutter --version
-      - name: Prepare dependencies
-        run: flutter pub get
-      - name: Analyse the repo
-        run: flutter analyze lib example/lib
-#      - name: Run tests
-#        run: flutter test
-      - name: Generate docs
-        run: |
-          dart pub global activate dartdoc
-          dart pub global run dartdoc .
+      - name: Run the runnable shell
+        run: sh ./runnable.sh
 
   test_iOS:
     needs: analyze
@@ -44,19 +36,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest ]
+        os: [macos-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: "11.x"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
-      - run: flutter pub get
-      - run: cd example; flutter build ios --no-codesign
+      - run: cd image_editor; flutter pub get
+      - run: cd image_editor/example; flutter build ios --no-codesign
 
   test_Android:
     needs: analyze
@@ -64,20 +56,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: "11.x"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
-      - run: flutter pub get
+      - run: cd image_editor; flutter pub get
       - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
-      - run: cd example; flutter build apk --debug
+      - run: cd image_editor/example; flutter build apk --debug
 
   test_macOS:
     needs: analyze
@@ -85,16 +77,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest ]
+        os: [macos-latest]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: "11.x"
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
       - run: dart --version
       - run: flutter --version
-      - run: flutter pub get
-      - run: cd example; flutter build macos --debug
+      - run: cd image_editor; flutter pub get
+      - run: cd image_editor/example; flutter build macos --debug
