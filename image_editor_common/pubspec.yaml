@@ -10,8 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_editor_platform_interface:
-    path: ../image_editor_platform_interface
+  image_editor_platform_interface: ^1.0.0
+  # image_editor_platform_interface: ^1.0.0
+  # path: ../image_editor_platform_interface
 
 dev_dependencies:
   flutter_lints: any
