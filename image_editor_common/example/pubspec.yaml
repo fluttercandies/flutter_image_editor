@@ -24,3 +24,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+
+dependency_overrides:
+  image_editor_common:
+    path: ../

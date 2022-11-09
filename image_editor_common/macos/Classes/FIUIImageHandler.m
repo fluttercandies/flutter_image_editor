@@ -535,7 +535,8 @@ FIImage *getImageFromCGContext(CGContextRef context) {
         return;
     }
 
-    [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+//    [outImage drawInRect:CGRectMake(0, 0, outImage.size.width, outImage.size.height)];
+    CGContextDrawImage(ctx, CGRectMake(0, 0, outImage.size.width, outImage.size.height), [outImage CGImage]);
 
     for (FIDrawPart *part in [option parts]) {
         if ([part isMemberOfClass:FILineDrawPart.class]) {
