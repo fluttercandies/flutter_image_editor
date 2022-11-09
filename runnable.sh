@@ -1,4 +1,4 @@
-export WORK_DIR=$(PWD)
+export WORK_DIR=$PWD
 
 echo "Set the work to ${WORK_DIR}"
 
