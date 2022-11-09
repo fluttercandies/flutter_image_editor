@@ -5,7 +5,7 @@ echo "Set the work to ${WORK_DIR}"
 # Get the binary library
 dart pub global activate dartdoc
 
-function check_code(){
+check_code(){
     cd "$WORK_DIR/$1"
 
     # Check code
