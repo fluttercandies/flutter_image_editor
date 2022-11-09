@@ -28,7 +28,7 @@ jobs:
           dart --version
           flutter --version
       - name: Run the runnable shell
-        run: sh ./runnable.sh
+        run: sh -e ./runnable.sh
 
   test_iOS:
     needs: analyze
