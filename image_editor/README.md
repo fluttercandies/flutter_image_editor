@@ -1,6 +1,6 @@
 # image_editor
 
-![BUILD](https://github.com/fluttercandies/flutter_image_editor/actions/workflows/runnable.yml/badge.svg)
+![BUILD](https://github.com/fluttercandies/flutter_image_editor/actions/workflows/runnable.yml/badge.svg?event=push)
 
 The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
 
