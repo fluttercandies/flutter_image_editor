@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.3.0-dev.2
+
+Fix the problem of `DrawOption`.
+
 ## 1.3.0-dev.1
 
 Migration to platform interface.
