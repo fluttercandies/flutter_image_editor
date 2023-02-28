@@ -117,6 +117,11 @@ class ColorOption implements Option {
 
   factory ColorOption.contrast(double contrast) {
     final m = List<double>.from(defaultColorMatrix);
+    // final double translate = 255.0 * (1 - contrast) / 2
+    final double translate = (1 - contrast) * 127.5; // faster
+    m[4] = translate;
+    m[9] = translate;
+    m[14] = translate;
     m[0] = contrast;
     m[6] = contrast;
     m[12] = contrast;
