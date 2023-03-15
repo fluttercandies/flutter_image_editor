@@ -1,5 +1,9 @@
 # CHANGE LOG
 
+## 1.0.1
+
+- Fix invalid matrix with `ColorOption.contrast`.
+
 ## 1.0.0
 
 Initial version, The platform interface API of [image_editor][].

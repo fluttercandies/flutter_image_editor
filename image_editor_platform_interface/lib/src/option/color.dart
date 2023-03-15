@@ -115,8 +115,16 @@ class ColorOption implements Option {
     return ColorOption.scale(brightness, brightness, brightness, 1);
   }
 
+  /// The contrast translate follows the guide:
+  /// https://docs.rainmeter.net/tips/colormatrix-guide.
   factory ColorOption.contrast(double contrast) {
     final m = List<double>.from(defaultColorMatrix);
+
+    // final double translate = 255.0 * (1 - contrast) / 2
+    final double translate = (1 - contrast) * 127.5; // faster
+    m[4] = translate;
+    m[9] = translate;
+    m[14] = translate;
     m[0] = contrast;
     m[6] = contrast;
     m[12] = contrast;

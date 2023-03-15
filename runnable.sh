@@ -20,12 +20,18 @@ check_code(){
     echo "Generate docs in $PWD"
     dart pub global run dartdoc
 
-    # If have example folder, analyse example code
+    # Analyze if the "example" folder exists.
     if [ -d "example" ]; then
         echo "Analyse example code in $PWD"
         cd example
         flutter pub get
         flutter analyze lib
+    fi
+
+    # Run tests if the "test" folder exists.
+    if [ -d "test" ]; then
+        echo "Running tests in $PWD"
+        flutter test
     fi
 }
 
