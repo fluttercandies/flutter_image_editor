@@ -8,6 +8,16 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: [
+          "image_editor",
+          "image_editor_common",
+          "image_editor_platform_interface"
+        ]
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -18,4 +28,3 @@ jobs:
           flutter: true
           skipTests: true
           dryRunOnly: true
-          relativePath: image_editor
