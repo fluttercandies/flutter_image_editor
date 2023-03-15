@@ -14,21 +14,15 @@ jobs:
       - uses: k-paxian/dart-package-publisher@master
         with:
           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          flutter: true
           skipTests: true
-          dryRunOnly: true
           relativePath: "image_editor"
       - uses: k-paxian/dart-package-publisher@master
         with:
           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          flutter: true
           skipTests: true
-          dryRunOnly: true
           relativePath: "image_editor_common"
       - uses: k-paxian/dart-package-publisher@master
         with:
           credentialJson: ${{ secrets.CREDENTIAL_JSON }}
-          flutter: true
           skipTests: true
-          dryRunOnly: true
           relativePath: "image_editor_platform_interface"
