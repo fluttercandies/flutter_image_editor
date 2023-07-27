@@ -6,7 +6,7 @@ The version of readme pub and github may be inconsistent, please refer to [githu
 
 Use native(objc,kotlin) code to handle image data, it is easy to process pictures, and can be used for saving/uploading/preview images.
 
-- [image_editor](#image_editor)
+- [image\_editor](#image_editor)
   - [Screenshot](#screenshot)
   - [Platform of support](#platform-of-support)
   - [Change Log](#change-log)
@@ -92,9 +92,9 @@ ImageEditor.editFileImageAndGetFile();
 ImageEditor.editImageAndGetFile();
 ```
 
-[Example used alone](https://github.com/CaiJingLong/flutter_image_editor/blob/master/example/lib/advanced_page.dart)
+[Example used alone](https://github.com/CaiJingLong/flutter_image_editor/blob/main/image_editor/example/lib/advanced_page.dart)
 
-[Example](https://github.com/CaiJingLong/flutter_image_editor/blob/master/example/lib/advanced_page.dart) of [extended_image](https://github.com/fluttercandies/extended_image)
+[Example](https://github.com/CaiJingLong/flutter_image_editor/blob/main/image_editor/example/lib/advanced_page.dart) of [extended_image](https://github.com/fluttercandies/extended_image)
 
 ### ImageEditor method params
 
@@ -273,7 +273,7 @@ Support:
   - bezier2
   - bezier3
 
-[Example](https://github.com/fluttercandies/flutter_image_editor/blob/master/example/lib/draw_example_page.dart)
+[Example](https://github.com/fluttercandies/flutter_image_editor/blob/main/image_editor/example/lib/draw_example_page.dart)
 
 Style of paint: `DrawPaint`, user can set lineWeight,color,style(stroke,fill).
 
