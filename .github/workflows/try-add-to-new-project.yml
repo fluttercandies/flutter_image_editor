@@ -49,7 +49,7 @@ jobs:
       - run: flutter create new_project --platforms=android
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
@@ -122,7 +122,7 @@ jobs:
       - run: flutter create new_project --platforms=ios
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
@@ -191,7 +191,7 @@ jobs:
       - run: flutter create new_project --platforms=web
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
@@ -272,7 +272,7 @@ jobs:
       - run: flutter create new_project --platforms=linux
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
@@ -347,7 +347,7 @@ jobs:
       - run: flutter create new_project --platforms=macos
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
@@ -416,7 +416,7 @@ jobs:
       - run: flutter create new_project --platforms=windows
         name: Create new project
       - name: Add image_editor to new project.
-        run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
+        run: flutter pub add image_editor --path ../image_editor
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
