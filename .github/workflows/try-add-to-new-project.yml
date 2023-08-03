@@ -17,15 +17,16 @@ jobs:
         name: Flutter info
       - run: flutter create new_project --platforms=macos
         name: Create new project
-      - name: Set minimum macOS version
-        run: |
-              sed -i '' 's/platform :osx, .*/platform :osx, '\''11.0'\''/g' macos/Podfile
-              sed -i '' 's/MACOSX_DEPLOYMENT_TARGET = .*;/MACOSX_DEPLOYMENT_TARGET = 11.0;/g' macos/Runner.xcodeproj/project.pbxproj
       - name: Add image_editor to new project.
         run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
+        working-directory: ${{ github.workspace }}/new_project
+      - name: Set minimum macOS version
+        run: |
+              [ -f "macos/Podfile" ] && sed -i '' 's/platform :osx, .*/platform :osx, '\''11.0'\''/g' macos/Podfile
+              [ -f "macos/Runner.xcodeproj/project.pbxproj" ] && sed -i '' 's/MACOSX_DEPLOYMENT_TARGET = .*;/MACOSX_DEPLOYMENT_TARGET = 11.0;/g' macos/Runner.xcodeproj/project.pbxproj
         working-directory: ${{ github.workspace }}/new_project
       - run: flutter build macos --release
         working-directory: ${{ github.workspace }}/new_project
@@ -44,15 +45,16 @@ jobs:
         name: Flutter info
       - run: flutter create new_project --platforms=ios
         name: Create new project
-      - name: Set minimum iOS version
-        run: |
-              sed -i '' 's/platform :ios, .*/platform :ios, '\''11.0'\''/g' ios/Podfile
-              sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = .*;/IPHONEOS_DEPLOYMENT_TARGET = 11.0;/g' ios/Runner.xcodeproj/project.pbxproj
       - name: Add image_editor to new project.
         run: flutter pub add -- 'image_editor:{"path":"../image_editor"}'
         working-directory: ${{ github.workspace }}/new_project
         shell: bash
       - run: flutter pub get
+        working-directory: ${{ github.workspace }}/new_project
+      - name: Set minimum iOS version
+        run: |
+              [ -f "ios/Podfile" ] && sed -i '' 's/platform :ios, .*/platform :ios, '\''11.0'\''/g' ios/Podfile
+              [ -f "ios/Runner.xcodeproj/project.pbxproj" ] && sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = .*;/IPHONEOS_DEPLOYMENT_TARGET = 11.0;/g' ios/Runner.xcodeproj/project.pbxproj
         working-directory: ${{ github.workspace }}/new_project
       - run: flutter build ios --release --no-codesign
         working-directory: ${{ github.workspace }}/new_project
