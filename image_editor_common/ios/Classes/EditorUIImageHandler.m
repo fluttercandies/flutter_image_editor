@@ -114,7 +114,16 @@ UIImage *getImageFromCGContext(CGContextRef context) {
     if (fmt.format == 0) {
         return UIImagePNGRepresentation(outImage);
     } else {
-        return UIImageJPEGRepresentation(outImage, ((CGFloat) fmt.quality) / 100);
+        NSMutableData *data = [NSMutableData new];
+        CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)data, kUTTypeJPEG, 1, NULL);
+        NSDictionary *options = @{
+            (id)kCGImageDestinationLossyCompressionQuality : @(((CGFloat)fmt.quality) / 100),
+            (id)kCGImageDestinationOptimizeColorForSharing: (id)kCFBooleanTrue
+        };
+        CGImageDestinationAddImage(imageDestination, outImage.CGImage, (CFDictionaryRef)options);
+        CGImageDestinationFinalize(imageDestination);
+        CFRelease(imageDestination);
+        return data;
     }
 }
 
