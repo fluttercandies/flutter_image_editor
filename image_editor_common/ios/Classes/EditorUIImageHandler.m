@@ -7,6 +7,8 @@
 
 #import "EditorUIImageHandler.h"
 #import <CoreImage/CIFilterBuiltins.h>
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 
 void releaseCGContext(CGContextRef ref) {

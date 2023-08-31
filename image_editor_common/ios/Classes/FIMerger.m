@@ -7,6 +7,8 @@
 
 #import "FIMerger.h"
 #import "EditorUIImageHandler.h"
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation FIMerger
 
