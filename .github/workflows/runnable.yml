@@ -2,27 +2,18 @@ name: Runnable (stable)
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   analyze:
-    name: Analyze on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    name: Analyze code
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "11.x"
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
       - name: Log Dart/Flutter versions
         run: |
           dart --version
@@ -32,19 +23,14 @@ jobs:
 
   test_iOS:
     needs: analyze
-    name: Test iOS build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
+    name: Test iOS build
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "11.x"
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
@@ -52,19 +38,14 @@ jobs:
 
   test_Android:
     needs: analyze
-    name: Test Android build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    name: Test Android build
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "11.x"
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
@@ -79,13 +60,11 @@ jobs:
       matrix:
         os: [macos-latest]
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-java@v1
-        with:
-          java-version: "11.x"
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          cache: true
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
