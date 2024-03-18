@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.4.0
+
+- Support OpenHarmony.
+
+
 ## 1.3.0
 
 - Migration to platform interface.

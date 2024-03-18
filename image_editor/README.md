@@ -4,7 +4,7 @@
 
 The version of readme pub and github may be inconsistent, please refer to [github](https://github.com/fluttercandies/flutter_image_editor).
 
-Use native(objc,kotlin) code to handle image data, it is easy to process pictures, and can be used for saving/uploading/preview images.
+Use native(objc,kotlin,arkts) code to handle image data, it is easy to process pictures, and can be used for saving/uploading/preview images.
 
 - [image\_editor](#image_editor)
   - [Screenshot](#screenshot)
@@ -36,7 +36,7 @@ Use native(objc,kotlin) code to handle image data, it is easy to process picture
 
 ## Platform of support
 
-Android, iOS.
+Android, iOS, OpenHarmony
 
 ## Change Log
 
@@ -49,22 +49,23 @@ Please read document for null-safety information in [dart][dart-safe] or [flutte
 
 ## Support
 
-- [x] flip
-- [x] crop
-- [x] rotate
-- [x] scale
-- [x] matrix
-- [x] add text
-- [x] mix image
-- [x] merge multi image
-- [x] draw somethings
-  - [x] draw point
-  - [x] draw line
-  - [x] draw rect
-  - [x] draw circle
-  - [x] draw path
-  - [x] draw Bezier
-- [ ] Gaussian blur
+| Feature           | Android |  iOS  | OpenHarmony |
+| :---------------- | :-----: | :---: | :---------: |
+| flip              |    ✅    |   ✅   |      ✅      |
+| crop              |    ✅    |   ✅   |      ✅      |
+| rotate            |    ✅    |   ✅   |      ✅      |
+| scale             |    ✅    |   ✅   |      ✅      |
+| matrix            |    ✅    |   ✅   |      ❌      |
+| mix image         |    ✅    |   ✅   |      ❌      |
+| merge multi image |    ✅    |   ✅   |      ❌      |
+| draw point        |    ✅    |   ✅   |      ❌      |
+| draw line         |    ✅    |   ✅   |      ❌      |
+| draw rect         |    ✅    |   ✅   |      ❌      |
+| draw circle       |    ✅    |   ✅   |      ❌      |
+| draw path         |    ✅    |   ✅   |      ❌      |
+| draw Bezier       |    ✅    |   ✅   |      ❌      |
+| Gaussian blur     |    ❌    |   ❌   |      ❌      |
+
 
 ## ImageEditor Usage
 

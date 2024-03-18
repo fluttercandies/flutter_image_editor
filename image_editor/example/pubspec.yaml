@@ -14,11 +14,16 @@ dependencies:
   image_editor:
     path: ..
 
-  extended_image: ^8.0.2
+  extended_image: any
   image_picker: ^1.0.1
   oktoast: ^3.1.5
   path_provider: ^2.0.15
   image_size_getter: ^2.1.2
+  path_provider_ohos:
+     git:
+       url: https://gitee.com/openharmony-sig/flutter_packages.git
+       path: packages/path_provider/path_provider_ohos
+dependency_overrides: 
 
 flutter:
   uses-material-design: true
