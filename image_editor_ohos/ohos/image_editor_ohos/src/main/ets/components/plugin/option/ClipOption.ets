@@ -1,12 +1,13 @@
 import image from '@ohos.multimedia.image';
+import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
 export class ClipOption implements Option {
   constructor(data: Map<string, ESObject>) {
-    this.x = data.has('x') ? data.get('x') : 0;
-    this.y = data.has('y') ? data.get('y') : 0;
-    this.width = data.has('width') ? data.get('width') : 0;
-    this.height = data.has('height') ? data.get('height') : 0;
+    this.x = MapUtils.get(data, 'x', 0);
+    this.y = MapUtils.get(data, 'y', 0);
+    this.width = MapUtils.get(data, 'width', 0);
+    this.height = MapUtils.get(data, 'height', 0);
   }
 
   /// The x coordinate of clip.
@@ -26,7 +27,7 @@ export class ClipOption implements Option {
     return this.width <= 0 || this.height <= 0;
   }
 
-  async handle(pixelMap: image.PixelMap): Promise<void> {
+  async handle(pixelMap: image.PixelMap): Promise<image.PixelMap> {
     await pixelMap.crop({
       size: {
         width: this.width,
@@ -35,5 +36,6 @@ export class ClipOption implements Option {
       x: this.x,
       y: this.y,
     });
+    return pixelMap;
   }
 }

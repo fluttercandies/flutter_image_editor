@@ -15,7 +15,12 @@ import { ClipOption } from './option/ClipOption';
 import { RotateOption } from './option/RotateOption';
 import { ScaleOption } from './option/ScaleOption';
 import fs from '@ohos.file.fs';
-import colorSpaceManager from '@ohos.graphics.colorSpaceManager';
+import font from '@ohos.font'
+import drawing from "@ohos.graphics.drawing"
+import { DrawContext, RenderNode } from '@kit.ArkUI';
+import { common2D } from '@kit.ArkGraphics2D';
+import { AddTextOption } from './option/AddTextOption';
+
 /** ImageEditorOhosPlugin **/
 export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallHandler {
   private channel: MethodChannel | null = null;
@@ -89,6 +94,17 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
       case 'getCachePath':
         result.success(this.context?.cacheDir);
         break;
+      case 'registerFont':
+        // TODO
+        let args: Map<string, ESObject> = call.args;
+        let fontPath: string = args.get('path');
+        font.registerFont({
+          familyName: 'abc',
+          familySrc: 'file:/' + fontPath,
+        });
+        // let xx = font.getFontByName('abc');
+        result.success('abc');
+        break;
       default:
         result.notImplemented();
         break;
@@ -115,78 +131,8 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
 
   async handleImage(args: Map<string, ESObject>, imageSource: image.ImageSource): Promise<Uint8Array> {
     let fmt: FormatOption = new FormatOption(args.get('fmt'));
-    let optionsList: Array<Map<string, ESObject>> = args.get('options');
-    let decodingOptions: image.DecodingOptions = {
-      sampleSize: 1,
-      editable: true,
-    };
 
-    let pixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
-
-    for (let index = 0; index < optionsList.length; index++) {
-      const data: Map<string, ESObject> = optionsList[index];
-      let value: Map<string, ESObject> = data.get('value');
-      let option: Option | null = null;
-      switch (data.get('type')) {
-        case 'clip':
-          option = new ClipOption(value);
-          break;
-        case 'flip':
-          option = new FlipOption(value);
-          break;
-        case 'rotate':
-          option = new RotateOption(value);
-          break;
-        case 'scale':
-          option = new ScaleOption(value);
-          break;
-        default:
-          break;
-      }
-      if (option != null && !option.canIgnore()) {
-        await option.handle(pixelMap);
-      }
-    }
-
-
-    let exifRotate = 0;
-    // let minWidth: number = args.get('minWidth');
-    // let minHeight: number = args.get('minHeight');
-    // if (args.get('autoCorrectionAngle')) {
-    //   try {
-    //     let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-    //     /// exifRotate = this.parseExifRotate(imageProperty);
-    //   }
-    //   catch (e) {
-    //     if (this.showLog)
-    //       console.error(`getImageProperty failed, code is ${e.code}, message is ${e.message}`);
-    //   }
-    // }
-    // if (exifRotate == 270 || exifRotate == 90) {
-    //   let tmp: number = minWidth;
-    //   minWidth = minHeight;
-    //   minHeight = tmp;
-    // }
-    try {
-      let imageInfo = await pixelMap.getImageInfo();
-      // let scale = 1 / this.calcScale(
-      //   minWidth,
-      //   minHeight,
-      //   imageInfo.size.width,
-      //   imageInfo.size.height,
-      // );
-      // await pixelMap.scale(scale, scale);
-      // let rotate: number = args.get('rotate');
-      // let targetRotate = (rotate + exifRotate) % 360;
-      // if (targetRotate != 0) {
-      //   await pixelMap.rotate(targetRotate);
-      // }
-    }
-    catch (e) {
-      //if (this.showLog)
-      console.error(`getImageInfo failed, code is ${e.code}, message is ${e.message}`);
-    }
-
+    let pixelMap: PixelMap = await this.handleImageOptions(args, imageSource);
 
     const imagePackerApi = image.createImagePacker();
 
@@ -209,6 +155,65 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     pixelMap.release();
     imageSource.release();
     return uint8Array;
+  }
+
+
+  async handleImageOptions(args: Map<string, ESObject>, imageSource: image.ImageSource): Promise<PixelMap> {
+
+    let optionsList: Array<Map<string, ESObject>> = args.get('options');
+    let decodingOptions: image.DecodingOptions = {
+      sampleSize: 1,
+      editable: true,
+    };
+
+    let pixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
+    let exifRotate: number = 0;
+    try {
+      let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+      exifRotate = this.parseExifRotate(imageProperty);
+      await pixelMap.rotate(exifRotate % 360);
+    }
+    catch (e) {
+    }
+
+    // const brush = new drawing.Brush();
+    // let colorFilter = drawing.ColorFilter.createLinearToSRGBGamma();
+    // brush.setColorFilter(colorFilter);
+
+
+    // let reverseWH: boolean = false;
+    // if (exifRotate == 270 || exifRotate == 90) {
+    //   reverseWH = true;
+    // }
+
+    for (let index = 0; index < optionsList.length; index++) {
+      const data: Map<string, ESObject> = optionsList[index];
+      let value: Map<string, ESObject> = data.get('value');
+      let option: Option | null = null;
+      switch (data.get('type')) {
+        case 'clip':
+          option = new ClipOption(value);
+          break;
+        case 'flip':
+          option = new FlipOption(value);
+          break;
+        case 'rotate':
+          option = new RotateOption(value);
+          break;
+        case 'scale':
+          option = new ScaleOption(value);
+          break;
+        // case 'add_text':
+        // option = new AddTextOption(value);
+        // break;
+        default:
+          break;
+      }
+      if (option != null && !option.canIgnore()) {
+        pixelMap = await option.handle(pixelMap);
+      }
+    }
+    return pixelMap;
   }
 
   calcScale(minWidth: number, minHeight: number, width: number, height: number,): number {

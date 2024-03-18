@@ -1,18 +1,21 @@
 import image from '@ohos.multimedia.image';
+import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
 export class RotateOption implements Option {
   constructor(data: Map<string, ESObject>) {
-    this.degree = data.has('degree') ? data.get('degree') : 0;
+    this.degree = MapUtils.get(data, 'degree', 0) % 360;
   }
+
   /// The degree of rotate.
   degree: number;
 
   canIgnore(): boolean {
-    return this.degree % 360 == 0;
+    return this.degree == 0;
   }
 
-  async handle(pixelMap: image.PixelMap): Promise<void> {
+  async handle(pixelMap: image.PixelMap): Promise<image.PixelMap> {
     await pixelMap.rotate(this.degree);
+    return pixelMap;
   }
 }

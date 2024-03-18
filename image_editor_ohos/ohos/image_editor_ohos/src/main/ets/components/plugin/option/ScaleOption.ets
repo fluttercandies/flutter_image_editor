@@ -1,12 +1,13 @@
 import image from '@ohos.multimedia.image';
+import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
 export class ScaleOption implements Option {
   constructor(data: Map<string, ESObject>) {
-    this.keepWidthFirst = data.has('keepWidthFirst') ? data.get('keepWidthFirst') : true;
-    this.keepRatio = data.has('keepRatio') ? data.get('keepRatio') : false;
-    this.width = data.has('width') ? data.get('width') : 0;
-    this.height = data.has('height') ? data.get('height') : 0;
+    this.keepWidthFirst = MapUtils.get(data, 'keepWidthFirst', true);
+    this.keepRatio = MapUtils.get(data, 'keepRatio', false);
+    this.width = MapUtils.get(data, 'width', 0);
+    this.height = MapUtils.get(data, 'height', 0);
   }
 
   /// The width of scale.
@@ -22,7 +23,7 @@ export class ScaleOption implements Option {
     return false;
   }
 
-  async handle(pixelMap: image.PixelMap): Promise<void> {
+  async handle(pixelMap: image.PixelMap): Promise<image.PixelMap> {
     let w = this.width
     let h = this.height
     let imageInfo = await pixelMap.getImageInfo();
@@ -42,5 +43,7 @@ export class ScaleOption implements Option {
       let sy: number = h / height
       await pixelMap.scale(sx, sy);
     }
+
+    return pixelMap;
   }
 }

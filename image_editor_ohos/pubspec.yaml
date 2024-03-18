@@ -1,7 +1,12 @@
 name: image_editor_ohos
-description: A new Flutter plugin project.
+description: The OpenHarmony implementation of image_editor
 version: 0.0.1
-homepage:
+repository: https://github.com/fluttercandies/flutter_image_editor
+topics:
+  - image-editor
+  - ohos
+  - harmony-os
+  - openharmony
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
