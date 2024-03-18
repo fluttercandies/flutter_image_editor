@@ -19,10 +19,11 @@ dependencies:
   oktoast: ^3.1.5
   path_provider: ^2.0.15
   image_size_getter: ^2.1.2
-  path_provider_ohos:
-     git:
-       url: https://gitee.com/openharmony-sig/flutter_packages.git
-       path: packages/path_provider/path_provider_ohos
+  # 如果你需要跑鸿蒙，请打开下面的注释
+  # path_provider_ohos:
+  #    git:
+  #      url: https://gitee.com/openharmony-sig/flutter_packages.git
+  #      path: packages/path_provider/path_provider_ohos
 dependency_overrides: 
 
 flutter:

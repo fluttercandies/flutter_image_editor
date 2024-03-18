@@ -38,6 +38,8 @@ Use native(objc,kotlin,arkts) code to handle image data, it is easy to process p
 
 Android, iOS, OpenHarmony
 
+如果你需要在 `OpenHarmony` 平台上面运行例子，请将例子中的 `path_provider_ohos` 引用注释解开。
+
 ## Change Log
 
 This version is a null-safety version.
