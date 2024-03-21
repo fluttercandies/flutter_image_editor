@@ -49,7 +49,6 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
-      - run: sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.4.7075529"
       - run: cd image_editor/example; flutter build apk --debug
 
   test_macOS:
