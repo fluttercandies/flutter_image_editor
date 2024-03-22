@@ -70,18 +70,20 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   Widget buildImage() {
-    return ExtendedImage(
-      image: provider,
-      height: 400,
-      width: 400,
-      extendedImageEditorKey: editorKey,
-      mode: ExtendedImageMode.editor,
-      fit: BoxFit.contain,
-      initEditorConfigHandler: (_) => EditorConfig(
-        maxScale: 8.0,
-        cropRectPadding: const EdgeInsets.all(20.0),
-        hitTestSize: 20.0,
-        cropAspectRatio: 2 / 1,
+    return ClipRect(
+      child: ExtendedImage(
+        image: provider,
+        height: 400,
+        width: 400,
+        extendedImageEditorKey: editorKey,
+        mode: ExtendedImageMode.editor,
+        fit: BoxFit.contain,
+        initEditorConfigHandler: (_) => EditorConfig(
+          maxScale: 8.0,
+          cropRectPadding: const EdgeInsets.all(20.0),
+          hitTestSize: 20.0,
+          cropAspectRatio: 2 / 1,
+        ),
       ),
     );
   }

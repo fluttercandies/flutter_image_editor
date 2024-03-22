@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "image_editor_ohos",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}

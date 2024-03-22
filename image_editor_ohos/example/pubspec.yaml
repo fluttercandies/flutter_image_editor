@@ -1,0 +1,35 @@
+name: flutter_image_editor_ohos_example
+description: Demonstrates how to use the flutter_image_editor plugin.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  image_editor:
+    path: ../../image_editor
+
+  extended_image: any
+  image_picker: ^1.0.1
+  oktoast: ^3.1.5
+  path_provider: ^2.0.15
+  image_size_getter: ^2.1.2
+  path_provider_ohos:
+     git:
+       url: https://gitee.com/openharmony-sig/flutter_packages.git
+       path: packages/path_provider/path_provider_ohos
+  flutter_image_editor_example:
+    path: ../../image_editor/example
+  
+  
+dependency_overrides: 
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
