@@ -1,6 +1,5 @@
 name: Add library to new flutter project
 on:
-  push:
   pull_request:
 jobs:
   build-for-android-3-10-6:

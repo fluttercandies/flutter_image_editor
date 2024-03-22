@@ -1,7 +1,6 @@
 name: Runnable (stable)
 
 on:
-  push:
   pull_request:
 
 jobs:
