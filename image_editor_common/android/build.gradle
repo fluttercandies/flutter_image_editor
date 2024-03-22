@@ -34,6 +34,10 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+
+    if (project.android.hasProperty('namespace')) {
+        namespace 'com.fluttercandies.image_editor'
+    }
 }
 
 dependencies {
