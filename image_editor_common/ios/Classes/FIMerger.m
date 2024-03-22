@@ -7,6 +7,8 @@
 
 #import "FIMerger.h"
 #import "EditorUIImageHandler.h"
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @implementation FIMerger
 
@@ -35,7 +37,16 @@
     if (fmt.format == 0) {
         return UIImagePNGRepresentation(image);
     } else {
-        return UIImageJPEGRepresentation(image, ((CGFloat)fmt.quality) / 100);
+        NSMutableData *data = [NSMutableData new];
+        CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((__bridge CFMutableDataRef)data, kUTTypeJPEG, 1, NULL);
+        NSDictionary *options = @{
+            (id)kCGImageDestinationLossyCompressionQuality : @(((CGFloat)fmt.quality) / 100),
+            (id)kCGImageDestinationOptimizeColorForSharing: (id)kCFBooleanTrue
+        };
+        CGImageDestinationAddImage(imageDestination, image.CGImage, (CFDictionaryRef)options);
+        CGImageDestinationFinalize(imageDestination);
+        CFRelease(imageDestination);
+        return data;
     }
 }
 
