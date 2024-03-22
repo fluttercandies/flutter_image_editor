@@ -18,11 +18,12 @@ if len(sys.argv) < 2:
     print("  The available package names are: ", ", ".join(support_pkg_name))
     sys.exit(1)
 
+# refs/tags/image_editor-v1.4.0
 target_tag = sys.argv[1]
 
 print('Current github.ref is: ', target_tag)
 
-target_pkg_name = target_tag.split("-")[0]
+target_pkg_name = target_tag.split("/")[-1].split("-v")[0]
 
 print("Publishing package: ", target_pkg_name)
 current_dir = os.path.abspath(os.path.dirname(__file__))
