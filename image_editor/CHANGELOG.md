@@ -2,8 +2,9 @@
 
 ## 1.4.0
 
-- Support OpenHarmony.
-
+- Support OpenHarmony. [#122](https://github.com/fluttercandies/flutter_image_editor/issues/122)
+- Added AGP 8 Support for Android. [#117](https://github.com/fluttercandies/flutter_image_editor/issues/117)
+- Fix: Create JPEG images without embedded ICC profile. [#116](https://github.com/fluttercandies/flutter_image_editor/issues/116)
 
 ## 1.3.0
 
