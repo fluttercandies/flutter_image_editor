@@ -34,4 +34,6 @@ if target_pkg_name not in support_pkg_name:
     sys.exit(1)
 
 os.chdir(os.path.join(current_dir, target_pkg_name))
-os.system("dart pub publish -f")
+
+os.system("flutter pub get")
+os.system("flutter pub publish -f")

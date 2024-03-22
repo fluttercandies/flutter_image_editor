@@ -4,7 +4,7 @@ name: Publish to pub.dev
 on:
   push:
     tags:
-    - '*-v[0-9]+.[0-9]+.[0-9]+*' # tag pattern on pub.dev: 'v{{version}'
+      - "*-v[0-9]+.[0-9]+.[0-9]+*" # tag pattern on pub.dev: 'v{{version}'
 
 # Publish using custom workflow
 jobs:
@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dart-lang/setup-dart@v1
-      - name: 'Publish'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+      - name: "Publish"
         run: python3 publish.py ${{ github.ref }}
