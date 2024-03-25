@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.4.1
+
+- Support draw, merge, mix image for OpenHarmony
+
+
 ## 1.4.0
 
 - Support OpenHarmony.
