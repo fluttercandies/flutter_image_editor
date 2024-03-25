@@ -10,3 +10,5 @@ The OpenHarmony implementation of [`image_editor`][1].
 [1]: https://pub.dev/packages/image_editor
 
 Only support flip, crop, rotate, scale for now.
+
+`hvigorVersion: 4.1.2`

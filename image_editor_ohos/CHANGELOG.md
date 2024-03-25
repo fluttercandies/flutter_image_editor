@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Support draw, merge, mix image
+
 ## 0.0.2
 
 * Keep sdk limition the same as image_editor

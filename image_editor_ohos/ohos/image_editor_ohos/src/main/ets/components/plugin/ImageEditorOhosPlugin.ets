@@ -17,9 +17,12 @@ import { ScaleOption } from './option/ScaleOption';
 import fs from '@ohos.file.fs';
 import font from '@ohos.font'
 import drawing from "@ohos.graphics.drawing"
-import { DrawContext, RenderNode } from '@kit.ArkUI';
-import { common2D } from '@kit.ArkGraphics2D';
 import { AddTextOption } from './option/AddTextOption';
+import { MixImageOption } from './option/MixImageOption';
+import { DrawOption } from './option/DrawOption';
+import { ImageMergeOption } from './option/ImageMergeOption';
+import { ImageUtils } from './util/ImageUtils';
+import { ColorOption } from './option/ColorOption';
 
 /** ImageEditorOhosPlugin **/
 export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallHandler {
@@ -48,7 +51,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
   async onMethodCall(call: MethodCall, result: MethodResult): Promise<void> {
     switch (call.method) {
       case 'memoryToMemory':
-        await this.tryAgain(1, call, result, async () => {
+        await this.tryAgain(call, result, async () => {
           let args: Map<string, ESObject> = call.args;
           let list: Uint8Array = args.get('image');
           let buf: ArrayBuffer = list.buffer as ArrayBuffer;
@@ -57,7 +60,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
         });
         break;
       case 'memoryToFile':
-        await this.tryAgain(1, call, result, async () => {
+        await this.tryAgain(call, result, async () => {
           let args: Map<string, ESObject> = call.args;
           let targetPath: string = args.get('target');
           let list: Uint8Array = args.get('image');
@@ -71,7 +74,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
         });
         break;
       case 'fileToMemory':
-        await this.tryAgain(1, call, result, async () => {
+        await this.tryAgain(call, result, async () => {
           let args: Map<string, ESObject> = call.args;
           let filePath: string = args.get('src');
           const imageSource: image.ImageSource = image.createImageSource(filePath);
@@ -79,7 +82,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
         });
         break;
       case 'fileToFile':
-        await this.tryAgain(1, call, result, async () => {
+        await this.tryAgain(call, result, async () => {
           let args: Map<string, ESObject> = call.args;
           let filePath: string = args.get('src');
           let targetPath: string = args.get('target');
@@ -95,15 +98,40 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
         result.success(this.context?.cacheDir);
         break;
       case 'registerFont':
-        // TODO
+      // TODO
         let args: Map<string, ESObject> = call.args;
         let fontPath: string = args.get('path');
+        let familyName: string = new Date().getTime().toString();
         font.registerFont({
-          familyName: 'abc',
+          familyName: familyName,
           familySrc: 'file:/' + fontPath,
         });
-        // let xx = font.getFontByName('abc');
-        result.success('abc');
+      // let xx = font.getFontByName('abc');
+        result.success(familyName);
+        break;
+      case 'mergeToMemory':
+        await this.tryAgain(call, result, async () => {
+          let uint8Array = await this.mergeImage(call);
+          return uint8Array;
+        });
+        break;
+      case 'mergeToFile':
+        await this.tryAgain(call, result, async () => {
+          let uint8Array = await this.mergeImage(call);
+          let args: Map<string, ESObject> = call.args;
+          let option: Map<string, ESObject> = args.get('option');
+          let fmt: FormatOption = new FormatOption(option.get('fmt'));
+          let extName: string = 'jpg';
+          if (fmt.format == 0) {
+            extName = 'png';
+          }
+          const currentTimeStamp: number = new Date().getTime();
+          let path = this.context?.getApplicationContext().cacheDir + '/' + currentTimeStamp.toString() + '.' + extName;
+          let file = await fs.open(path, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE);
+          await fs.write(file.fd, uint8Array.buffer);
+          await fs.close(file.fd);
+          return path;
+        });
         break;
       default:
         result.notImplemented();
@@ -111,7 +139,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     }
   }
 
-  async tryAgain(numberOfRetries: number, call: MethodCall, result: MethodResult, doWork: () => Promise<ESObject>): Promise<void> {
+  async tryAgain(call: MethodCall, result: MethodResult, doWork: () => Promise<ESObject>, numberOfRetries: number = 1,): Promise<void> {
     if (numberOfRetries < 0) {
       return;
     }
@@ -121,7 +149,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     catch (e) {
       console.error(`${call.method} failed, code is ${e.code}, message is ${e.message}`);
       if (numberOfRetries - 1 > 0) {
-        this.tryAgain(numberOfRetries - 1, call, result, doWork);
+        this.tryAgain(call, result, doWork, numberOfRetries - 1);
       }
       else {
         result.error(`${e.code}`, call.method, `${e.message}`);
@@ -170,7 +198,7 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     let exifRotate: number = 0;
     try {
       let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-      exifRotate = this.parseExifRotate(imageProperty);
+      exifRotate = ImageUtils.parseExifRotate(imageProperty);
       await pixelMap.rotate(exifRotate % 360);
     }
     catch (e) {
@@ -191,21 +219,30 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
       let value: Map<string, ESObject> = data.get('value');
       let option: Option | null = null;
       switch (data.get('type')) {
-        case 'clip':
+        case ClipOption.key:
           option = new ClipOption(value);
           break;
-        case 'flip':
+        case FlipOption.key:
           option = new FlipOption(value);
           break;
-        case 'rotate':
+        case RotateOption.key:
           option = new RotateOption(value);
           break;
-        case 'scale':
+        case ScaleOption.key:
           option = new ScaleOption(value);
           break;
-        // case 'add_text':
-        // option = new AddTextOption(value);
-        // break;
+        case AddTextOption.key:
+          option = new AddTextOption(value);
+          break;
+        case MixImageOption.key:
+          option = new MixImageOption(value);
+          break;
+        case DrawOption.key:
+          option = new DrawOption(value);
+          break;
+        case ColorOption.key:
+          option = new ColorOption(value);
+          break;
         default:
           break;
       }
@@ -216,54 +253,55 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     return pixelMap;
   }
 
-  calcScale(minWidth: number, minHeight: number, width: number, height: number,): number {
-    let scaleW = width / minWidth
-    let scaleH = height / minHeight
-    //if (this.showLog) {
-    console.log(`width scale = ${scaleW}`)
-    console.log(`height scale = ${scaleH}`)
-    //}
-    return Math.max(1, Math.min(scaleW, scaleH))
-  }
 
-  // 1	上	左	0°
-  // 2	上	右	水平翻转
-  // 3	下	右	180°
-  // 4	下	左	垂直翻转
-  // 5	左	上	顺时针90°+水平翻转
-  // 6	右	上	顺时针90°
-  // 7	右	下	顺时针90°+垂直翻转
-  // 8	左	下	逆时针90°
-  parseExifRotate(orientation: string): number {
-    orientation = orientation.toLowerCase();
-    switch (orientation) {
-    // 1	上	左	0°
-      case 'top-left':
-        return 0;
-    // 2	上	右	水平翻转
-      case 'top-right':
-        return 0;
-    // 3	下	右	180°
-      case 'bottom-right':
-        return 180;
-    // 4	下	左	垂直翻转
-      case 'bottom-left':
-        return 0;
-      case 'left-top':
-      // 5	左	上	顺时针90°+水平翻转
-        return 90;
-    // 6	右	上	顺时针90°
-      case 'right-top':
-        return 90;
-    // 7	右	下	顺时针90°+垂直翻转
-      case 'right-bottom':
-        return 90;
-    // 8	左	下	逆时针90°
-      case 'left-bottom':
-        return 270;
+  async mergeImage(call: MethodCall): Promise<Uint8Array> {
+    let args: Map<string, ESObject> = call.args;
+    let option: Map<string, ESObject> = args.get('option');
+    let fmt: FormatOption = new FormatOption(option.get('fmt'));
+    let width: number = option.get('w');
+    let height: number = option.get('h');
+    const color = new ArrayBuffer(width * height * 4);
+    let opts: image.InitializationOptions = {
+      editable: true,
+      pixelFormat: image.PixelMapFormat.RGBA_8888,
+      size: {
+        height: height,
+        width: width,
+      }
+    }
+    let pixelMap = await image.createPixelMap(color, opts);
+
+    let canvas = new drawing.Canvas(pixelMap);
+
+    let images: Array<Map<string, ESObject>> = option.get('images');
+    // 'src': image.toJson(), => 'memory'
+    // 'position': position.toJson(),
+
+    for (let index = 0; index < images.length; index++) {
+      const element: Map<string, ESObject> = images[index];
+      await new ImageMergeOption(element).handle(canvas);
+    }
+
+
+    const imagePackerApi = image.createImagePacker();
+
+    // PixelMap编码成不同格式的存档图片
+    let format: string = 'image/jpeg';
+    switch (fmt.format) {
+      case 0:
+        format = 'image/png'
+        break;
       default:
         break;
     }
-    return 0;
+
+    const packOptions: image.PackingOption = {
+      format: format,
+      quality: fmt.quality,
+    }
+
+    let uint8Array: Uint8Array = new Uint8Array(await imagePackerApi.packing(pixelMap, packOptions));
+    pixelMap.release();
+    return uint8Array;
   }
 }

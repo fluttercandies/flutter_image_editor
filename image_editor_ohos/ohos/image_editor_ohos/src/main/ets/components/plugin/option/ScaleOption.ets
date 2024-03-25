@@ -3,12 +3,21 @@ import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
 export class ScaleOption implements Option {
+  static readonly key: string = 'scale';
+
   constructor(data: Map<string, ESObject>) {
     this.keepWidthFirst = MapUtils.get(data, 'keepWidthFirst', true);
     this.keepRatio = MapUtils.get(data, 'keepRatio', false);
     this.width = MapUtils.get(data, 'width', 0);
     this.height = MapUtils.get(data, 'height', 0);
   }
+
+  // constructor(width: number, height: number, keepRatio: boolean, keepWidthFirst: boolean) {
+  //   this.keepWidthFirst =keepWidthFirst;
+  //   this.keepRatio = keepRatio;
+  //   this.width = width;
+  //   this.height = height;
+  // }
 
   /// The width of scale.
   width: number;
