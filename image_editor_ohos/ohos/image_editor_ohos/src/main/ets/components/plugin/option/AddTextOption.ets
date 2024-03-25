@@ -59,10 +59,10 @@ export class EditorText {
     brush.setColor(this.color);
     const font = new drawing.Font();
     font.setSize(this.size);
-    // TODO, 没有 api 设置
-    // let typeface = new drawing.Typeface();
+    // TODO, 没有 api 设置自定义
+    let typeface = new drawing.Typeface();
     // let familyName = typeface.getFamilyName();
-    // font.setTypeface(typeface);
+    font.setTypeface(typeface);
     const textBlob = drawing.TextBlob.makeFromString(this.text, font, drawing.TextEncoding.TEXT_ENCODING_UTF8);
     let bounds = textBlob.bounds();
     canvas.attachBrush(brush);
