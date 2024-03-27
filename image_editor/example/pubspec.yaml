@@ -20,6 +20,10 @@ dependencies:
   path_provider: ^2.0.15
   image_size_getter: ^2.1.2
 dependency_overrides: 
+  image_editor_platform_interface:
+    path: ../../image_editor_platform_interface
+  image_editor_common:
+    path: ../../image_editor_common
 
 flutter:
   uses-material-design: true
