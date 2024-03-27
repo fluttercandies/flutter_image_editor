@@ -61,13 +61,6 @@ class EditorText {
   /// The align of text.
   final TextAlign textAlign;
 
-  int get y {
-    if (Platform.isAndroid) {
-      return offset.dy.toInt() + fontSizePx;
-    }
-    return offset.dy.toInt();
-  }
-
   Map<String, Object> toJson() {
     return <String, Object>{
       'text': text,
