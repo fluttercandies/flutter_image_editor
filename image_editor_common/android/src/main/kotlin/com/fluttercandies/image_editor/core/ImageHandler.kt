@@ -119,6 +119,7 @@ class ImageHandler(private var bitmap: Bitmap) {
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
         textPaint.textSize = text.fontSizePx.toFloat()
+        textPaint.textAlign = text.textAlign
         if (text.fontName.isNotEmpty()) {
             try {
                 val typefaceFromAsset = FontUtils.getFont(text.fontName)

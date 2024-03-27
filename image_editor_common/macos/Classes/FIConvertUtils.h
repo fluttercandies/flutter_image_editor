@@ -68,6 +68,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) int b;
 @property(nonatomic, assign) int a;
 @property(nonatomic, assign) NSString *fontName;
+@property(nonatomic, assign) NSString *textAlign;
+
+-(NSMutableParagraphStyle*) getParagraphStyle;
 @end
 
 @interface FIAddTextOption : NSObject <FIOption>

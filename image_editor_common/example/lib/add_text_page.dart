@@ -26,6 +26,8 @@ class _AddTextPageState extends State<AddTextPage> {
 
   String fontName = '';
 
+  TextAlign textAlign = TextAlign.left;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

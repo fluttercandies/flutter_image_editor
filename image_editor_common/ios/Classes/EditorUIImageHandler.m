@@ -341,6 +341,7 @@ UIImage *getImageFromCGContext(CGContextRef context) {
             NSFontAttributeName: font,
             NSForegroundColorAttributeName: color,
             NSBackgroundColorAttributeName: UIColor.clearColor,
+            NSParagraphStyleAttributeName: [text getParagraphStyle],
         };
         CGFloat w = outImage.size.width - text.x;
         CGFloat h = outImage.size.height - text.y;
