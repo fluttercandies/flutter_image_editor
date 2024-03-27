@@ -126,10 +126,38 @@ class ImageHandler(private var bitmap: Bitmap) {
             } catch (_: Exception) {
             }
         }
-//    canvas.drawText(text.text, text.x.toFloat(), text.y.toFloat(), textPaint)
         val staticLayout = getStaticLayout(text, textPaint, canvas.width - text.x)
+
         canvas.translate(text.x.toFloat(), text.y.toFloat())
-        staticLayout.draw(canvas)
+//        staticLayout.draw(canvas)
+
+        for (i in 0 until staticLayout.lineCount) {
+            val lineText = staticLayout.text.subSequence(
+                staticLayout.getLineStart(i),
+                staticLayout.getLineEnd(i)
+            ).toString()
+
+            val lineWidth = textPaint.measureText(lineText)
+
+            val lineY = text.y + (i + 1) * text.fontSizePx
+            val lineX =
+                when (text.textAlign) {
+                    Paint.Align.CENTER -> {
+                        (staticLayout.width - lineWidth) / 2
+                    }
+
+                    Paint.Align.RIGHT -> {
+                        staticLayout.width - lineWidth
+                    }
+
+                    else -> {
+                        text.x
+                    }
+                }
+
+            canvas.drawText(lineText, lineX.toFloat(), lineY.toFloat(), textPaint)
+        }
+
         canvas.translate((-text.x).toFloat(), (-text.y).toFloat())
     }
 
@@ -140,7 +168,15 @@ class ImageHandler(private var bitmap: Bitmap) {
                 text.text, 0, text.text.length, textPaint, width
             ).build()
         } else {
-            StaticLayout(text.text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.0F, 0.0F, true)
+            StaticLayout(
+                text.text,
+                textPaint,
+                width,
+                Layout.Alignment.ALIGN_NORMAL,
+                1.0F,
+                0.0F,
+                true
+            )
         }
     }
 

@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.1.0
+
+Feat:
+
+- Support `TextAlign` for `EditorText`.
+
 ## 1.0.1
 
 Fix:

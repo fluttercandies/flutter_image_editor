@@ -412,8 +412,10 @@ FIImage *getImageFromCGContext(CGContextRef context) {
         CGFloat h = outImage.size.height - text.y;
 
         CGRect rect = CGRectMake(text.x, text.y, w, h);
+        
+        NSMutableParagraphStyle *style = [text getParagraphStyle];
 
-        [self addTextWithContext:ctx text:text.text color:color rect:rect fontName:font.fontName textSize:text.fontSizePx];
+        [self addTextWithContext:ctx text:text.text color:color rect:rect fontName:font.fontName textSize:text.fontSizePx style: style];
     }
 
     NSImage *newImage = [self getImageWith:ctx];
@@ -427,7 +429,7 @@ FIImage *getImageFromCGContext(CGContextRef context) {
     outImage = newImage;
 }
 
-- (void)addTextWithContext:(CGContextRef)context text:(NSString *)text color:(NSColor *)color rect:(CGRect)range fontName:(NSString *)fontName textSize:(CGFloat)textSize {
+- (void)addTextWithContext:(CGContextRef)context text:(NSString *)text color:(NSColor *)color rect:(CGRect)range fontName:(NSString *)fontName textSize:(CGFloat)textSize style: (NSMutableParagraphStyle*)style {
 
     // Set the text matrix.
     CGContextSetTextMatrix(context, CGAffineTransformIdentity);
@@ -468,7 +470,10 @@ FIImage *getImageFromCGContext(CGContextRef context) {
 
     // Set the color of the first 12 chars to red.
     CFAttributedStringSetAttribute(attrString, CFRangeMake(0, text.length), kCTForegroundColorAttributeName, red);
-
+    
+    CFTypeRef styleTypeRef = (__bridge CFTypeRef)style;
+    CFAttributedStringSetAttribute(attrString, CFRangeMake(0, text.length), kCTParagraphStyleAttributeName, styleTypeRef);
+    
     // Create the framesetter with the attributed string.
     CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString(attrString);
     CFRelease(attrString);

@@ -3,7 +3,7 @@
 ## 1.5.0
 
 - Support draw, merge, mix image for OpenHarmony
-
+- Feat: Support `TextAlign` for `EditorText`.
 
 ## 1.4.0
 

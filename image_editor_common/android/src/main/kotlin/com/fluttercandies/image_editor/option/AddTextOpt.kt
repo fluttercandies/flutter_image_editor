@@ -1,5 +1,7 @@
 package com.fluttercandies.image_editor.option
 
+import android.graphics.Paint
+
 class AddTextOpt : Option {
     val texts = ArrayList<Text>()
 
@@ -17,5 +19,6 @@ data class Text(
     val g: Int,
     val b: Int,
     val a: Int,
-    val fontName: String
+    val fontName: String,
+    val textAlign: Paint.Align
 )

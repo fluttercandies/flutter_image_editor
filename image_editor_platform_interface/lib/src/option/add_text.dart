@@ -34,7 +34,14 @@ class EditorText {
     this.fontSizePx = 14,
     this.textColor = Colors.black,
     this.fontName = '',
-  });
+    this.textAlign = TextAlign.left,
+  })  : assert(fontSizePx > 0, 'fontSizePx must be greater than 0'),
+        assert(
+          textAlign == TextAlign.left ||
+              textAlign == TextAlign.center ||
+              textAlign == TextAlign.right,
+          'textAlign must be left, center or right',
+        );
 
   /// The text.
   final String text;
@@ -51,12 +58,8 @@ class EditorText {
   /// The font name of text, if fontName is empty string, the text will use system font.
   final String fontName;
 
-  int get y {
-    if (Platform.isAndroid) {
-      return offset.dy.toInt() + fontSizePx;
-    }
-    return offset.dy.toInt();
-  }
+  /// The align of text.
+  final TextAlign textAlign;
 
   Map<String, Object> toJson() {
     return <String, Object>{
@@ -69,6 +72,20 @@ class EditorText {
       'g': textColor.green,
       'b': textColor.blue,
       'a': textColor.alpha,
+      'textAlign': _alignValue,
     };
+  }
+
+  String get _alignValue {
+    switch (textAlign) {
+      case TextAlign.left:
+        return 'left';
+      case TextAlign.center:
+        return 'center';
+      case TextAlign.right:
+        return 'right';
+      default:
+        return 'left';
+    }
   }
 }

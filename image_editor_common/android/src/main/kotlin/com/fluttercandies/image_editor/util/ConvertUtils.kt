@@ -1,5 +1,6 @@
 package com.fluttercandies.image_editor.util
 
+import android.graphics.Paint
 import android.graphics.PorterDuff
 import io.flutter.plugin.common.MethodCall
 import com.fluttercandies.image_editor.core.BitmapWrapper
@@ -33,30 +34,37 @@ object ConvertUtils {
                     val flipOption = getFlipOption(valueMap)
                     list.add(flipOption)
                 }
+
                 "clip" -> {
                     val clipOption = getClipOption(valueMap)
                     list.add(clipOption)
                 }
+
                 "rotate" -> {
                     val rotateOption = getRotateOption(valueMap)
                     list.add(rotateOption)
                 }
+
                 "color" -> {
                     val colorOption: ColorOption = getColorOption(valueMap)
                     list.add(colorOption)
                 }
+
                 "scale" -> {
                     val scaleOption: ScaleOption = getScaleOption(valueMap) ?: continue@loop
                     list.add(scaleOption)
                 }
+
                 "add_text" -> {
                     val addTextOption: AddTextOpt = getTextOption(valueMap) ?: continue@loop
                     list.add(addTextOption)
                 }
+
                 "mix_image" -> {
                     val mixImageOpt = MixImageOpt(valueMap)
                     list.add(mixImageOpt)
                 }
+
                 "draw" -> {
                     val drawOption = DrawOption(valueMap)
                     list.add(drawOption)
@@ -93,7 +101,8 @@ object ConvertUtils {
             v["g"]!!.asValue(),
             v["b"]!!.asValue(),
             v["a"]!!.asValue(),
-            v["fontName"]!!.asValue()
+            v["fontName"]!!.asValue(),
+            v["textAlign"]!!.toTextAlign()
         )
     }
 
@@ -170,5 +179,14 @@ object ConvertUtils {
     @Suppress("UNCHECKED_CAST")
     fun <T> Any.asValue(): T {
         return this as T
+    }
+}
+
+private fun Any.toTextAlign(): Paint.Align {
+    return when (this) {
+        "left" -> Paint.Align.LEFT
+        "center" -> Paint.Align.CENTER
+        "right" -> Paint.Align.RIGHT
+        else -> Paint.Align.LEFT
     }
 }
