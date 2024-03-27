@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.5.0
+
+- Support draw, merge, mix image for OpenHarmony
+
+
 ## 1.4.0
 
 - Support OpenHarmony. [#122](https://github.com/fluttercandies/flutter_image_editor/issues/122)

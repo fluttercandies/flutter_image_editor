@@ -58,14 +58,14 @@ Please read document for null-safety information in [dart][dart-safe] or [flutte
 | rotate            |    ✅    |   ✅   |      ✅      |
 | scale             |    ✅    |   ✅   |      ✅      |
 | matrix            |    ✅    |   ✅   |      ❌      |
-| mix image         |    ✅    |   ✅   |      ❌      |
-| merge multi image |    ✅    |   ✅   |      ❌      |
-| draw point        |    ✅    |   ✅   |      ❌      |
-| draw line         |    ✅    |   ✅   |      ❌      |
-| draw rect         |    ✅    |   ✅   |      ❌      |
-| draw circle       |    ✅    |   ✅   |      ❌      |
-| draw path         |    ✅    |   ✅   |      ❌      |
-| draw Bezier       |    ✅    |   ✅   |      ❌      |
+| mix image         |    ✅    |   ✅   |      ✅      |
+| merge multi image |    ✅    |   ✅   |      ✅      |
+| draw point        |    ✅    |   ✅   |      ✅      |
+| draw line         |    ✅    |   ✅   |      ✅      |
+| draw rect         |    ✅    |   ✅   |      ✅      |
+| draw circle       |    ✅    |   ✅   |      ✅      |
+| draw path         |    ✅    |   ✅   |      ✅      |
+| draw Bezier       |    ✅    |   ✅   |      ✅      |
 | Gaussian blur     |    ❌    |   ❌   |      ❌      |
 
 

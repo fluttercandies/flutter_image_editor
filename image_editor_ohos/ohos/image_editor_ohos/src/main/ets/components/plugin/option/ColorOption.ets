@@ -2,21 +2,20 @@ import image from '@ohos.multimedia.image';
 import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
-export class RotateOption implements Option {
-  static readonly key: string = 'rotate';
+export class ColorOption implements Option {
+  static readonly key: string = 'color';
+
   constructor(data: Map<string, ESObject>) {
-    this.degree = MapUtils.get(data, 'degree', 0) % 360;
+    this.matrix = new ColorFilter(MapUtils.get(data, 'matrix', []));
   }
 
-  /// The degree of rotate.
-  degree: number;
+  matrix: ColorFilter;
 
   canIgnore(): boolean {
-    return this.degree == 0;
+    return false;
   }
 
   async handle(pixelMap: image.PixelMap): Promise<image.PixelMap> {
-    await pixelMap.rotate(this.degree);
     return pixelMap;
   }
 }

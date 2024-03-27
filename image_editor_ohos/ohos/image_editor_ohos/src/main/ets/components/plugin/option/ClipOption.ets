@@ -3,6 +3,7 @@ import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
 
 export class ClipOption implements Option {
+  static readonly key: string = 'clip';
   constructor(data: Map<string, ESObject>) {
     this.x = MapUtils.get(data, 'x', 0);
     this.y = MapUtils.get(data, 'y', 0);

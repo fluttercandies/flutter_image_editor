@@ -19,16 +19,21 @@ dependencies:
   oktoast: ^3.1.5
   path_provider: ^2.0.15
   image_size_getter: ^2.1.2
-  path_provider_ohos:
-     git:
-       url: https://gitee.com/openharmony-sig/flutter_packages.git
-       path: packages/path_provider/path_provider_ohos
   flutter_image_editor_example:
     path: ../../image_editor/example
   
   
-dependency_overrides: 
-
+dependency_overrides:
+  image_picker:  
+     git:
+       url: https://gitee.com/openharmony-sig/flutter_packages.git
+       path: packages/image_picker/image_picker  
+  path_provider:
+     git:
+       url: https://gitee.com/openharmony-sig/flutter_packages.git
+       path: packages/path_provider/path_provider
+  image_editor_ohos:
+     path: ../     
 flutter:
   uses-material-design: true
   assets:

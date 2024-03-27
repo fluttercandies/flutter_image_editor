@@ -1,8 +1,11 @@
 import image from '@ohos.multimedia.image';
 import { MapUtils } from '../util/MapUtils';
 import { Option } from './Option';
+import { common2D, drawing } from '@kit.ArkGraphics2D';
 
 export class AddTextOption implements Option {
+  static readonly key: string = 'add_text';
+
   constructor(data: Map<string, ESObject>) {
     let list: Array<Map<string, ESObject>> = MapUtils.get(data, 'texts', []);
     this.texts = [];
@@ -19,18 +22,17 @@ export class AddTextOption implements Option {
   }
 
   async handle(pixelMap: image.PixelMap): Promise<image.PixelMap> {
-    let settings: RenderingContextSettings = new RenderingContextSettings(true);
-    let imageInfo = await pixelMap.getImageInfo();
-    let offcontext: OffscreenCanvasRenderingContext2D = new OffscreenCanvasRenderingContext2D(imageInfo.size.width, imageInfo.size.height, settings);
-    offcontext.setPixelMap(pixelMap);
-    for (let index = 0; index < this.texts.length; index++) {
-      const element = this.texts[index];
-      element.handle(offcontext);
+    try {
+      let canvas = new drawing.Canvas(pixelMap);
+      for (let index = 0; index < this.texts.length; index++) {
+        const element = this.texts[index];
+        element.handle(canvas);
+      }
     }
-    offcontext.filter;
-    offcontext.transferToImageBitmap();
+    catch (e) {
+      console.log(e);
+    }
     return pixelMap;
-    return offcontext.getPixelMap(0, 0, imageInfo.size.width, imageInfo.size.height);
   }
 }
 
@@ -41,26 +43,31 @@ export class EditorText {
     this.x = MapUtils.get(data, 'x', 0);
     this.y = MapUtils.get(data, 'y', 0);
     this.size = MapUtils.get(data, 'size', 0);
-    this.r = MapUtils.get(data, 'r', 0);
-    this.g = MapUtils.get(data, 'g', 0);
-    this.b = MapUtils.get(data, 'b', 0);
-    this.a = MapUtils.get(data, 'a', 0);
+    this.color = MapUtils.getColor(data);
   }
 
   canIgnore(): boolean {
     return this.text == '' || this.size == 0;
   }
 
-  async handle(offContext: OffscreenCanvasRenderingContext2D) {
+  async handle(canvas: drawing.Canvas) {
     if (this.canIgnore()) {
       return;
     }
-    offContext.save();
-    let color: string = `#${this.a.toString(16).padStart(2, '0')}${this.r.toString(16)
-      .padStart(2, '0')}${this.g.toString(16).padStart(2, '0')}${this.b.toString(16).padStart(2, '0')}`;
-    offContext.fillStyle = color
-    offContext.fillText(this.text, this.x, this.y);
-    offContext.restore();
+
+    const brush = new drawing.Brush();
+    brush.setColor(this.color);
+    const font = new drawing.Font();
+    font.setSize(this.size);
+    // TODO, 没有 api 设置自定义
+    let typeface = new drawing.Typeface();
+    // let familyName = typeface.getFamilyName();
+    font.setTypeface(typeface);
+    const textBlob = drawing.TextBlob.makeFromString(this.text, font, drawing.TextEncoding.TEXT_ENCODING_UTF8);
+    let bounds = textBlob.bounds();
+    canvas.attachBrush(brush);
+    canvas.drawTextBlob(textBlob, this.x, this.y + (bounds.bottom - bounds.top) / 2);
+    canvas.detachBrush();
   }
 
   text: string;
@@ -68,8 +75,5 @@ export class EditorText {
   x: number;
   y: number;
   size: number;
-  r: number;
-  g: number;
-  b: number;
-  a: number;
+  color: common2D.Color;
 }

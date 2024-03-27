@@ -3,6 +3,7 @@ import image from '@ohos.multimedia.image';
 import { MapUtils } from '../util/MapUtils';
 
 export class FlipOption implements Option {
+  static readonly key: string = 'flip';
   constructor(data: Map<string, ESObject>) {
     this.horizontal = MapUtils.get(data, 'h', false);
     this.vertical = MapUtils.get(data, 'v', false);
