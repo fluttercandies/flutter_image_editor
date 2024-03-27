@@ -6,7 +6,7 @@ jobs:
     name: Build for android with 3.10.6 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -33,7 +33,7 @@ jobs:
     name: Build for android with 3.7.0 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -60,7 +60,7 @@ jobs:
     name: Build for android with 3.0.5 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
@@ -87,7 +87,7 @@ jobs:
     name: Build for ios with 3.10.6 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -115,7 +115,7 @@ jobs:
     name: Build for ios with 3.7.0 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -143,7 +143,7 @@ jobs:
     name: Build for ios with 3.0.5 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
@@ -171,7 +171,7 @@ jobs:
     name: Build for web with 3.10.6 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -194,7 +194,7 @@ jobs:
     name: Build for web with 3.7.0 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -217,7 +217,7 @@ jobs:
     name: Build for web with 3.0.5 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
@@ -240,7 +240,7 @@ jobs:
     name: Build for linux with 3.10.6 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -269,7 +269,7 @@ jobs:
     name: Build for linux with 3.7.0 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -298,7 +298,7 @@ jobs:
     name: Build for linux with 3.0.5 on ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
@@ -327,7 +327,7 @@ jobs:
     name: Build for macos with 3.10.6 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -355,7 +355,7 @@ jobs:
     name: Build for macos with 3.7.0 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -383,7 +383,7 @@ jobs:
     name: Build for macos with 3.0.5 on macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
@@ -411,7 +411,7 @@ jobs:
     name: Build for windows with 3.10.6 on windows-latest
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.10.6
@@ -434,7 +434,7 @@ jobs:
     name: Build for windows with 3.7.0 on windows-latest
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.7.0
@@ -457,7 +457,7 @@ jobs:
     name: Build for windows with 3.0.5 on windows-latest
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.0.5
