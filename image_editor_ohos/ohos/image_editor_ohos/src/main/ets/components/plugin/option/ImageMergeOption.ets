@@ -22,29 +22,20 @@ export class ImageMergeOption {
   width: number;
   height: number;
 
-  async handle(canvas: drawing.Canvas): Promise<void> {
+  async handle(context: OffscreenCanvasRenderingContext2D): Promise<void> {
     const imageSource: image.ImageSource = image.createImageSource(this.image.buffer);
     let decodingOptions: image.DecodingOptions = {
       sampleSize: 1,
-      editable: true,
+      // editable: true,
     };
     let pixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
-    let exifRotate: number = 0;
-    try {
-      let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-      exifRotate = ImageUtils.parseExifRotate(imageProperty);
-      await pixelMap.rotate(exifRotate % 360);
-    }
-    catch (e) {
-    }
-
-    let scaleOption: ScaleOption = new ScaleOption(new Map<string, ESObject>([
-      ['width', this.width],
-      ['height', this.height],
-      ['keepWidthFirst', true],
-      ['keepRatio', false],
-    ]));
-    await scaleOption.handle(pixelMap);
-    canvas.drawImage(pixelMap, this.offset.x, this.offset.y);
+    // let pixelMap: PixelMap = await image.createPixelMap(this.image.buffer, {
+    //   size: {
+    //     width: this.width, height: this.height,
+    //
+    //   },
+    //   // editable: true,
+    // },);
+    context.drawImage(pixelMap, this.offset.x, this.offset.y, this.width, this.height);
   }
 }

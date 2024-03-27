@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Fix merge image rendering error
+
 ## 0.0.5
 
 * Fix text drawing coordinate system
