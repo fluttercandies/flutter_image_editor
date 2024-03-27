@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Fix text drawing coordinate system
+
 ## 0.0.4
 
 * Add system font for add_text
