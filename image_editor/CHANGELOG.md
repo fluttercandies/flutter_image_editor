@@ -3,7 +3,7 @@
 ## 1.5.0
 
 - Support draw, merge, mix image for OpenHarmony
-
+- Fix: mergeToFile return parameter type error
 
 ## 1.4.0
 
