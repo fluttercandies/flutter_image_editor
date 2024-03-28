@@ -66,7 +66,7 @@ export class EditorText {
     const textBlob = drawing.TextBlob.makeFromString(this.text, font, drawing.TextEncoding.TEXT_ENCODING_UTF8);
     let bounds = textBlob.bounds();
     canvas.attachBrush(brush);
-    canvas.drawTextBlob(textBlob, this.x, this.y + (bounds.bottom - bounds.top) / 2);
+    canvas.drawTextBlob(textBlob, this.x - bounds.left, this.y - bounds.top);
     canvas.detachBrush();
   }
 

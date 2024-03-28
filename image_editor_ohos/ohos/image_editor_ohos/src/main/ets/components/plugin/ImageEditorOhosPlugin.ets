@@ -260,18 +260,9 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     let fmt: FormatOption = new FormatOption(option.get('fmt'));
     let width: number = option.get('w');
     let height: number = option.get('h');
-    const color = new ArrayBuffer(width * height * 4);
-    let opts: image.InitializationOptions = {
-      editable: true,
-      pixelFormat: image.PixelMapFormat.RGBA_8888,
-      size: {
-        height: height,
-        width: width,
-      }
-    }
-    let pixelMap = await image.createPixelMap(color, opts);
-
-    let canvas = new drawing.Canvas(pixelMap);
+    const context = new OffscreenCanvasRenderingContext2D(width, height, {
+      antialias: true,
+    });
 
     let images: Array<Map<string, ESObject>> = option.get('images');
     // 'src': image.toJson(), => 'memory'
@@ -279,9 +270,9 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
 
     for (let index = 0; index < images.length; index++) {
       const element: Map<string, ESObject> = images[index];
-      await new ImageMergeOption(element).handle(canvas);
+      let imageMergeOption: ImageMergeOption = new ImageMergeOption(element);
+      await imageMergeOption.handle(context);
     }
-
 
     const imagePackerApi = image.createImagePacker();
 
@@ -299,7 +290,10 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
       format: format,
       quality: fmt.quality,
     }
+    let pixelMap = context.getPixelMap(0, 0, width, height);
 
+    let scale = px2vp(1);
+    await pixelMap.scale(scale,scale);
     let uint8Array: Uint8Array = new Uint8Array(await imagePackerApi.packing(pixelMap, packOptions));
     pixelMap.release();
     return uint8Array;
