@@ -4,6 +4,7 @@
 
 - Support draw, merge, mix image for OpenHarmony
 - Fix: mergeToFile return parameter type error
+- Feat: Support `TextAlign` for `EditorText`.
 
 ## 1.4.0
 

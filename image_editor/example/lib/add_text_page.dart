@@ -26,6 +26,8 @@ class _AddTextPageState extends State<AddTextPage> {
 
   String fontName = '';
 
+  TextAlign textAlign = TextAlign.left;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +103,35 @@ class _AddTextPageState extends State<AddTextPage> {
                 controller: _controller,
               ),
             ),
-            // Slider(value: null, onChanged: null),
+
+            // text align dropdown
+            ListTile(
+              title: Text('textAlign'),
+              subtitle: DropdownButton<TextAlign>(
+                value: textAlign,
+                items: <DropdownMenuItem<TextAlign>>[
+                  const DropdownMenuItem<TextAlign>(
+                    value: TextAlign.left,
+                    child: Text('left'),
+                  ),
+                  const DropdownMenuItem<TextAlign>(
+                    value: TextAlign.center,
+                    child: Text('center'),
+                  ),
+                  const DropdownMenuItem<TextAlign>(
+                    value: TextAlign.right,
+                    child: Text('right'),
+                  ),
+                ],
+                onChanged: (TextAlign? value) {
+                  if (value != null) {
+                    setState(() {
+                      textAlign = value;
+                    });
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -119,6 +149,7 @@ class _AddTextPageState extends State<AddTextPage> {
         fontSizePx: size,
         textColor: const Color(0xFF995555),
         fontName: fontName,
+        textAlign: textAlign,
       ),
     );
     option.outputFormat = const OutputFormat.png();

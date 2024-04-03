@@ -128,8 +128,25 @@
   text.b = [dict[@"b"] intValue];
   text.a = [dict[@"a"] intValue];
   text.fontName = dict[@"fontName"];
-
+  text.textAlign = dict[@"textAlign"];
   return text;
+}
+
+-(NSMutableParagraphStyle*) getParagraphStyle {
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    if ([self.textAlign isEqualToString:@"left"]) {
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+    } else if ([self.textAlign isEqualToString:@"center"]) {
+        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+    } else if ([self.textAlign isEqualToString:@"right"]) {
+        [paragraphStyle setAlignment:NSTextAlignmentRight];
+    } else {
+        // 如果textAlign不是预期的任何一个值，可以默认设置为左对齐或其他适当的对齐方式
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+    }
+    
+    return paragraphStyle;
 }
 @end
 

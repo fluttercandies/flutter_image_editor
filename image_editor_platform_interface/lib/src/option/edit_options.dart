@@ -1,30 +1,22 @@
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../image_source.dart';
+import '../output_format.dart';
 import '../utils/convert_utils.dart';
 
-import '../output_format.dart';
-
-part 'flip.dart';
-
-part 'clip.dart';
-
-part 'rotate.dart';
-
-part 'color.dart';
-
-part 'scale.dart';
-
 part 'add_text.dart';
-
-part 'mix_image.dart';
-
+part 'clip.dart';
+part 'color.dart';
 part 'draw.dart';
+part 'flip.dart';
+part 'mix_image.dart';
+part 'rotate.dart';
+part 'scale.dart';
 
 /// Used to describe whether it can be ignored.
 abstract class IgnoreAble {
