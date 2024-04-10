@@ -116,10 +116,11 @@ class ImageEditorCommon extends ImageEditorPlatform {
   }
 
   @override
-  Future<File?> mergeToFile({required ImageMergeOption option}) {
-    return NativeChannel.channel.invokeMethod('mergeToFile', {
+  Future<File?> mergeToFile({required ImageMergeOption option}) async {
+    String? filePath = await NativeChannel.channel.invokeMethod('mergeToFile', {
       'option': option.toJson(),
     });
+    return filePath != null ? File(filePath) : null;
   }
 
   @override

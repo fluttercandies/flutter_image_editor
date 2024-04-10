@@ -1,14 +1,14 @@
-import { common2D} from '@kit.ArkGraphics2D';
-import {Offset} from '../mode/Offset';
+import { common2D } from '@kit.ArkGraphics2D';
+import { Offset } from '../mode/Offset';
 
 
 export class MapUtils {
   static get<T>(map: Map<string, ESObject>, key: string, defaultValue: T): T {
-    return map.has(key) ? map.get(key) as T : defaultValue;
+    return map.has(key) && map.get(key) != undefined ? map.get(key) as T : defaultValue;
   }
 
   static getMap(map: Map<string, ESObject>, key: string,): Map<string, ESObject> {
-    return map.has(key) ? map.get(key) as Map<string, ESObject> : new Map<string, ESObject>();
+    return MapUtils.get<Map<string, ESObject>>(map, key, new Map<string, ESObject>());
   }
 
   static getColor(map: Map<string, ESObject>): common2D.Color {

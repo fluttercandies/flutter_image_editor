@@ -113,7 +113,7 @@ class ImageEditorPlugin : FlutterPlugin, MethodCallHandler {
             val extName = if (mergeOption.formatOption.format == 1) "jpg" else "png"
             val f = File(applicationContext!!.cacheDir, "${System.currentTimeMillis()}.$extName")
             f.writeBytes(byteArray)
-            resultHandler.reply(byteArray)
+            resultHandler.reply(f.path)
         }
     }
 
