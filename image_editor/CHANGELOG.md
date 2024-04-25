@@ -5,6 +5,9 @@
 - Support draw, merge, mix image for OpenHarmony
 - Fix: mergeToFile return parameter type error
 - Feat: Support `TextAlign` for `EditorText`.
+- deps: Bump `image_editor_platform_interface` to `1.1.0`.
+- deps: Bump `image_editor_common` to `1.1.1`.
+- deps: Bump `image_editor_ohos` to `0.0.7`.
 
 ## 1.4.0
 
