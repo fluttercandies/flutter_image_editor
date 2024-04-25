@@ -10,8 +10,9 @@ Here's a quick guide:
 
 1. Fork the repo.
 1. `git clone <fork_url>`
-1. `cd flutter_image_editor/image_editor/example`
-1. `flutter pub get`
+1. `cd flutter_image_editor`
+1. `dart pub global activate melos`
+1. melos bootstrap
 
 ### Android
 
@@ -38,3 +39,7 @@ open flutter_image_editor/image_editor/example/macos/Runner.xcworkspace
 ```
 
 Edit the `Pods/Development Pods/image_editor_common/**.m` files.
+
+### Open Harmony
+
+Open `flutter_image_editor/image_editor/example/ohos` in DevEco Studio.

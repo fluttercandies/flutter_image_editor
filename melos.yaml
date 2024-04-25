@@ -1,0 +1,7 @@
+name: image_editor_workspace
+
+packages:
+  - "image_editor_common"
+  - "image_editor"
+  - "image_editor_ohos"
+  - "image_editor_platform_interface"
