@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Update hvigor to 4.1.2
+
 ## 0.0.6
 
 * Fix merge image rendering error
