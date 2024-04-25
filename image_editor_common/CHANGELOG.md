@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.1
+
+- Upgrade `image_editor_platform_interface` to `1.1.0`.
+
 ## 1.1.0
 
 Feat:
