@@ -1,13 +1,13 @@
 {
-  name: 'entry',
-  version: '1.0.0',
-  description: 'Please describe the basic information.',
-  main: '',
-  author: '',
-  license: '',
-  dependencies: {
-    '@ohos/image_editor_ohos': 'file:./har/image_editor_ohos.har',
-    '@ohos/path_provider_ohos': 'file:./har/path_provider_ohos.har',
-    '@ohos/image_picker_ohos': 'file:./har/image_picker_ohos.har',
-  },
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "image_picker_ohos": "file:../har/image_picker_ohos.har",
+    "path_provider_ohos": "file:../har/path_provider_ohos.har",
+    "image_editor_ohos": "file:../har/image_editor_ohos.har"
+  }
 }

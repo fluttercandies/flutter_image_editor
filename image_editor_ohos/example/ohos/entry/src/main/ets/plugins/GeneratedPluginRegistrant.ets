@@ -1,8 +1,7 @@
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
-import Log from '@ohos/flutter_ohos/src/main/ets/util/Log';
-import ImageEditorOhosPlugin from '@ohos/image_editor_ohos'
-import ImagePickerPlugin from '@ohos/image_picker_ohos'
-import PathProviderPlugin from '@ohos/path_provider_ohos'
+import { FlutterEngine, Log } from '@ohos/flutter_ohos';
+import ImageEditorOhosPlugin from 'image_editor_ohos';
+import ImagePickerPlugin from 'image_picker_ohos';
+import PathProviderPlugin from 'path_provider_ohos';
 
 /**
  * Generated file. Do not edit.
