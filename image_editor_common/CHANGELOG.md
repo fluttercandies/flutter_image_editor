@@ -1,3 +1,7 @@
+## 1.1.2
+
+ - **FIX**: add android.compileOptions.compatibility, upgrade kotlin version.
+
 # CHANGELOG
 
 ## 1.1.1

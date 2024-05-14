@@ -1,3 +1,7 @@
+## 1.5.1
+
+ - Update a dependency to the latest release.
+
 # CHANGELOG
 
 ## 1.5.0

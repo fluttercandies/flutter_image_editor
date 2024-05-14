@@ -1,3 +1,17 @@
+## 0.0.9
+
+ - **FIX**: mergeToFile return parameter type error.
+ - **FIX**: * Fix merge image rendering error on Openharmony.
+ - **FIX**: Fix text drawing coordinate system on OpenHarmony.
+ - **FIX**: Add system font for add_text on OpenHarmony.
+ - **FEAT**: Update harmony plugin structure (#134).
+ - **FEAT**: Support draw, merge, mix image for OpenHarmony.
+ - **FEAT**: update readme about OpenHarmony example.
+ - **FEAT**: Create an ohos example to ohos/example.
+ - **FEAT**: Keep sdk limition the same as image_editor.
+ - **FEAT**: support flip, crop, rotate, scale for OpenHarmony.
+ - **FEAT**: support openharmony.
+
 ## 0.0.8
 
 * Update plugin structure

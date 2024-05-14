@@ -1,6 +1,6 @@
 name: image_editor_ohos
 description: The OpenHarmony implementation of image_editor
-version: 0.0.8
+version: 0.0.9
 repository: https://github.com/fluttercandies/flutter_image_editor
 topics:
   - image-editor
