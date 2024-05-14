@@ -16,14 +16,13 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache: false
       - name: show flutter version
         run: flutter doctor -v
       - name: Install melos
         run: flutter pub global activate melos
       - name: Install dependencies
-        run: melos bootstrap --no-example 
+        run: melos bootstrap --no-example
       - name: Setup git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
