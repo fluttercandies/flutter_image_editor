@@ -23,11 +23,13 @@ jobs:
       - name: Install melos
         run: flutter pub global activate melos
       - name: Install dependencies
-        run: melos bootstrap
+        run: melos bootstrap --no-example 
+      - name: Setup git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
       - name: Version packages
         run: melos version --yes
-      - name: Setup git by gh
-        run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
       - name: resign the changes
         run: git commit --amend --signoff -S
       - name: Show git log
