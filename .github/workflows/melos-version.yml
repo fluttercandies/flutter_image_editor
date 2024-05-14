@@ -3,12 +3,14 @@ name: "melos version"
 on:
   workflow_dispatch:
 
-permissions: 
+permissions:
   contents: write
 
 jobs:
   melos_version:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -29,7 +31,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
       - name: Version packages
         run: melos version --yes
-      - name: resign the changes
-        run: git commit --amend --signoff -S
+      - name: Setup git by github cli
+        run: gh auth setup-git
       - name: Show git log
         run: git log -1

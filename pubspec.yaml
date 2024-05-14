@@ -6,5 +6,5 @@ environment:
 
 dev_dependencies:
   lints: any
-  melos: 3.0.0
+  melos: 6.0.0
   flutter_lints: any
