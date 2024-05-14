@@ -22,7 +22,7 @@ jobs:
       - name: Install melos
         run: flutter pub global activate melos
       - name: Install dependencies
-        run: melos bootstrap --no-example
+        run: melos bootstrap
       - name: Setup git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
