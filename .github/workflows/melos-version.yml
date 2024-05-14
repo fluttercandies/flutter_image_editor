@@ -17,7 +17,6 @@ jobs:
         with:
           flutter-version: stable
           cache: true
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
       - name: show flutter version
         run: flutter doctor -v
       - name: Install melos
