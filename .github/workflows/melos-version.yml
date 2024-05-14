@@ -15,8 +15,9 @@ jobs:
       - name: Install flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: stable
+          channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
       - name: show flutter version
         run: flutter doctor -v
       - name: Install melos
