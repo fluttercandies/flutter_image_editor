@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Update plugin structure
+
 ## 0.0.7
 
 * Update hvigor to 4.1.2

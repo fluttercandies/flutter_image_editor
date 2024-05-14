@@ -1,6 +1,6 @@
 name: image_editor_ohos
 description: The OpenHarmony implementation of image_editor
-version: 0.0.7
+version: 0.0.8
 repository: https://github.com/fluttercandies/flutter_image_editor
 topics:
   - image-editor
@@ -39,7 +39,6 @@ flutter:
   plugin:
     platforms:
       ohos:
-        package: com.fluttercandies.image_editor_ohos
         pluginClass: ImageEditorOhosPlugin
         dartPluginClass: ImageEditorOhos
   # To add assets to your plugin package, add an assets section, like this:
