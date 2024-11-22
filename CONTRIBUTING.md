@@ -44,7 +44,75 @@ Edit the `Pods/Development Pods/image_editor_common/**.m` files.
 
 Open `flutter_image_editor/image_editor/example/ohos` in DevEco Studio.
 
+## CHANGELOG
+
+When contributing to this project, please follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for your commit messages. This helps us automatically generate the CHANGELOG.
+
+### Commit Message Format
+
+Each commit message should be structured as follows:
+
+```log
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+- `feat`: A new feature (correlates with MINOR version)
+- `fix`: A bug fix (correlates with PATCH version)
+- `docs`: Documentation only changes
+- `style`: Changes that do not affect the meaning of the code
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to the build process or auxiliary tools
+
+### Breaking Changes
+
+- Add `!` after the type/scope: `feat!: breaking change`
+- Or add `BREAKING CHANGE:` in the footer
+
+### Examples
+
+```log
+feat(android): add image rotation support
+
+fix(ios): resolve memory leak in image processing
+
+docs: update installation instructions
+
+feat!: change API interface
+BREAKING CHANGE: new API is not compatible with previous versions
+```
+
 ## For adminer of repo
+
+### Generate changelog and bump version
+
+```sh
+melos version
+```
+
+The command will generate changelog and bump version.
+
+Next:
+
+```sh
+git push # to publish code to github
+git push --tags # to publish tags to github
+# or
+git push --follow-tags # the command will push code and tags to github
+```
+
+If the package is the main package, you should create new release on github.
+
+When the tag pushed to github, the action will publish the package to pub.dev.
+
+### Publish a new version manually
 
 Use git tag to publish a new version to `pub.dev`.
 
