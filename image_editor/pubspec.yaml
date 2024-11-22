@@ -1,6 +1,6 @@
 name: image_editor
 description: Edit your image data and output to file/memory on Android and iOS.
-version: 1.6.0
+version: 1.5.1
 repository: https://github.com/fluttercandies/flutter_image_editor
 
 environment:
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   image_editor_platform_interface: ^1.1.0
-  image_editor_common: ^1.2.0
+  image_editor_common: ^1.1.2
   image_editor_ohos: ^0.0.9
   # image_editor_common:
   #   path: ../image_editor_common
