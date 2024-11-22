@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-11-22
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`image_editor` - `v1.6.0`](#image_editor---v160)
+ - [`image_editor_common` - `v1.2.0`](#image_editor_common---v120)
+
+---
+
+#### `image_editor` - `v1.6.0`
+
+ - **FIX**: error for new sdk.
+ - **FEAT**: upgrade android sdk to 35.
+ - **DOCS**(README): external link BlendMode (#137).
+
+#### `image_editor_common` - `v1.2.0`
+
+ - **FIX**: error for new sdk.
+ - **FEAT**: upgrade android sdk to 35.
+
+
 ## 2024-05-14
 
 ### Changes

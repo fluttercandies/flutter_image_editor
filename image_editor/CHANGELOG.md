@@ -1,3 +1,9 @@
+## 1.6.0
+
+ - **FIX**: error for new sdk.
+ - **FEAT**: upgrade android sdk to 35.
+ - **DOCS**(README): external link BlendMode (#137).
+
 ## 1.5.1
 
  - Update a dependency to the latest release.
