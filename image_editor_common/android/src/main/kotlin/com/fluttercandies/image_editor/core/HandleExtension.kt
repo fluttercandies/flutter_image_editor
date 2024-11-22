@@ -7,7 +7,7 @@ import android.graphics.RectF
 import com.fluttercandies.image_editor.option.draw.*
 
 fun Bitmap.draw(option: DrawOption): Bitmap {
-    val newBitmap = Bitmap.createBitmap(width, height, config)
+    val newBitmap = Bitmap.createBitmap(width, height, config!!)
     val canvas = Canvas(newBitmap)
     canvas.drawBitmap(this, 0F, 0F, null)
 
