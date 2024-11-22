@@ -103,35 +103,7 @@ class _AddTextPageState extends State<AddTextPage> {
                 controller: _controller,
               ),
             ),
-
-            // text align dropdown
-            ListTile(
-              title: Text('textAlign'),
-              subtitle: DropdownButton<TextAlign>(
-                value: textAlign,
-                items: <DropdownMenuItem<TextAlign>>[
-                  const DropdownMenuItem<TextAlign>(
-                    value: TextAlign.left,
-                    child: Text('left'),
-                  ),
-                  const DropdownMenuItem<TextAlign>(
-                    value: TextAlign.center,
-                    child: Text('center'),
-                  ),
-                  const DropdownMenuItem<TextAlign>(
-                    value: TextAlign.right,
-                    child: Text('right'),
-                  ),
-                ],
-                onChanged: (TextAlign? value) {
-                  if (value != null) {
-                    setState(() {
-                      textAlign = value;
-                    });
-                  }
-                },
-              ),
-            ),
+            // Slider(value: null, onChanged: null),
           ],
         ),
       ),
@@ -149,7 +121,6 @@ class _AddTextPageState extends State<AddTextPage> {
         fontSizePx: size,
         textColor: const Color(0xFF995555),
         fontName: fontName,
-        textAlign: textAlign,
       ),
     );
     option.outputFormat = const OutputFormat.png();

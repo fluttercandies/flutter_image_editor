@@ -5,3 +5,5 @@ packages:
   - "image_editor"
   - "image_editor_ohos"
   - "image_editor_platform_interface"
+  - "image_editor/example"
+  - "image_editor_ohos/example"

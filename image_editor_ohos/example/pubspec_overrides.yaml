@@ -1,0 +1,20 @@
+# melos_managed_dependency_overrides: flutter_image_editor_example,image_editor,image_editor_common,image_editor_ohos,image_editor_platform_interface,image_picker,path_provider
+dependency_overrides:
+  flutter_image_editor_example:
+    path: ../../image_editor/example
+  image_editor:
+    path: ../../image_editor
+  image_editor_common:
+    path: ../../image_editor_common
+  image_editor_ohos:
+    path: ../
+  image_editor_platform_interface:
+    path: ../../image_editor_platform_interface
+  image_picker:
+    git:
+      url: https://gitee.com/openharmony-sig/flutter_packages.git
+      path: packages/image_picker/image_picker
+  path_provider:
+    git:
+      url: https://gitee.com/openharmony-sig/flutter_packages.git
+      path: packages/path_provider/path_provider
