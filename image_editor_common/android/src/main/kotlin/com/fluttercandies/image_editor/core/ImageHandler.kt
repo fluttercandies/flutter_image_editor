@@ -29,7 +29,7 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     private fun handleMixImage(option: MixImageOpt): Bitmap {
-        val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+        val newBitmap = bitmap.createNewBitmap(bitmap.width, bitmap.height)
         val canvas = Canvas(newBitmap)
         canvas.drawBitmap(bitmap, 0F, 0F, null)
         val src = BitmapFactory.decodeByteArray(option.img, 0, option.img.count())
@@ -96,7 +96,7 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     private fun handleColor(option: ColorOption): Bitmap {
-        val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+        val newBitmap = bitmap.createNewBitmap(bitmap.width, bitmap.height)
         val canvas = Canvas(newBitmap)
         val paint = Paint()
         paint.colorFilter = ColorMatrixColorFilter(option.matrix)
@@ -105,7 +105,7 @@ class ImageHandler(private var bitmap: Bitmap) {
     }
 
     private fun handleText(option: AddTextOpt): Bitmap {
-        val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, bitmap.config)
+        val newBitmap = bitmap.createNewBitmap(bitmap.width, bitmap.height)
         val canvas = Canvas(newBitmap)
         val paint = Paint()
         canvas.drawBitmap(bitmap, 0F, 0F, paint)

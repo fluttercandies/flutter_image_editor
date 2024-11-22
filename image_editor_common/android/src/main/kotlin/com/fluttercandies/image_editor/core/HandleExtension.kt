@@ -6,8 +6,21 @@ import android.graphics.Path
 import android.graphics.RectF
 import com.fluttercandies.image_editor.option.draw.*
 
+/**
+ * Create a new bitmap with the same config as the original bitmap
+ * If the original bitmap has no config, use ARGB_8888
+ */
+fun Bitmap.createNewBitmap(width: Int, height: Int): Bitmap {
+    val config = this.config
+    return if (config != null) Bitmap.createBitmap(width, height, config) else Bitmap.createBitmap(
+        width,
+        height,
+        Bitmap.Config.ARGB_8888
+    )
+}
+
 fun Bitmap.draw(option: DrawOption): Bitmap {
-    val newBitmap = Bitmap.createBitmap(width, height, config)
+    val newBitmap = createNewBitmap(this.width, this.height)
     val canvas = Canvas(newBitmap)
     canvas.drawBitmap(this, 0F, 0F, null)
 
@@ -32,13 +45,16 @@ fun drawPath(canvas: Canvas, drawPart: PathDrawPart) {
             is MovePathPart -> {
                 path.moveTo(p.offset.x.toFloat(), p.offset.y.toFloat())
             }
+
             is LineToPathPart -> {
                 path.lineTo(p.offset.x.toFloat(), p.offset.y.toFloat())
             }
+
             is ArcToPathPart -> {
                 val rectF = RectF(p.rect)
                 path.arcTo(rectF, p.start.toFloat(), p.sweep.toFloat(), p.useCenter)
             }
+
             is BezierPathPart -> {
                 if (p.kind == 2) {
                     path.quadTo(
