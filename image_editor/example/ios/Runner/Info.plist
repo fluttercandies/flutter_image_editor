@@ -47,7 +47,5 @@
 	<string>App want to use your camera to capture photo.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

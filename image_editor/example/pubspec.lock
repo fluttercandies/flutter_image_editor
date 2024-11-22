@@ -153,21 +153,20 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.5.1"
+    version: "1.6.0"
   image_editor_common:
     dependency: "direct overridden"
     description:
       path: "../../image_editor_common"
       relative: true
     source: path
-    version: "1.1.2"
+    version: "1.2.0"
   image_editor_ohos:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: image_editor_ohos
-      sha256: "06756859586d5acefec6e3b4f356f9b1ce05ef09213bcb9a0ce1680ecea2d054"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "../../image_editor_ohos"
+      relative: true
+    source: path
     version: "0.0.9"
   image_editor_platform_interface:
     dependency: "direct overridden"
@@ -180,10 +179,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: "021834d9c0c3de46bf0fe40341fa07168407f694d9b2bb18d532dc1261867f7a"
+      sha256: b6951e25b795d053a6ba03af5f710069c99349de9341af95155d52665cb4607c
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.2"
+    version: "0.8.9"
   image_picker_android:
     dependency: transitive
     description:
@@ -196,10 +195,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_for_web
-      sha256: "717eb042ab08c40767684327be06a5d8dbb341fe791d514e4b92c7bbe1b7bb83"
+      sha256: "869fe8a64771b7afbc99fc433a5f7be2fea4d1cb3d7c11a48b6b579eb9c797f0"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.6"
+    version: "2.2.0"
   image_picker_ios:
     dependency: transitive
     description:
@@ -252,10 +251,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.1"
+    version: "0.6.7"
   material_color_utilities:
     dependency: transitive
     description:
@@ -276,10 +275,10 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.0"
+    version: "1.0.6"
   oktoast:
     dependency: "direct main"
     description:

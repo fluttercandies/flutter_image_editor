@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
           IconButton(
             icon: Icon(Icons.check),
             onPressed: () async {
-              await crop();
+              await crop(_editorController);
             },
           ),
         ],
@@ -69,21 +69,22 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     );
   }
 
+  final ImageEditorController _editorController = ImageEditorController();
+
   Widget buildImage() {
-    return ClipRect(
-      child: ExtendedImage(
-        image: provider,
-        height: 400,
-        width: 400,
-        extendedImageEditorKey: editorKey,
-        mode: ExtendedImageMode.editor,
-        fit: BoxFit.contain,
-        initEditorConfigHandler: (_) => EditorConfig(
-          maxScale: 8.0,
-          cropRectPadding: const EdgeInsets.all(20.0),
-          hitTestSize: 20.0,
-          cropAspectRatio: 2 / 1,
-        ),
+    return ExtendedImage(
+      image: provider,
+      height: 400,
+      width: 400,
+      extendedImageEditorKey: editorKey,
+      mode: ExtendedImageMode.editor,
+      fit: BoxFit.contain,
+      initEditorConfigHandler: (_) => EditorConfig(
+        maxScale: 8.0,
+        cropRectPadding: const EdgeInsets.all(20.0),
+        hitTestSize: 20.0,
+        cropAspectRatio: 2 / 1,
+        controller: _editorController,
       ),
     );
   }
@@ -123,45 +124,44 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
     );
   }
 
-  Future<void> crop([bool test = false]) async {
-    final ExtendedImageEditorState? state = editorKey.currentState;
-    if (state == null) {
-      return;
-    }
-    final Rect? rect = state.getCropRect();
-    if (rect == null) {
-      showToast('The crop rect is null.');
-      return;
-    }
-    final EditActionDetails action = state.editAction!;
-    final double radian = action.rotateAngle;
+  Future<void> crop(ImageEditorController imageEditorController) async {
+    print('native library start cropping');
 
-    final bool flipHorizontal = action.flipY;
-    final bool flipVertical = action.flipX;
-    // final img = await getImageFromEditorKey(editorKey);
-    final Uint8List? img = state.rawImageData;
+    final EditActionDetails action = imageEditorController.editActionDetails!;
 
-    if (img == null) {
-      showToast('The img is null.');
-      return;
-    }
+    final Uint8List img = imageEditorController.state!.rawImageData;
 
     final ImageEditorOption option = ImageEditorOption();
 
-    option.addOption(ClipOption.fromRect(rect));
-    option.addOption(
-        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
-    if (action.hasRotateAngle) {
-      option.addOption(RotateOption(radian.toInt()));
+    if (action.hasRotateDegrees) {
+      final int rotateDegrees = action.rotateDegrees.toInt();
+      option.addOption(RotateOption(rotateDegrees));
+    }
+    if (action.flipY) {
+      option.addOption(const FlipOption(horizontal: true, vertical: false));
     }
 
-    option.addOption(ColorOption.saturation(sat));
-    option.addOption(ColorOption.brightness(bright));
-    option.addOption(ColorOption.contrast(con));
+    if (action.needCrop) {
+      Rect cropRect = imageEditorController.getCropRect()!;
+      if (imageEditorController.state!.widget.extendedImageState.imageProvider
+          is ExtendedResizeImage) {
+        final ImmutableBuffer buffer = await ImmutableBuffer.fromUint8List(img);
+        final ImageDescriptor descriptor =
+            await ImageDescriptor.encoded(buffer);
 
-    option.outputFormat = const OutputFormat.png(88);
-
-    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
+        final double widthRatio =
+            descriptor.width / imageEditorController.state!.image!.width;
+        final double heightRatio =
+            descriptor.height / imageEditorController.state!.image!.height;
+        cropRect = Rect.fromLTRB(
+          cropRect.left * widthRatio,
+          cropRect.top * heightRatio,
+          cropRect.right * widthRatio,
+          cropRect.bottom * heightRatio,
+        );
+      }
+      option.addOption(ClipOption.fromRect(cropRect));
+    }
 
     final DateTime start = DateTime.now();
     final Uint8List? result = await ImageEditor.editImage(
@@ -169,17 +169,10 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       imageEditorOption: option,
     );
 
-    print('result.length = ${result?.length}');
-
-    final Duration diff = DateTime.now().difference(start);
-
-    print('image_editor time : $diff');
-    showToast('handle duration: $diff',
-        duration: const Duration(seconds: 5), dismissOtherToast: true);
-
-    if (result == null) return;
-
-    showPreviewDialog(result);
+    print('${DateTime.now().difference(start)} ：total time');
+    if (result != null) {
+      showPreviewDialog(result);
+    }
   }
 
   void flip() {
@@ -187,7 +180,9 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
   }
 
   void rotate(bool right) {
-    editorKey.currentState?.rotate(right: right);
+    editorKey.currentState?.rotate(
+      degree: right ? 90 : -90,
+    );
   }
 
   void showPreviewDialog(Uint8List image) {

@@ -94,18 +94,6 @@ class _MergeImagePageState extends State<MergeImagePage> {
     } else {
       provider = MemoryImage(result);
     }
-    // provider
-    //     ?.resolve(ImageConfiguration.empty)
-    //     .addListener(ImageStreamListener((image, synchronousCall) {
-    //   print(image.image);
-    // }));
-
-    // final File? result = await ImageMerger.mergeToFile(option: option);
-    // if (result == null) {
-    //   provider = null;
-    // } else {
-    //   provider = FileImage(result);
-    // }
     setState(() {});
   }
 }
