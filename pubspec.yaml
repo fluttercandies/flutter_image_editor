@@ -1,4 +1,4 @@
-name: image_editor_workspace
+name: image_editor
 publish_to: "none"
 
 environment:
