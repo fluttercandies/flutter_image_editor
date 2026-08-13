@@ -86,8 +86,8 @@ class _MixImagePageState extends State<MixImagePage> {
     final Uint8List src = await loadFromAsset(R.ASSETS_SRC_PNG);
     final Uint8List dst = await loadFromAsset(R.ASSETS_DST_PNG);
 
-    final srcSize = ImageSizeGetter.getSize(MemoryInput(src));
-    final dstSize = ImageSizeGetter.getSize(MemoryInput(dst));
+    final srcSize = ImageSizeGetter.getSizeResult(MemoryInput(src)).size;
+    final dstSize = ImageSizeGetter.getSizeResult(MemoryInput(dst)).size;
 
     final ImageEditorOption optionGroup = ImageEditorOption();
     optionGroup.outputFormat = const OutputFormat.png();
@@ -108,7 +108,7 @@ class _MixImagePageState extends State<MixImagePage> {
     } else {
       image = MemoryImage(result);
 
-      final resultSize = ImageSizeGetter.getSize(MemoryInput(result));
+      final resultSize = ImageSizeGetter.getSizeResult(MemoryInput(result)).size;
       print('srcSize: $srcSize, dstSize: $dstSize, resultSize: $resultSize');
     }
 

@@ -51,7 +51,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
             Expanded(
               child: SliderTheme(
                 data: const SliderThemeData(
-                  showValueIndicator: ShowValueIndicator.always,
+                  showValueIndicator: ShowValueIndicator.onDrag,
                 ),
                 child: Column(
                   children: <Widget>[
@@ -191,7 +191,7 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       builder: (BuildContext ctx) => GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Container(
-          color: Colors.grey.withOpacity(0.5),
+          color: Colors.grey.withValues(alpha: 0.5),
           child: Center(
             child: SizedBox.fromSize(
               size: const Size.square(200),
