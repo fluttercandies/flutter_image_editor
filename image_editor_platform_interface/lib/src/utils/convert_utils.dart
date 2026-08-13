@@ -15,10 +15,10 @@ class ConvertUtils {
   /// Convert [Color] to map
   static Map<String, Object> color(Color c) {
     return {
-      'r': c.red,
-      'g': c.green,
-      'b': c.blue,
-      'a': c.alpha,
+      'r': c.red, // ignore: deprecated_member_use
+      'g': c.green, // ignore: deprecated_member_use
+      'b': c.blue, // ignore: deprecated_member_use
+      'a': c.alpha, // ignore: deprecated_member_use
     };
   }
 

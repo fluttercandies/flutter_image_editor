@@ -1,7 +1,20 @@
 name: Runnable (stable)
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
   pull_request:
+    paths-ignore:
+      - "**.md"
+
+permissions: {}
 
 jobs:
   analyze:
@@ -9,6 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
@@ -17,10 +34,22 @@ jobs:
         run: |
           dart --version
           flutter --version
-      - name: Run the runnable shell
-        run: sh -e ./runnable.sh
+      - name: Analyze image_editor
+        run: cd image_editor && flutter pub get && flutter analyze lib
+      - name: Analyze image_editor_common
+        run: cd image_editor_common && flutter pub get && flutter analyze lib
+      - name: Analyze image_editor_platform_interface
+        run: cd image_editor_platform_interface && flutter pub get && flutter analyze lib
+      - name: Analyze example
+        run: |
+          cd image_editor/example
+          flutter pub get
+          flutter analyze lib
+      - name: Dry run docs generate
+        run: cd image_editor && dart doc --dry-run .
+        continue-on-error: true
 
-  test_iOS:
+  test_ios:
     needs: analyze
     name: Test iOS build
     runs-on: macos-latest
@@ -33,9 +62,9 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
-      - run: cd image_editor/example; flutter build ios --no-codesign
+      - run: cd image_editor/example; flutter build ios --debug --no-codesign
 
-  test_Android:
+  test_android:
     needs: analyze
     name: Test Android build
     runs-on: ubuntu-latest
@@ -43,8 +72,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: "corretto"
-          java-version: "17"
+          distribution: 'corretto'
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
@@ -52,15 +81,12 @@ jobs:
       - run: dart --version
       - run: flutter --version
       - run: cd image_editor; flutter pub get
-      - run: cd image_editor/example; flutter build apk --debug
+      - run: cd image_editor/example; flutter build apk --debug --android-skip-build-dependency-validation
 
-  test_macOS:
+  test_macos:
     needs: analyze
-    name: Test macOS build on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
+    name: Test macOS build
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2

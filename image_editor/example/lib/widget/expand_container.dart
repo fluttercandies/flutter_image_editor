@@ -21,7 +21,7 @@ class _ExpandContainerState extends State<ExpandContainer> {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.withOpacity(0.4),
+          color: Colors.grey.withValues(alpha: 0.4),
           width: 1,
         ),
         borderRadius: BorderRadius.circular(3),
