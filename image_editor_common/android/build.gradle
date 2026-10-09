@@ -21,8 +21,17 @@ rootProject.allprojects {
     }
 }
 
+def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
+// AGP 9 enables built-in Kotlin and no longer allows library subprojects to apply
+// the Kotlin Gradle Plugin (KGP). Apply KGP ourselves whenever built-in Kotlin is
+// not in effect; the pluginManager form keeps Flutter's static KGP detection from
+// flagging this plugin. See
+// https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+def builtInKotlinEnabled = project.findProperty('android.builtInKotlin')?.toString()?.toBoolean() ?: (agpMajor >= 9)
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+if (agpMajor < 9 || !builtInKotlinEnabled) {
+    pluginManager.apply('kotlin-android')
+}
 
 android {
     if (project.hasProperty('compileSdk')) {
@@ -40,8 +49,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = '1.8'
+    if (!builtInKotlinEnabled) {
+        kotlinOptions {
+            jvmTarget = '1.8'
+        }
     }
 
     defaultConfig {
@@ -56,4 +67,12 @@ android {
 dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.3.3'
     implementation 'com.jaredrummler:truetypeparser-light:1.0.0'
+}
+
+if (builtInKotlinEnabled) {
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+        }
+    }
 }
