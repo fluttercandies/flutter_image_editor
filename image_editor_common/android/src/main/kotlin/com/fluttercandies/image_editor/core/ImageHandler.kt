@@ -1,6 +1,7 @@
 package com.fluttercandies.image_editor.core
 
 import android.graphics.*
+import android.graphics.text.LineBreaker
 import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
@@ -119,60 +120,45 @@ class ImageHandler(private var bitmap: Bitmap) {
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.color = Color.argb(text.a, text.r, text.g, text.b)
         textPaint.textSize = text.fontSizePx.toFloat()
-        if (text.fontName.isNotEmpty()) {
-            try {
-                val typefaceFromAsset = FontUtils.getFont(text.fontName)
-                textPaint.typeface = typefaceFromAsset
-            } catch (_: Exception) {
-            }
-        }
-        val staticLayout = getStaticLayout(text, textPaint, canvas.width - text.x)
 
+        // 计算可用宽度（避免负值）
+        val availableWidth = (canvas.width - text.x).coerceAtLeast(0)
+
+        // 将 Paint.Align 转为 Layout.Alignment，交给 StaticLayout 管理对齐
+        val alignment = when (text.textAlign) {
+            Paint.Align.CENTER -> Layout.Alignment.ALIGN_CENTER
+            Paint.Align.RIGHT -> Layout.Alignment.ALIGN_OPPOSITE
+            else -> Layout.Alignment.ALIGN_NORMAL
+        }
+
+        val staticLayout = getStaticLayout(text, textPaint, availableWidth, alignment)
+
+        // 把画布移动到文本区域的左上角，然后由 StaticLayout 负责绘制行和基线
+        canvas.save()
         canvas.translate(text.x.toFloat(), text.y.toFloat())
-//        staticLayout.draw(canvas)
-
-        for (i in 0 until staticLayout.lineCount) {
-            val lineText = staticLayout.text.subSequence(
-                staticLayout.getLineStart(i),
-                staticLayout.getLineEnd(i)
-            ).toString()
-
-            val lineWidth = textPaint.measureText(lineText)
-
-            val lineY = text.y + (i + 1) * text.fontSizePx
-            val lineX =
-                when (text.textAlign) {
-                    Paint.Align.CENTER -> {
-                        (staticLayout.width - lineWidth) / 2
-                    }
-
-                    Paint.Align.RIGHT -> {
-                        staticLayout.width - lineWidth
-                    }
-
-                    else -> {
-                        text.x
-                    }
-                }
-
-            canvas.drawText(lineText, lineX.toFloat(), lineY.toFloat(), textPaint)
-        }
-
-        canvas.translate((-text.x).toFloat(), (-text.y).toFloat())
+        staticLayout.draw(canvas)
+        canvas.restore()
     }
 
     @Suppress("DEPRECATION")
-    private fun getStaticLayout(text: Text, textPaint: TextPaint, width: Int): StaticLayout {
-        return if (Build.VERSION.SDK_INT >= 23) {
-            StaticLayout.Builder.obtain(
-                text.text, 0, text.text.length, textPaint, width
-            ).build()
+    private fun getStaticLayout(
+        text: Text,
+        textPaint: TextPaint,
+        width: Int,
+        alignment: Layout.Alignment
+    ): StaticLayout {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            StaticLayout.Builder.obtain(text.text, 0, text.text.length, textPaint, width)
+                .setAlignment(alignment)
+                .setBreakStrategy(LineBreaker.BREAK_STRATEGY_HIGH_QUALITY)
+                .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NORMAL)
+                .build()
         } else {
             StaticLayout(
                 text.text,
                 textPaint,
                 width,
-                Layout.Alignment.ALIGN_NORMAL,
+                alignment,
                 1.0F,
                 0.0F,
                 true
