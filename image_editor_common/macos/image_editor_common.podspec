@@ -13,9 +13,8 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'image_editor_common/Sources/image_editor_common/**/*.{h,m}'
+  s.public_header_files = 'image_editor_common/Sources/image_editor_common/include/image_editor_common/**/*.h'
 
   s.osx.dependency 'FlutterMacOS'
   s.ios.dependency 'Flutter'

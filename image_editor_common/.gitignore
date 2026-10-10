@@ -77,3 +77,6 @@ build/
 *.lock
 .env
 fvm
+
+# Swift Package Manager build artifacts
+**/.build/
