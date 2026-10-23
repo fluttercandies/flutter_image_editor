@@ -139,7 +139,7 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
 
     final Uint8List assetImage = await getAssetImage();
 
-    final srcSize = ImageSizeGetter.getSize(MemoryInput(assetImage));
+    final srcSize = ImageSizeGetter.getSizeResult(MemoryInput(assetImage)).size;
 
     print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
     final Uint8List? result = await ImageEditor.editImage(
@@ -152,7 +152,7 @@ class _SimpleExamplePageState extends State<SimpleExamplePage> {
       return;
     }
 
-    final resultSize = ImageSizeGetter.getSize(MemoryInput(result));
+    final resultSize = ImageSizeGetter.getSizeResult(MemoryInput(result)).size;
 
     print('srcSize: $srcSize, resultSize: $resultSize');
 
