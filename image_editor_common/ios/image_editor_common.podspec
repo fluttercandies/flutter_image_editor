@@ -13,8 +13,8 @@ Edit your image data and output to file/memory.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Flutter Candies' => 'admin@fluttercandies.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'image_editor_common/Sources/image_editor_common/**/*.{h,m}'
+  s.public_header_files = 'image_editor_common/Sources/image_editor_common/include/image_editor_common/**/*.h'
   s.dependency 'Flutter'
   s.platform = :ios, '9.0'
   

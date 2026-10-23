@@ -17,6 +17,7 @@ typedef UIFont FIFont;
 
 #if TARGET_OS_OSX
 #import <CoreText/CoreText.h>
+#import <AppKit/AppKit.h>
 typedef NSImage FIImage;
 typedef NSFont FIFont;
 typedef NSColor FIColor;

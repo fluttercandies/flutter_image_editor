@@ -23,12 +23,13 @@ if (flutterVersionName == null) {
 }
 
 android {
-    def sdkVersion = 35
+    def sdkVersion = 36
     if (project.hasProperty('compileSdk')) {
         compileSdk = sdkVersion
     } else {
         compileSdkVersion = sdkVersion
     }
+    ndkVersion "28.2.13676358"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

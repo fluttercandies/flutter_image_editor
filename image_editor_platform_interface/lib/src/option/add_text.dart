@@ -68,10 +68,10 @@ class EditorText {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
       'size': fontSizePx,
-      'r': textColor.red,
-      'g': textColor.green,
-      'b': textColor.blue,
-      'a': textColor.alpha,
+      'r': textColor.red, // ignore: deprecated_member_use
+      'g': textColor.green, // ignore: deprecated_member_use
+      'b': textColor.blue, // ignore: deprecated_member_use
+      'a': textColor.alpha, // ignore: deprecated_member_use
       'textAlign': _alignValue,
     };
   }
