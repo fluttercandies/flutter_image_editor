@@ -49,6 +49,33 @@ jobs:
         run: cd image_editor && dart doc --dry-run .
         continue-on-error: true
 
+  library_tests:
+    name: Library tests (Flutter ${{ matrix.label }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {label: "3.7.12", version: "3.7.12"}
+          - {label: "stable", version: ""}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.version }}
+          cache: true
+      - name: Analyze library packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          for package in image_editor image_editor_common image_editor_platform_interface; do
+            (cd "$package" && dart pub get && flutter analyze --no-pub lib)
+          done
+      - name: Run package unit tests
+        working-directory: image_editor_platform_interface
+        run: flutter test --no-pub
+
   test_ios:
     needs: analyze
     name: Test iOS build
