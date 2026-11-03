@@ -27,9 +27,16 @@ def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0
 // not in effect; the pluginManager form keeps Flutter's static KGP detection from
 // flagging this plugin. See
 // https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
-def builtInKotlinEnabled = project.findProperty('android.builtInKotlin')?.toString()?.toBoolean() ?: (agpMajor >= 9)
+//
+// Built-in Kotlin only exists on AGP 9+. There it is on by default and can be
+// opted out of with `android.builtInKotlin=false`; on AGP 8 the property has no
+// effect. An explicit `false` must be honoured, so the property is checked for
+// presence rather than truthiness (Groovy's `?:` would treat `false` as absent).
+def builtInKotlinProperty = project.findProperty('android.builtInKotlin')
+def builtInKotlinEnabled = agpMajor >= 9 &&
+    (builtInKotlinProperty == null || builtInKotlinProperty.toString().toBoolean())
 apply plugin: 'com.android.library'
-if (agpMajor < 9 || !builtInKotlinEnabled) {
+if (!builtInKotlinEnabled) {
     pluginManager.apply('kotlin-android')
 }
 
