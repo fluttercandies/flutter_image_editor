@@ -1,10 +1,7 @@
 import image from '@ohos.multimedia.image';
 import { Offset } from '../mode/Offset';
 import { MapUtils } from '../util/MapUtils';
-import { Option } from './Option';
-import { drawing } from '@kit.ArkGraphics2D';
 import { ImageUtils } from '../util/ImageUtils';
-import { ScaleOption } from './ScaleOption';
 
 export class ImageMergeOption {
   constructor(data: Map<string, ESObject>) {
@@ -24,18 +21,16 @@ export class ImageMergeOption {
 
   async handle(context: OffscreenCanvasRenderingContext2D): Promise<void> {
     const imageSource: image.ImageSource = image.createImageSource(this.image.buffer);
-    let decodingOptions: image.DecodingOptions = {
-      sampleSize: 1,
-      // editable: true,
-    };
-    let pixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
-    // let pixelMap: PixelMap = await image.createPixelMap(this.image.buffer, {
-    //   size: {
-    //     width: this.width, height: this.height,
-    //
-    //   },
-    //   // editable: true,
-    // },);
-    context.drawImage(pixelMap, this.offset.x, this.offset.y, this.width, this.height);
+    try {
+      const decodingOptions: image.DecodingOptions = { sampleSize: 1 };
+      const pixelMap = await imageSource.createPixelMap(decodingOptions);
+      try {
+        context.drawImage(pixelMap, this.offset.x, this.offset.y, this.width, this.height);
+      } finally {
+        await ImageUtils.releaseResource('PixelMap', () => pixelMap.release());
+      }
+    } finally {
+      await ImageUtils.releaseResource('ImageSource', () => imageSource.release());
+    }
   }
 }

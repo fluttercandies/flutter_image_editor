@@ -1,4 +1,12 @@
 export class ImageUtils {
+  static async releaseResource(name: string, release: () => Promise<void>): Promise<void> {
+    try {
+      await release();
+    } catch (error) {
+      console.error(`Failed to release ${name}`, error);
+    }
+  }
+
   static calcScale(minWidth: number, minHeight: number, width: number, height: number,): number {
     let scaleW = width / minWidth
     let scaleH = height / minHeight

@@ -158,33 +158,31 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
   }
 
   async handleImage(args: Map<string, ESObject>, imageSource: image.ImageSource): Promise<Uint8Array> {
-    let fmt: FormatOption = new FormatOption(args.get('fmt'));
-
-    let pixelMap: PixelMap = await this.handleImageOptions(args, imageSource);
-
-    const imagePackerApi = image.createImagePacker();
-
-    // PixelMap编码成不同格式的存档图片
-    let format: string = 'image/jpeg';
-    switch (fmt.format) {
-      case 0:
-        format = 'image/png'
-        break;
-      default:
-        break;
+    try {
+      const fmt = new FormatOption(args.get('fmt'));
+      const pixelMap = await this.handleImageOptions(args, imageSource);
+      try {
+        return await this.packImage(pixelMap, fmt);
+      } finally {
+        await ImageUtils.releaseResource('PixelMap', () => pixelMap.release());
+      }
+    } finally {
+      await ImageUtils.releaseResource('ImageSource', () => imageSource.release());
     }
-
-    const packOptions: image.PackingOption = {
-      format: format,
-      quality: fmt.quality,
-    }
-
-    let uint8Array: Uint8Array = new Uint8Array(await imagePackerApi.packing(pixelMap, packOptions));
-    pixelMap.release();
-    imageSource.release();
-    return uint8Array;
   }
 
+  private async packImage(pixelMap: PixelMap, fmt: FormatOption): Promise<Uint8Array> {
+    const packOptions: image.PackingOption = {
+      format: fmt.format === 0 ? 'image/png' : 'image/jpeg',
+      quality: fmt.quality,
+    };
+    const imagePacker = image.createImagePacker();
+    try {
+      return new Uint8Array(await imagePacker.packing(pixelMap, packOptions));
+    } finally {
+      await ImageUtils.releaseResource('ImagePacker', () => imagePacker.release());
+    }
+  }
 
   async handleImageOptions(args: Map<string, ESObject>, imageSource: image.ImageSource): Promise<PixelMap> {
 
@@ -195,62 +193,64 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
     };
 
     let pixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
-    let exifRotate: number = 0;
+    let ownershipTransferred = false;
     try {
-      let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-      exifRotate = ImageUtils.parseExifRotate(imageProperty);
-      await pixelMap.rotate(exifRotate % 360);
-    }
-    catch (e) {
-    }
-
-    // const brush = new drawing.Brush();
-    // let colorFilter = drawing.ColorFilter.createLinearToSRGBGamma();
-    // brush.setColorFilter(colorFilter);
-
-
-    // let reverseWH: boolean = false;
-    // if (exifRotate == 270 || exifRotate == 90) {
-    //   reverseWH = true;
-    // }
-
-    for (let index = 0; index < optionsList.length; index++) {
-      const data: Map<string, ESObject> = optionsList[index];
-      let value: Map<string, ESObject> = data.get('value');
-      let option: Option | null = null;
-      switch (data.get('type')) {
-        case ClipOption.key:
-          option = new ClipOption(value);
-          break;
-        case FlipOption.key:
-          option = new FlipOption(value);
-          break;
-        case RotateOption.key:
-          option = new RotateOption(value);
-          break;
-        case ScaleOption.key:
-          option = new ScaleOption(value);
-          break;
-        case AddTextOption.key:
-          option = new AddTextOption(value);
-          break;
-        case MixImageOption.key:
-          option = new MixImageOption(value);
-          break;
-        case DrawOption.key:
-          option = new DrawOption(value);
-          break;
-        case ColorOption.key:
-          option = new ColorOption(value);
-          break;
-        default:
-          break;
+      let exifRotate: number = 0;
+      try {
+        let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+        exifRotate = ImageUtils.parseExifRotate(imageProperty);
+        await pixelMap.rotate(exifRotate % 360);
       }
-      if (option != null && !option.canIgnore()) {
-        pixelMap = await option.handle(pixelMap);
+      catch (e) {
+      }
+
+      for (let index = 0; index < optionsList.length; index++) {
+        const data: Map<string, ESObject> = optionsList[index];
+        let value: Map<string, ESObject> = data.get('value');
+        let option: Option | null = null;
+        switch (data.get('type')) {
+          case ClipOption.key:
+            option = new ClipOption(value);
+            break;
+          case FlipOption.key:
+            option = new FlipOption(value);
+            break;
+          case RotateOption.key:
+            option = new RotateOption(value);
+            break;
+          case ScaleOption.key:
+            option = new ScaleOption(value);
+            break;
+          case AddTextOption.key:
+            option = new AddTextOption(value);
+            break;
+          case MixImageOption.key:
+            option = new MixImageOption(value);
+            break;
+          case DrawOption.key:
+            option = new DrawOption(value);
+            break;
+          case ColorOption.key:
+            option = new ColorOption(value);
+            break;
+          default:
+            break;
+        }
+        if (option != null && !option.canIgnore()) {
+          const previous = pixelMap;
+          pixelMap = await option.handle(previous);
+          if (pixelMap !== previous) {
+            await ImageUtils.releaseResource('PixelMap', () => previous.release());
+          }
+        }
+      }
+      ownershipTransferred = true;
+      return pixelMap;
+    } finally {
+      if (!ownershipTransferred) {
+        await ImageUtils.releaseResource('PixelMap', () => pixelMap.release());
       }
     }
-    return pixelMap;
   }
 
 
@@ -274,28 +274,13 @@ export default class ImageEditorOhosPlugin implements FlutterPlugin, MethodCallH
       await imageMergeOption.handle(context);
     }
 
-    const imagePackerApi = image.createImagePacker();
-
-    // PixelMap编码成不同格式的存档图片
-    let format: string = 'image/jpeg';
-    switch (fmt.format) {
-      case 0:
-        format = 'image/png'
-        break;
-      default:
-        break;
+    const pixelMap = context.getPixelMap(0, 0, width, height);
+    try {
+      const scale = px2vp(1);
+      await pixelMap.scale(scale, scale);
+      return await this.packImage(pixelMap, fmt);
+    } finally {
+      await ImageUtils.releaseResource('PixelMap', () => pixelMap.release());
     }
-
-    const packOptions: image.PackingOption = {
-      format: format,
-      quality: fmt.quality,
-    }
-    let pixelMap = context.getPixelMap(0, 0, width, height);
-
-    let scale = px2vp(1);
-    await pixelMap.scale(scale,scale);
-    let uint8Array: Uint8Array = new Uint8Array(await imagePackerApi.packing(pixelMap, packOptions));
-    pixelMap.release();
-    return uint8Array;
   }
 }

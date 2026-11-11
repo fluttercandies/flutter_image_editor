@@ -87,36 +87,37 @@ export class MixImageOption implements Option {
     if (this.blendMode != undefined) {
       brush.setBlendMode(this.blendMode);
     }
-    canvas.attachBrush(brush);
-
     const imageSource: image.ImageSource = image.createImageSource(this.target.buffer);
-    let decodingOptions: image.DecodingOptions = {
-      sampleSize: 1,
-      editable: true,
-    };
-    let targetPixelMap: PixelMap = await imageSource.createPixelMap(decodingOptions);
-    let exifRotate: number = 0;
     try {
-      let imageProperty = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-      exifRotate = ImageUtils.parseExifRotate(imageProperty);
-      await pixelMap.rotate(exifRotate % 360);
+      const decodingOptions: image.DecodingOptions = { sampleSize: 1, editable: true };
+      const targetPixelMap = await imageSource.createPixelMap(decodingOptions);
+      try {
+        try {
+          const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+          await pixelMap.rotate(ImageUtils.parseExifRotate(orientation) % 360);
+        } catch (e) {
+        }
+
+        const scaleOption = new ScaleOption(new Map<string, ESObject>([
+          ['width', this.width],
+          ['height', this.height],
+          ['keepWidthFirst', true],
+          ['keepRatio', false],
+        ]));
+        await scaleOption.handle(targetPixelMap);
+        canvas.attachBrush(brush);
+        try {
+          canvas.drawImage(targetPixelMap, this.x, this.y);
+        } finally {
+          canvas.detachBrush();
+        }
+      } finally {
+        await ImageUtils.releaseResource('PixelMap', () => targetPixelMap.release());
+      }
+    } finally {
+      await ImageUtils.releaseResource('ImageSource', () => imageSource.release());
     }
-    catch (e) {
-    }
-
-
-    let scaleOption: ScaleOption = new ScaleOption(new Map<string, ESObject>([
-      ['width', this.width],
-      ['height', this.height],
-      ['keepWidthFirst', true],
-      ['keepRatio', false],
-    ]));
-    await scaleOption.handle(targetPixelMap);
-    canvas.drawImage(targetPixelMap, this.x, this.y);
-    canvas.detachBrush();
-
     return pixelMap;
-
   }
 
   canIgnore(): boolean {
